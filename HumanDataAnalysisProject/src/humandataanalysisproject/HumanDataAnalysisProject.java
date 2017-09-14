@@ -13,19 +13,22 @@ public class HumanDataAnalysisProject
 {
     public static void main(String[] args) throws IOException 
     {
-        File thefile = new File("externalfiles/BigAssDictionaryFromPrinceton.txt");
-        GenericSpellDictionary dictionary = new GenericSpellDictionary(thefile);
+        //File thefile = new File("externalfiles/BigAssDictionaryFromPrinceton.txt");
+        //GenericSpellDictionary dictionary = new GenericSpellDictionary(thefile);
         
         
-        String teststring = new String("Hello world crap");
-        StringWordTokenizer finder = new StringWordTokenizer(teststring);
-        SpellChecker checker = new SpellChecker(dictionary);
-        int results = checker.checkSpelling(finder);
-        System.out.print(results);
-        checker.getSuggestions("thestring", 1);
+        String teststring = new String("Hello world crap, now with punctuation and shit!");
+        
+        CommentInstance testCI = new CommentInstance(teststring);
+        
+        //StringWordTokenizer finder = new StringWordTokenizer(teststring);
+        
+        //SpellChecker checker = new SpellChecker(dictionary);
+        //int results = checker.checkSpelling(finder);
+        //System.out.print(results);
+        //checker.getSuggestions("thestring", 1);
         
                
         
     }
-    
 }
