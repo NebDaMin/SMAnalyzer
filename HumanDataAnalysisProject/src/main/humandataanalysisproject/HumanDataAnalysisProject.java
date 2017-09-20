@@ -1,25 +1,21 @@
 package main.humandataanalysisproject;
 
-import com.swabunga.spell.event.*;
-import com.swabunga.spell.engine.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
-//import java.util.Scanner;
-
-/**
- *
- * @author Ben Ciummo
- */
 public class HumanDataAnalysisProject 
 {
     private ArrayList<CommentInstance> _AllComments;
+    private DictionaryInstance _Dictionary;
     
     public HumanDataAnalysisProject() throws IOException 
     {
+        //Initialize Variables
+        _Dictionary = new DictionaryInstance("externalfiles/BigAssDictionaryFromPrinceton.txt","English");
+        _AllComments = new ArrayList();
+        
+        
         //Test strings to simulate reading in multiple comments.
         String teststring =     "This is Bob. Bob is an english comment be like bob";
         String teststring1 =    "THIZZZ hereeeeeee comment izzz nottttt speeeeellled cerecterly IZZZ NOOOOOT bob";
@@ -28,13 +24,12 @@ public class HumanDataAnalysisProject
         String teststring4 =    "This is a cooooment that has only a few missssspelled words therefore it should still be counted";
         
         
-        //Adding all comments to an ArrayList
-        _AllComments = new ArrayList();
-        _AllComments.add(new CommentInstance(teststring));
-        _AllComments.add(new CommentInstance(teststring1));
-        _AllComments.add(new CommentInstance(teststring2));
-        _AllComments.add(new CommentInstance(teststring3));
-        _AllComments.add(new CommentInstance(teststring4));
+        //Adding all comments to an ArrayList, this is where the file read in stuff happens
+        _AllComments.add(new CommentInstance(teststring,_Dictionary.getDictionaryInstance()));
+        _AllComments.add(new CommentInstance(teststring1,_Dictionary.getDictionaryInstance()));
+        _AllComments.add(new CommentInstance(teststring2,_Dictionary.getDictionaryInstance()));
+        _AllComments.add(new CommentInstance(teststring3,_Dictionary.getDictionaryInstance()));
+        _AllComments.add(new CommentInstance(teststring4,_Dictionary.getDictionaryInstance()));
         
         
         //this loop gets the total number of unique words for every comment
@@ -65,10 +60,6 @@ public class HumanDataAnalysisProject
         //Become one with the all powerful HashMap
         HashMap rankedWords = compileAllCommentInstances(allComments);
         System.out.println(rankedWords.toString());
-        
-        //Alice test
-        //String teststring = new Scanner(new File("externalfiles/alice.txt")).useDelimiter("\\Z").next();
-        //CommentInstance testCI = new CommentInstance(teststring);
     }
     
     public static HashMap compileAllCommentInstances(String[] inputArray )

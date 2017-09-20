@@ -2,46 +2,47 @@ package main.humandataanalysisproject;
 
 import java.util.ArrayList;
 import java.io.*;
-import java.util.Scanner;
 import com.swabunga.spell.event.*;
 import com.swabunga.spell.engine.*;
 
 public class CommentInstance 
 {
+    //class level vars
+    //Gettable vars
+    private String _CommentRaw = "";                    //Raw comment when first initialized
+    private String _CommentNoPunct = "";                //Comment Version without punctuation
+    private ArrayList<String> _UniqueWordList;          //List of unique words
+    private ArrayList<Integer> _UniqueWordListCounts;   //Count of each words in word list
+    private ArrayList<String> _GeneralizedWordList;     //TODO: make a string of all word variances generalized
+    private boolean _IsEnglish;                         //Is comment english
     
-    private String _CommentRaw = "";            //Raw comment when first initialized
-    private String _CommentNoPunct = "";        //Comment Version without punctuation
-    private ArrayList<Character> _CharList;     //List of Chars while removing punctuation
-    private ArrayList<String> _WordList;        //List of unique words
-    private ArrayList<Integer> _WordListCounts; //Count of words in word list
-    private char[] _PunctWhitelist;             //Array to store whitelist of english characters
-    private final File _Dictionaryfile;         //File where the dictionary is stored
-    private GenericSpellDictionary _Dictionary; //Dictionary object that will do the spellcheck to identify non english words
-    private boolean _IsEnglish;                 //Is comment english
+    
+    
+    //Other Vars
+    
+    private char[] _PunctWhitelist;                 //Array to store whitelist of english characters
+    private ArrayList<Character> _CommentCharList;  //List of Chars while removing punctuation
     
     //Constructor for CommentInstance
-    public CommentInstance(String inputString) throws IOException
+    public CommentInstance(String inputString, GenericSpellDictionary dictionary) throws IOException
     {
-        _Dictionaryfile = new File("externalfiles/BigAssDictionaryFromPrinceton.txt");
-        _Dictionary = new GenericSpellDictionary(_Dictionaryfile);
+        //Initialize Variables
+        _CommentRaw = inputString;
+        _CommentCharList = new ArrayList<>();
+        _UniqueWordList = new ArrayList<>();
+        _UniqueWordListCounts = new ArrayList<>();
         _PunctWhitelist = new char[] {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',' '
                                      ,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-        _CommentRaw = inputString;
-        _CharList = new ArrayList<>();
-        _WordList = new ArrayList<>();
-        _WordListCounts = new ArrayList<>();
         
         //Iterate through comment and put into ArrayList of chars
         for(int z=0;z<_CommentRaw.length();z++)
         {
-            _CharList.add(_CommentRaw.charAt(z));
+            _CommentCharList.add(_CommentRaw.charAt(z));
         }
-        
-        
         
         removePunctuation();
         populateWordList();
-        identifyLanguage();
+        identifyLanguage(dictionary);
     }
     
     //This method takes the comment and saves a version of it that doesnt include punctuation
@@ -49,15 +50,15 @@ public class CommentInstance
     {
         Character currentChar;
         
-        for(int y=0;y<_CharList.size();y++)
+        for(int y=0;y<_CommentCharList.size();y++)
         {
-            currentChar = _CharList.get(y);
+            currentChar = _CommentCharList.get(y);
             
             for(int x=0; x<_PunctWhitelist.length;x++)
             {
                 if(currentChar.equals(_PunctWhitelist[x]))
                 {
-                    _CommentNoPunct += _CharList.get(y);
+                    _CommentNoPunct += _CommentCharList.get(y);
                 }
             }
         }
@@ -76,22 +77,22 @@ public class CommentInstance
         
         //Iterate by character. If not a space, store character in currentWord
         //If space, check for duplicates, 
-        //then store currentWord in _WordList and iterate count
+        //then store currentWord in _UniqueWordList and iterate count
         for(int z=0;z<comment.length();z++)
         {
             if(comment.charAt(z)==' ') 
             {
-              int searchResults = _WordList.indexOf(currentWord);
+              int searchResults = _UniqueWordList.indexOf(currentWord);
               if(searchResults == -1)
               {
-                 _WordList.add(currentWord);
-                 _WordListCounts.add(1);
+                 _UniqueWordList.add(currentWord);
+                 _UniqueWordListCounts.add(1);
                  currentWord = "";
               }
               else
               {
-                 int currentCount = _WordListCounts.get(searchResults);
-                 _WordListCounts.set(searchResults, (currentCount +1));
+                 int currentCount = _UniqueWordListCounts.get(searchResults);
+                 _UniqueWordListCounts.set(searchResults, (currentCount +1));
                  currentWord = "";
               }
             }
@@ -107,34 +108,34 @@ public class CommentInstance
            int offsetCount = 0;
            for(int k =0;k<_WordList.size();k++) {
                if(offsetFlag == 0) {
-                 out.print(_WordList.get(k)+": "+_WordListCounts.get(k)); 
-                 offsetCount = _WordList.get(k).length() + 
-                         _WordListCounts.get(k).toString().length() + 2;
+                 out.print(_UniqueWordList.get(k)+": "+_UniqueWordListCounts.get(k)); 
+                 offsetCount = _UniqueWordList.get(k).length() + 
+                         _UniqueWordListCounts.get(k).toString().length() + 2;
                  offsetFlag = 1;
                }
                else if(offsetFlag == 1) {
                   for(int j = 0;j<(35-offsetCount);j++) {
                       out.print(" ");
                   } 
-                  out.print(_WordList.get(k)+": "+_WordListCounts.get(k));
-                  offsetCount = _WordList.get(k).length() + 
-                         _WordListCounts.get(k).toString().length() + 2;
+                  out.print(_UniqueWordList.get(k)+": "+_UniqueWordListCounts.get(k));
+                  offsetCount = _UniqueWordList.get(k).length() + 
+                         _UniqueWordListCounts.get(k).toString().length() + 2;
                   offsetFlag = 3;
                }
                else if(offsetFlag == 3) {
                   for(int j = 0;j<(35-offsetCount);j++) {
                       out.print(" ");
                   } 
-                  out.print(_WordList.get(k)+": "+_WordListCounts.get(k));
-                  offsetCount = _WordList.get(k).length() + 
-                         _WordListCounts.get(k).toString().length() + 2;
+                  out.print(_UniqueWordList.get(k)+": "+_UniqueWordListCounts.get(k));
+                  offsetCount = _UniqueWordList.get(k).length() + 
+                         _UniqueWordListCounts.get(k).toString().length() + 2;
                   offsetFlag = 4;
                }
                else if(offsetFlag == 4) {
                   for(int j = 0;j<(35-offsetCount);j++) {
                       out.print(" ");
                   } 
-                  out.println(_WordList.get(k)+": "+_WordListCounts.get(k));
+                  out.println(_UniqueWordList.get(k)+": "+_UniqueWordListCounts.get(k));
                   offsetCount = 0;
                   offsetFlag = 0;   
                }
@@ -142,25 +143,32 @@ public class CommentInstance
        }
        catch(IOException e) {System.out.println(e);}
         
-       print _WordList and _WordListCounts for testing
+       print _UniqueWordList and _UniqueWordListCounts for testing
        for(int k =0;k<_WordList.size();k++) {
-           System.out.println(_WordList.get(k)+": "+_WordListCounts.get(k));
+           System.out.println(_UniqueWordList.get(k)+": "+_UniqueWordListCounts.get(k));
        }  */  
     }
     
-    private void identifyLanguage()
+    private void generalizeWordList()
+    {
+        //TODO: Create generalization code here
+        
+    }
+    
+    private void identifyLanguage(GenericSpellDictionary dictionary)
     {
         StringWordTokenizer commentTokenizer = new StringWordTokenizer(_CommentNoPunct);
-        SpellChecker checker = new SpellChecker(_Dictionary);
+        SpellChecker checker = new SpellChecker(dictionary);
         double results = checker.checkSpelling(commentTokenizer);
         double resultThreshold = results / getCommentNoPunctStringArray().length;
         
-        if(resultThreshold < .25)
-            _IsEnglish = true;
-        else
-            _IsEnglish = false;
-        System.out.println(_IsEnglish);
-        //checker.getSuggestions("thestring", 1);  
+        _IsEnglish = resultThreshold < .25;
+    }
+    
+    //Getters
+    public String getCommentRaw()
+    {
+        return this._CommentRaw;
     }
     
     public String getCommentNoPunctString()
@@ -176,5 +184,15 @@ public class CommentInstance
     public boolean getIsEnglish()
     {
         return _IsEnglish;
+    }
+    
+    public ArrayList<String> getUniqueWordList()
+    {
+        return _UniqueWordList;
+    }
+    
+    public ArrayList<Integer> getUniqueWordListCounts()
+    {
+        return _UniqueWordListCounts;
     }
 }
