@@ -17,20 +17,29 @@ public class HumanDataAnalysisProject
         
         
         //Test strings to simulate reading in multiple comments.
-        String teststring =     "This is Bob. Bob is an english comment be like bob";
-        String teststring1 =    "THIZZZ hereeeeeee comment izzz nottttt speeeeellled cerecterly IZZZ NOOOOOT bob";
-        String teststring2 =    "This is a comment that doesn't necessarily agree with bob's ideaology however it still is english";
-        String teststring3 =    "The cake is a lie";
-        String teststring4 =    "This is a cooooment that has only a few missssspelled words therefore it should still be counted";
+        //String teststring =     "This is Bob. Bob is an english comment be like bob";
+        //String teststring1 =    "THIZZZ hereeeeeee comment izzz nottttt speeeeellled cerecterly IZZZ NOOOOOT bob";
+        //String teststring2 =    "This is a comment that doesn't necessarily agree with bob's ideaology however it still is english";
+        //String teststring3 =    "The cake is a lie";
+        //String teststring4 =    "This is a cooooment that has only a few missssspelled words therefore it should still be counted";
         
         
         //Adding all comments to an ArrayList, this is where the file read in stuff happens
-        _AllComments.add(new CommentInstance(teststring,_Dictionary.getDictionaryInstance()));
-        _AllComments.add(new CommentInstance(teststring1,_Dictionary.getDictionaryInstance()));
-        _AllComments.add(new CommentInstance(teststring2,_Dictionary.getDictionaryInstance()));
-        _AllComments.add(new CommentInstance(teststring3,_Dictionary.getDictionaryInstance()));
-        _AllComments.add(new CommentInstance(teststring4,_Dictionary.getDictionaryInstance()));
+
         
+        
+
+        
+        
+
+    }
+    
+    public void setComments(ArrayList<String> post) throws IOException
+    {
+        for(int x =0;x<post.size()-1;x++)
+        {
+            _AllComments.add(new CommentInstance(post.get(x),_Dictionary.getDictionaryInstance()));
+        }
         
         //this loop gets the total number of unique words for every comment
         //this number will be used to build a very large primative string array with every single word
@@ -40,7 +49,6 @@ public class HumanDataAnalysisProject
             numOfWordsForAllComments += _AllComments.get(z).getCommentNoPunctStringArray().length;
         }
         numOfWordsForAllComments--;
-        
         
         //This will concatinate all the arrays together into a single array
         String[] allComments = new String[numOfWordsForAllComments+1];
@@ -60,9 +68,10 @@ public class HumanDataAnalysisProject
         //Become one with the all powerful HashMap
         HashMap rankedWords = compileAllCommentInstances(allComments);
         System.out.println(rankedWords.toString());
+        
     }
     
-    public static HashMap compileAllCommentInstances(String[] inputArray )
+    public HashMap compileAllCommentInstances(String[] inputArray )
     {
         HashMap<String, Integer> frequencyHashMap = new HashMap<String, Integer>();
         

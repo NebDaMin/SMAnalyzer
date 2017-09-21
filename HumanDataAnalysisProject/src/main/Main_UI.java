@@ -1,4 +1,4 @@
-
+package main;
 /**
  * TODO: 
  * Add some documentation for readability purposes
@@ -20,21 +20,29 @@ import java.awt.datatransfer.*;
 import java.io.*;
 import java.net.*;
 import javax.swing.JFileChooser;
-
+import main.fbinterface.FBClient;
+import main.humandataanalysisproject.*;
 
 public class Main_UI extends JFrame 
 {
+    //UI vars
     private JPanel mainPanel;
     private JPanel urlPanel;
     private JButton openButton;
     private JButton urlButton;
     private JButton pasteButton;
     private JButton analyzeButton;
+    
+    //restFB vars
+    private FBClient _FBClient;
+    
+    //HumanDataAnalysisProject
+    private HumanDataAnalysisProject _HDAP;
  
     private JLabel urlLabel;
     private JTextField urlText;    
     
-     public Main_UI() 
+     public Main_UI() throws IOException 
     {
         //init
         ActionHandler ah = new ActionHandler();
@@ -45,6 +53,9 @@ public class Main_UI extends JFrame
         openButton = new JButton("Open file...");
         urlButton = new JButton("Url");
         this.setLayout(new BorderLayout());
+        
+        _FBClient = new FBClient();
+        _HDAP = new HumanDataAnalysisProject();
         
         //main panel only has two buttons
         //TODO: add a fancy splash screen
@@ -103,8 +114,8 @@ public class Main_UI extends JFrame
 
                          String s=stringBuilder.toString();
                           Main_UI.this.setVisible(false);
-                          OutputFrame outputFrame = new OutputFrame(s);
-                          outputFrame.setVisible(true);    
+                          //OutputFrame outputFrame = new OutputFrame(s);
+                          //outputFrame.setVisible(true);    
                     }
                     catch(IOException ex)
                     {
@@ -148,7 +159,10 @@ public class Main_UI extends JFrame
                 {
                     try 
                     {
-                        Desktop.getDesktop().browse(new URL(urlString).toURI());
+                        //Desktop.getDesktop().browse(new URL(urlString).toURI());
+                        _FBClient.fetchPagePost("StarWars");
+                        
+                        _HDAP.setComments(_FBClient.getPostArray());
                         //this should reference an outside method and sent to outputframe to be displayed
                     }                       
                     catch (Exception ex) 
@@ -162,7 +176,7 @@ public class Main_UI extends JFrame
             "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
        }
    }
-    public static void main(String args[]) 
+    public static void main(String args[]) throws IOException 
     {
         new Main_UI();
     }   

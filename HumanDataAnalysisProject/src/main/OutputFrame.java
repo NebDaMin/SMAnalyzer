@@ -1,3 +1,5 @@
+package main;
+        
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
@@ -81,7 +83,12 @@ public class OutputFrame extends JFrame
            if (e.getSource()==newLookupButton)
            {
                 setVisible(false);
-                Main_UI main = new Main_UI();
+                Main_UI main;
+               try {
+                   main = new Main_UI();
+               } catch (IOException ex) {
+                   Logger.getLogger(OutputFrame.class.getName()).log(Level.SEVERE, null, ex);
+               }
                 main.setVisible(true);
            }
            else if (e.getSource()==saveButton)
