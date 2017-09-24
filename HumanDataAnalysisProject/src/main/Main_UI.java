@@ -26,7 +26,7 @@ import main.humandataanalysisproject.*;
 public class Main_UI extends JFrame 
 {
     //UI vars
-    private JPanel mainPanel;
+   // private JPanel mainPanel;
     private JPanel urlPanel;
     private JButton openButton;
     private JButton urlButton;
@@ -59,16 +59,16 @@ public class Main_UI extends JFrame
         
         //main panel only has two buttons
         //TODO: add a fancy splash screen
-        mainPanel = new JPanel();
-        this.add(mainPanel, BorderLayout.CENTER);
-        mainPanel.add(urlButton);
-        mainPanel.add(openButton);
-        
+       // mainPanel = new JPanel();
+     //    this.add(mainPanel, BorderLayout.CENTER);
+       //  mainPanel.add(urlButton);
+       // mainPanel.add(openButton);
+       
         //url panel is the urls stuff
         //not sure if I like how it's formatted so I might remove the smoke and mirrors and fiddle around with layouts
         urlPanel = new JPanel();
         this.add(urlPanel, BorderLayout.SOUTH);
-        urlPanel.setVisible(false);
+       // urlPanel.setVisible(false);
         urlPanel.add(urlLabel);
         urlPanel.add(urlText);
         urlPanel.add(pasteButton);
@@ -91,7 +91,7 @@ public class Main_UI extends JFrame
        {
            if(e.getSource()==openButton)
            {
-            FileReader fr;    
+            /*FileReader fr;    
             JFileChooser chooser = new JFileChooser();
             chooser.setCurrentDirectory(new File("."));
             int result = chooser.showSaveDialog(Main_UI.this);
@@ -125,11 +125,11 @@ public class Main_UI extends JFrame
                 }
                 
             }
-            else;
+            else;*/
            }
            else if(e.getSource()==urlButton)
            {
-            urlPanel.setVisible(true);
+            //urlPanel.setVisible(true);
            }
            else if(e.getSource()==pasteButton)
            {
