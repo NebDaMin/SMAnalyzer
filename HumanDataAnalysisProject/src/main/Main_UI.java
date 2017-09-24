@@ -67,7 +67,7 @@ public class Main_UI extends JFrame
         //url panel is the urls stuff
         //not sure if I like how it's formatted so I might remove the smoke and mirrors and fiddle around with layouts
         urlPanel = new JPanel();
-        this.add(urlPanel, BorderLayout.SOUTH);
+        this.add(urlPanel, BorderLayout.CENTER);
        // urlPanel.setVisible(false);
         urlPanel.add(urlLabel);
         urlPanel.add(urlText);
