@@ -160,13 +160,14 @@ public class Main_UI extends JFrame
                     try 
                     {
                         //Desktop.getDesktop().browse(new URL(urlString).toURI());
-                        _FBClient.fetchPagePost("StarWars");
+                        _FBClient.fetchPagePost("StarWars", false);
                         
                         _HDAP.setComments(_FBClient.getPostArray());
                         //this should reference an outside method and sent to outputframe to be displayed
                     }                       
                     catch (Exception ex) 
                     {
+                        System.out.println(ex);
                         JOptionPane.showMessageDialog(null, "Please paste a url.\nOr make sure http:// is at the beginning.", "Error", JOptionPane.ERROR_MESSAGE);
                     }   
                 }  
