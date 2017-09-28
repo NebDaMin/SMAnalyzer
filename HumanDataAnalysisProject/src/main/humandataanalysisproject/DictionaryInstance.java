@@ -6,22 +6,22 @@ import java.io.IOException;
         
 public class DictionaryInstance
 {
-    private final GenericSpellDictionary _TheDictionary;
-    private String _LanguageName;
+    private final GenericSpellDictionary TheDictionary;
+    private String LanguageName;
     
     public DictionaryInstance(String dictionarySourceFile, String languageName) throws IOException
     {
         File dictionaryFile = new File(dictionarySourceFile);
-        _TheDictionary = new GenericSpellDictionary(dictionaryFile);
+        TheDictionary = new GenericSpellDictionary(dictionaryFile);
     }
     
     public GenericSpellDictionary getDictionaryInstance()
     {
-        return _TheDictionary;
+        return TheDictionary;
     }
     
     public String getLanguageName()
     {
-        return _LanguageName;
+        return LanguageName;
     }
 }

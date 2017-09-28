@@ -34,10 +34,10 @@ public class Main_UI extends JFrame
     private JButton analyzeButton;
     
     //restFB vars
-    private FBClient _FBClient;
+    private FBClient FBClient;
     
     //HumanDataAnalysisProject
-    private HumanDataAnalysisProject _HDAP;
+    private CommentListAnalyzer Analyzer;
  
     private JLabel urlLabel;
     private JTextField urlText;    
@@ -54,8 +54,8 @@ public class Main_UI extends JFrame
         urlButton = new JButton("Url");
         this.setLayout(new BorderLayout());
         
-        _FBClient = new FBClient();
-        _HDAP = new HumanDataAnalysisProject();
+        FBClient = new FBClient();
+        Analyzer = new CommentListAnalyzer();
         
         //main panel only has two buttons
         //TODO: add a fancy splash screen
@@ -160,9 +160,9 @@ public class Main_UI extends JFrame
                     try 
                     {
                         //Desktop.getDesktop().browse(new URL(urlString).toURI());
-                        _FBClient.fetchPagePost("StarWars", false);
+                        FBClient.fetchPagePost("OfficialPCMasterRace", false);
                         
-                        _HDAP.setComments(_FBClient.getPostArray());
+                        Analyzer.setComments(FBClient.getPostArray());
                         //this should reference an outside method and sent to outputframe to be displayed
                     }                       
                     catch (Exception ex) 
