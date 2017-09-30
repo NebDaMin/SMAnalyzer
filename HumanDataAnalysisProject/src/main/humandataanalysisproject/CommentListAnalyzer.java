@@ -41,7 +41,11 @@ public class CommentListAnalyzer
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for(int x =0;x<post.size();x++)
         {
-            AllComments.add(new CommentInstance(post.get(x),Dictionary.getDictionaryInstance()));
+            CommentInstance currentInstance = new CommentInstance(post.get(x),Dictionary.getDictionaryInstance());
+            if (currentInstance.getIsEnglish())
+            {
+                AllComments.add(currentInstance);
+            }
         }
         
         //Loading the unique words from all CommentInstances into a single ArrayList that can be sorted
