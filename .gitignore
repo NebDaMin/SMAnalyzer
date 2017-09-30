@@ -1,0 +1,11 @@
+
+*.properties
+HumanDataAnalysisProject/build/classes/main/fbinterface/Browser.class
+HumanDataAnalysisProject/build/classes/main/fbinterface/FBClient.class
+HumanDataAnalysisProject/build/classes/main/humandataanalysisproject/CommentInstance.class
+HumanDataAnalysisProject/build/classes/main/humandataanalysisproject/DictionaryInstance.class
+HumanDataAnalysisProject/build/classes/main/humandataanalysisproject/HumanDataAnalysisProject.class
+HumanDataAnalysisProject/build/classes/main/Main_UI$1.class
+HumanDataAnalysisProject/build/classes/main/Main_UI$ActionHandler.class
+HumanDataAnalysisProject/build/classes/main/Main_UI.class
+HumanDataAnalysisProject/nbproject/private/private.xml

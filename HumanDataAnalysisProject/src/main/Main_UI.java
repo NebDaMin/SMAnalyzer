@@ -1,15 +1,14 @@
 package main;
 /**
  * TODO: 
- * Add some documentation for readability purposes
- * Perform general cleanup for "I don't like the way Netbeans formats things" purposes
- * Get distracted
- * Play Minecraft and CSD2
- * Get throttled by AT&T
- * Code completely from memory
- * Scheduled "nothing works and no one knows why" testing phase
- * Question life choices 30 minutes before due date
- * Somehow finish and win at life
+ * Play ARK
+ * Get base mercilessly destroyed and razed to the ground
+ * Rage quit
+ * Make a method that parses things correctly
+ * Add more ways for the parse method to do the thing
+ * Make the JCheckBox do things
+ * Fix that weird error message
+ * Rename some stuff
  */
 import java.awt.event.*;
 import javax.swing.*;
@@ -32,7 +31,7 @@ public class Main_UI extends JFrame
     private JButton urlButton;
     private JButton pasteButton;
     private JButton analyzeButton;
-    
+    private JCheckBox childCommentBox;
     //restFB vars
     private FBClient FBClient;
     
@@ -52,6 +51,7 @@ public class Main_UI extends JFrame
         analyzeButton = new JButton("Analyze");
         openButton = new JButton("Open file...");
         urlButton = new JButton("Url");
+        childCommentBox = new JCheckBox("Include child comments");
         this.setLayout(new BorderLayout());
         
         FBClient = new FBClient();
@@ -71,6 +71,7 @@ public class Main_UI extends JFrame
        // urlPanel.setVisible(false);
         urlPanel.add(urlLabel);
         urlPanel.add(urlText);
+        urlPanel.add(childCommentBox);
         urlPanel.add(pasteButton);
         urlPanel.add(analyzeButton);
         
@@ -159,16 +160,19 @@ public class Main_UI extends JFrame
                 {
                     try 
                     {
+                        String parsedString = parseUrl(urlString);
+                        if(childCommentBox.isSelected())
+                        {
+                            FBClient.fetchPagePost(parsedString, true); 
+                        }
                         //Desktop.getDesktop().browse(new URL(urlString).toURI());
-                        FBClient.fetchPagePost("OfficialPCMasterRace", false);
-                        
+                        else FBClient.fetchPagePost(parsedString, false);
                         Analyzer.setComments(FBClient.getPostArray());
-                        //this should reference an outside method and sent to outputframe to be displayed
                     }                       
                     catch (Exception ex) 
                     {
                         System.out.println(ex);
-                        JOptionPane.showMessageDialog(null, "Please paste a url.\nOr make sure http:// is at the beginning.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Something Broke", "Error", JOptionPane.ERROR_MESSAGE);
                     }   
                 }  
            }
@@ -176,6 +180,10 @@ public class Main_UI extends JFrame
                JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
             "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
        }
+   }
+   public String parseUrl(String s)
+   {
+       return s.replace("https://www.facebook.com/", "");
    }
     public static void main(String args[]) throws IOException 
     {
