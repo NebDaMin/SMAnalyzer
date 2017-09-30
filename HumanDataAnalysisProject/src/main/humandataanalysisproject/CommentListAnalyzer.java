@@ -1,5 +1,7 @@
 package main.humandataanalysisproject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,20 +9,31 @@ import java.util.Collections;
 public class CommentListAnalyzer 
 {
     //Declare Class Variables
+    private final String DictionaryPath = "externalfiles/BigAssDictionaryFromPrinceton.txt";
+    private final String BlackListPath = "externalfiles/BlackList.txt";;
     private ArrayList<CommentInstance> AllComments;
     private final DictionaryInstance Dictionary;
     private ArrayList<String> AllUniqueWords;
-    private ArrayList<String> AllUniqueWordsWithCounts;
+    private ArrayList<String> AllUniqueWordsFilteredWithCounts;
     private ArrayList<String> AllUniqueWordsFiltered;
+    private ArrayList<String> BlackList;
     
     public CommentListAnalyzer() throws IOException 
     {
         //Initialize Class Variables
-        Dictionary = new DictionaryInstance("externalfiles/BigAssDictionaryFromPrinceton.txt","English");
+        Dictionary = new DictionaryInstance(DictionaryPath,"English");
         AllComments = new ArrayList();
         AllUniqueWords = new ArrayList();
-        AllUniqueWordsWithCounts = new ArrayList();
+        AllUniqueWordsFilteredWithCounts = new ArrayList();
         AllUniqueWordsFiltered = new ArrayList();
+        BlackList = new ArrayList();
+        
+        //Import words into BlackList
+        BufferedReader br;
+        br = new BufferedReader(new FileReader(BlackListPath));
+        String sCurrentLine;
+        while ((sCurrentLine = br.readLine()) != null) 
+            BlackList.add(sCurrentLine);
     }
     
     public void setComments(ArrayList<String> post) throws IOException
@@ -44,32 +57,38 @@ public class CommentListAnalyzer
         Collections.sort(AllUniqueWords);
         
         //Call Method to filter out the crap 
-        //TODO: rename AllUniqueWordsFiltered as needed
         AllUniqueWordsFiltered = filterMeaninglessWords(AllUniqueWords);
         
-        //Loading the sorted list of AllUniqueWords into another ArrayList that is formatted to store
+        //Loading the sorted list of AllUniqueWordsFiltered into another ArrayList that is formatted to store
         //Only one instance of each word but with the number of unique reoccurances preceeding it
         //Once sorted, the highest frequency words will bubble to the top
         int currentCountForWord = 1;        
-        for(int k = 0; k<AllUniqueWords.size()-1;k++)
+        for(int k = 0; k<AllUniqueWordsFiltered.size()-1;k++)
         {
-            if(AllUniqueWords.get(k).equals(AllUniqueWords.get(k+1)))
+            if(AllUniqueWordsFiltered.get(k).equals(AllUniqueWordsFiltered.get(k+1)))
             {
                 currentCountForWord += 1;
             }
             else
             {
-                AllUniqueWordsWithCounts.add(currentCountForWord + AllUniqueWords.get(k));
+                AllUniqueWordsFilteredWithCounts.add(currentCountForWord + AllUniqueWordsFiltered.get(k));
                 currentCountForWord = 1;
             } 
         }
-        Collections.sort(AllUniqueWordsWithCounts);
-        System.out.print(AllUniqueWordsWithCounts.toString());
+        Collections.sort(AllUniqueWordsFilteredWithCounts);
+        System.out.print(AllUniqueWordsFilteredWithCounts.toString());
     }
     
     public ArrayList<String> filterMeaninglessWords(ArrayList<String> input)
     {
-        //TODO: This is where the code for excluding meaningless words will go
+        for(int x = 0; x<input.size();x++)
+        {
+            if(BlackList.contains(input.get(x)))
+            {
+                input.remove(x);
+                x--;
+            }
+        }
         return input;
     }
 }
