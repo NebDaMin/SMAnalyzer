@@ -157,10 +157,10 @@ public class Main_UI extends JFrame
                     JOptionPane.showMessageDialog(null, "There's nothing to analyze.\nPlease paste a url.", "Error", JOptionPane.ERROR_MESSAGE);
                 }        
                 else
-                {
+                {   
+                    String parsedString = parseUrl(urlString);
                     try 
                     {
-                        String parsedString = parseUrl(urlString);
                         if(childCommentBox.isSelected())
                         {
                             FBClient.fetchPagePost(parsedString, true); 
@@ -183,7 +183,10 @@ public class Main_UI extends JFrame
    }
    public String parseUrl(String s)
    {
-       return s.replace("https://www.facebook.com/", "");
+       System.out.println(s.lastIndexOf("facebook.com/"));
+       int last = s.lastIndexOf("facebook.com/");
+       int fbLength = "facebook.com/".length();
+       return s.substring(last+fbLength, s.length());
    }
     public static void main(String args[]) throws IOException 
     {
