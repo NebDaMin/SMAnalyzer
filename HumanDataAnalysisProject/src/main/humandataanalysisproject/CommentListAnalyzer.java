@@ -17,6 +17,8 @@ public class CommentListAnalyzer
     private ArrayList<String> AllUniqueWordsFilteredWithCounts;
     private ArrayList<String> AllUniqueWordsFiltered;
     private ArrayList<String> BlackList;
+    private ArrayList<CommentGroup> Groups;
+    private final int GROUP_THRESHOLD = 5;
     
     public CommentListAnalyzer() throws IOException 
     {
@@ -27,6 +29,7 @@ public class CommentListAnalyzer
         AllUniqueWordsFilteredWithCounts = new ArrayList();
         AllUniqueWordsFiltered = new ArrayList();
         BlackList = new ArrayList();
+        Groups = new ArrayList();
         
         //Import words into BlackList
         BufferedReader br;
@@ -94,5 +97,46 @@ public class CommentListAnalyzer
             }
         }
         return input;
+    }
+    
+    public void groupComments()
+    {
+        int wordCount;
+        for(String s : AllUniqueWordsFilteredWithCounts)
+        {
+            //parse leading integer from string
+            wordCount = Integer.parseInt(String.valueOf(s.charAt(0)));
+            //form a group for each word which appears enough times to
+            //meet the threshold
+            if(wordCount >= GROUP_THRESHOLD)
+            {
+                //trim leading integer from string and create group
+                s = s.substring(1, s.length());
+                Groups.add(new CommentGroup(s));
+            }
+        }
+        //iterate through AllComments and add any that contain a grouped keyword
+        //to that group. Might be more efficient method
+        String keyword;
+        ArrayList<String> wordList;
+        for(CommentGroup g : Groups)
+        {
+            keyword = g.getKeyword();
+            for (CommentInstance c : AllComments) 
+            {
+                wordList = c.getUniqueWordList();
+                if(wordList.contains(keyword))
+                {
+                    g.addComment(c);
+                }
+            }
+        }
+        //output groups to console
+        System.out.print("Total Groups: "+Groups.size()+
+                "\n----------------------------------\n");
+        for(CommentGroup g : Groups)
+        {
+            System.out.print(g);
+        }
     }
 }

@@ -168,6 +168,7 @@ public class Main_UI extends JFrame
                         //Desktop.getDesktop().browse(new URL(urlString).toURI());
                         else FBClient.fetchPagePost(parsedString, false);
                         Analyzer.setComments(FBClient.getPostArray());
+                        Analyzer.groupComments();
                     }                       
                     catch (Exception ex) 
                     {
@@ -183,7 +184,6 @@ public class Main_UI extends JFrame
    }
    public String parseUrl(String s)
    {
-       System.out.println(s.lastIndexOf("facebook.com/"));
        int last = s.lastIndexOf("facebook.com/");
        int fbLength = "facebook.com/".length();
        return s.substring(last+fbLength, s.length());
