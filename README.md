@@ -1,2 +1,2 @@
-# HumanDataAnalysisAlgo
+# SMAnalyzer
 This project will act as the Washburn University Senior Seminar project for Ben Ciummo, Salvador Lopez Jr., Amber Owens, Kailee Calhoun, Lisa Wehrly, and Matteo Pezzino. The goal of this algorithm will be to create a system that can analyse data of a highly unstandardized nature. Practical applications of this algorithm would be to implement it in a social media setting to analyse comments to identify trends, also it could be used to interpret survey data to identify common ideas within a large amount of data. The date scope of this project will be the Fall 2017 semester.
