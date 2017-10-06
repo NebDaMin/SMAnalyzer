@@ -1,13 +1,12 @@
 package main;
 /**
  * TODO: 
- * Play ARK
- * Get base mercilessly destroyed and razed to the ground
- * Rage quit
- * Make a method that parses things correctly
- * Add more ways for the parse method to do the thing
- * Make the JCheckBox do things
- * Fix that weird error message
+ * Add a checkbox for ignoring blacklist
+ * Add a checkbox for outputting to .txt
+ * make an options jpanel
+ * output stuff to the ui
+ * add a silly easter egg
+ * figure out why everything is errors
  * Rename some stuff
  */
 import java.awt.event.*;
@@ -27,11 +26,17 @@ public class Main_UI extends JFrame
     //UI vars
    // private JPanel mainPanel;
     private JPanel urlPanel;
+    private JPanel optionPanel;
+    private JPanel outputPanel;
+    private JTextArea outputText;
     private JButton openButton;
     private JButton urlButton;
     private JButton pasteButton;
     private JButton analyzeButton;
     private JCheckBox childCommentBox;
+    private JCheckBox blacklistIgnoreBox;
+    private JCheckBox fileBox;
+    private PrintWriter out;
     //restFB vars
     private FBClient FBClient;
     
@@ -52,28 +57,33 @@ public class Main_UI extends JFrame
         openButton = new JButton("Open file...");
         urlButton = new JButton("Url");
         childCommentBox = new JCheckBox("Include child comments");
+        blacklistIgnoreBox = new JCheckBox("Ignore blacklist");
+        fileBox = new JCheckBox("Save to File");
+        outputText = new JTextArea(10,50);
+        outputText.setLineWrap(true);
+        outputText.setEditable(false);
         this.setLayout(new BorderLayout());
         
         FBClient = new FBClient();
         Analyzer = new CommentListAnalyzer();
         
-        //main panel only has two buttons
-        //TODO: add a fancy splash screen
-       // mainPanel = new JPanel();
-     //    this.add(mainPanel, BorderLayout.CENTER);
-       //  mainPanel.add(urlButton);
-       // mainPanel.add(openButton);
-       
-        //url panel is the urls stuff
-        //not sure if I like how it's formatted so I might remove the smoke and mirrors and fiddle around with layouts
         urlPanel = new JPanel();
         this.add(urlPanel, BorderLayout.CENTER);
-       // urlPanel.setVisible(false);
         urlPanel.add(urlLabel);
         urlPanel.add(urlText);
-        urlPanel.add(childCommentBox);
         urlPanel.add(pasteButton);
         urlPanel.add(analyzeButton);
+        
+        optionPanel = new JPanel();
+        this.add(optionPanel, BorderLayout.WEST);
+        optionPanel.add(childCommentBox);
+        optionPanel.add(blacklistIgnoreBox);
+        optionPanel.add(fileBox);
+        
+        outputPanel = new JPanel();
+        this.add(outputPanel, BorderLayout.SOUTH);
+        outputPanel.setVisible(false);
+        outputPanel.add(new JScrollPane(outputText));
         
         openButton.addActionListener(ah);
         urlButton.addActionListener(ah);
@@ -90,49 +100,7 @@ public class Main_UI extends JFrame
    {
        public void actionPerformed(ActionEvent e)
        {
-           if(e.getSource()==openButton)
-           {
-            /*FileReader fr;    
-            JFileChooser chooser = new JFileChooser();
-            chooser.setCurrentDirectory(new File("."));
-            int result = chooser.showSaveDialog(Main_UI.this);
-            if (result == JFileChooser.APPROVE_OPTION) 
-            {
-                File f = chooser.getSelectedFile();
-                if (f.exists()==true)
-                {
-                    try
-                    {
-                        
-                        BufferedReader reader = new BufferedReader(new FileReader(f));
-                        String         line = null;
-                        StringBuilder  stringBuilder = new StringBuilder();
-                        while((line = reader.readLine()) != null) 
-                        {
-                            stringBuilder.append(line);
-                            stringBuilder.append("/n");
-                        }
-
-                         String s=stringBuilder.toString();
-                          Main_UI.this.setVisible(false);
-                          //OutputFrame outputFrame = new OutputFrame(s);
-                          //outputFrame.setVisible(true);    
-                    }
-                    catch(IOException ex)
-                    {
-                        JOptionPane.showMessageDialog(Main_UI.this, "File could not be opened.",
-                             "Get a file that works.", JOptionPane.INFORMATION_MESSAGE);;
-                    }
-                }
-                
-            }
-            else;*/
-           }
-           else if(e.getSource()==urlButton)
-           {
-            //urlPanel.setVisible(true);
-           }
-           else if(e.getSource()==pasteButton)
+            if(e.getSource()==pasteButton)
            {
                Clipboard clipboard = getToolkit().getSystemClipboard();
             
@@ -161,14 +129,43 @@ public class Main_UI extends JFrame
                     String parsedString = parseUrl(urlString);
                     try 
                     {
-                        if(childCommentBox.isSelected())
+                        Boolean child = childCommentBox.isSelected();
+                        Boolean blacklist = blacklistIgnoreBox.isSelected();
+                        Boolean file = fileBox.isSelected();
+                        
+                        if(file)
                         {
-                            FBClient.fetchPagePost(parsedString, true); 
-                        }
-                        //Desktop.getDesktop().browse(new URL(urlString).toURI());
-                        else FBClient.fetchPagePost(parsedString, false);
+                            JFileChooser chooser = new JFileChooser();
+                            chooser.setCurrentDirectory(new File("."));
+                            int result = chooser.showSaveDialog(Main_UI.this);
+                            if (result == JFileChooser.APPROVE_OPTION) 
+                            {
+                                File f = chooser.getSelectedFile();
+                                if (f.exists()==true)
+                                {
+                                    int n = JOptionPane.showConfirmDialog(Main_UI.this,
+                                    "This file already exists. Would you like to overwrite this file?", 
+                                    "Confirmation", JOptionPane.YES_NO_OPTION);
+                                    if (n==JOptionPane.YES_OPTION)
+                                    {
+                                        try 
+                                        {
+                                            out = new PrintWriter(new FileOutputStream(f, false));
+                                        } 
+                                        catch (IOException ex) 
+                                        { 
+                                            JOptionPane.showMessageDialog(Main_UI.this, "File could not be opened.",
+                                            "Get a better file", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                    }
+                                }
+                            }
+                        }   
+                        FBClient.fetchPagePost(parsedString, child); 
+                        
                         Analyzer.setComments(FBClient.getPostArray());
                         Analyzer.groupComments();
+                        //outputPanel.setVisible(true);
                     }                       
                     catch (Exception ex) 
                     {
@@ -182,6 +179,7 @@ public class Main_UI extends JFrame
             "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
        }
    }
+   
    public String parseUrl(String s)
    {
        int last = s.lastIndexOf("facebook.com/");
