@@ -1,4 +1,7 @@
 
 *.properties
 HumanDataAnalysisProject/*
-/SMAnalyzer/nbproject/*
+SMAnalyzer/nbproject/*
+SMAnalyzer/build/*
+SMAnalyzer/build.xml
+SMAnalyzer/manifest.mf
