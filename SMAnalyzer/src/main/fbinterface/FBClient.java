@@ -11,12 +11,12 @@ public class FBClient extends DefaultFacebookClient {
     public static final String APP_SECRET = "b224ad6a4bae050c34fff51efbce2b60";
     static FacebookClient fbClient;
     public Browser browser;
-    private ArrayList<String> _PostArrayList;
+    private ArrayList<String> PostArrayList;
 
     public FBClient() {
         accessToken = this.obtainAppAccessToken(APP_ID, APP_SECRET);
         fbClient = new DefaultFacebookClient(accessToken.getAccessToken(), APP_SECRET);
-        _PostArrayList = new ArrayList();
+        PostArrayList = new ArrayList();
     }
 
     public void viewToken() {
@@ -36,20 +36,20 @@ public class FBClient extends DefaultFacebookClient {
             int i = 0;
             Connection<Post> pageFeed = fbClient.fetchConnection(page.getId() + "/feed", Post.class, Parameter.with("limit", 1));
             for (Post post : pageFeed.getData()) {
-                _PostArrayList.add(post.getMessage());
+                PostArrayList.add(post.getMessage());
                 System.out.println("Message: " + post.getMessage());
                 System.out.println("Created on: " + post.getCreatedTime());
                 System.out.println();
                 Connection<Comment> comments = fbClient.fetchConnection(post.getId() + "/comments", Comment.class);
                 i = i + comments.getData().size();
                 for (Comment comment : comments.getData()) {
-                    _PostArrayList.add(comment.getMessage());
+                    PostArrayList.add(comment.getMessage());
                     System.out.println("Comment: " + comment.getMessage());
                     if (children == true) {
                         Connection<Comment> childComments = fbClient.fetchConnection(comment.getId() + "/comments", Comment.class);
                         i = i + childComments.getData().size();
                         for (Comment childComment : childComments.getData()) {
-                            _PostArrayList.add(childComment.getMessage());
+                            PostArrayList.add(childComment.getMessage());
                             System.out.println("Comment: " + childComment.getMessage());
                         }
                     }
@@ -60,6 +60,10 @@ public class FBClient extends DefaultFacebookClient {
     }
 
     public ArrayList<String> getPostArray() {
-        return _PostArrayList;
+        return PostArrayList;
+    }
+    
+    public void clearArray(){
+        PostArrayList.clear();
     }
 }

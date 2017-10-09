@@ -139,4 +139,13 @@ public class CommentListAnalyzer
             System.out.print(g);
         }
     }
+    
+    public void clearArray(){
+        AllComments.clear();
+        AllUniqueWords.clear();
+        AllUniqueWordsFilteredWithCounts.clear();
+        AllUniqueWordsFiltered.clear();
+        BlackList.clear();
+        Groups.clear();
+    }
 }

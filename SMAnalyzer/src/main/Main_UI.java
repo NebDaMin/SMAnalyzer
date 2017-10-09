@@ -118,6 +118,8 @@ public class Main_UI extends JFrame
            }
            else if(e.getSource()==analyzeButton)
            {
+              Analyzer.clearArray();
+              FBClient.clearArray();
               String urlString = urlText.getText();
         
                 if (urlString.equals(null) || urlString.equals(""))
