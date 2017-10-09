@@ -7,7 +7,7 @@ package main;
  * output stuff to the ui
  * add a silly easter egg
  * figure out why everything is errors
- * Rename some stuff
+ * Rename some stuff 
  */
 import java.awt.event.*;
 import javax.swing.*;
@@ -150,14 +150,15 @@ public class Main_UI extends JFrame
                                     "Confirmation", JOptionPane.YES_NO_OPTION);
                                     if (n==JOptionPane.YES_OPTION)
                                     {
-                                        try 
+                                       try 
                                         {
-                                            out = new PrintWriter(new FileOutputStream(f, false));
+                                          out = new PrintWriter(new FileOutputStream(f, false));
+                                          out.close();
                                         } 
                                         catch (IOException ex) 
-                                        { 
-                                            JOptionPane.showMessageDialog(Main_UI.this, "File could not be opened.",
-                                            "Get a better file", JOptionPane.INFORMATION_MESSAGE);
+                                       { 
+                                           JOptionPane.showMessageDialog(Main_UI.this, "File could not be opened.",
+                                           "Get a better file", JOptionPane.INFORMATION_MESSAGE);
                                         }
                                     }
                                 }

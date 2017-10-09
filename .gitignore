@@ -5,3 +5,6 @@ SMAnalyzer/nbproject/*
 SMAnalyzer/build/*
 SMAnalyzer/build.xml
 SMAnalyzer/manifest.mf
+/nbproject/private/
+/build/
+/dist/
