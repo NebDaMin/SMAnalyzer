@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.awt.datatransfer.*;
 import java.io.*;
 import java.net.*;
+import java.util.HashMap;
 import javax.swing.JFileChooser;
 import main.fbinterface.FBClient;
 import main.humandataanalysisproject.*;
@@ -129,7 +130,7 @@ public class Main_UI extends JFrame
                 }        
                 else
                 {   
-                    String parsedString = parseUrl(urlString);
+                    HashMap <String, String> stringMap = parseUrl(urlString);
                     try 
                     {
                         Boolean child = childCommentBox.isSelected();
@@ -170,7 +171,11 @@ public class Main_UI extends JFrame
                         Analyzer.setComments(FBClient.getPostArray());
                         Analyzer.groupComments();
                         //outputPanel.setVisible(true);
-                    }                       
+                    }     
+                    catch(NullPointerException npe)
+                    {
+                        System.out.println(npe);
+                    }
                     catch (Exception ex) 
                     {
                         System.out.println(ex);
@@ -184,11 +189,29 @@ public class Main_UI extends JFrame
        }
    }
    
-   public String parseUrl(String s)
+   public HashMap<String, String> parseUrl(String s)
    {
        int last = s.lastIndexOf("facebook.com/");
        int fbLength = "facebook.com/".length();
-       return s.substring(last+fbLength, s.length());
+    
+       String sub = s.substring(last+fbLength, s.length());
+       String[] array = sub.split("/");
+       if(!(array.length == 3)){
+           JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
+            "Url not recognized", JOptionPane.INFORMATION_MESSAGE);
+           return null;
+       }
+       HashMap<String, String> map = new HashMap<String, String>();
+       map.put("Page Name", array[0]);
+       map.put("Post Type", array[1]);
+       map.put("Post Id", array[2]);
+       if(array[2].equals("photos"))
+       {
+           JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
+            "We cannot parse photo posts yet", JOptionPane.INFORMATION_MESSAGE);
+          return null;
+       }
+       return map;       
    }
     public static void main(String args[]) throws IOException 
     {
