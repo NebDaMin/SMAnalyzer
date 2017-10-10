@@ -76,6 +76,7 @@ public class Main_UI extends JFrame
         
         optionPanel = new JPanel();
         this.add(optionPanel, BorderLayout.WEST);
+        optionPanel.setLayout(new GridLayout(5,1));
         optionPanel.add(childCommentBox);
         optionPanel.add(blacklistIgnoreBox);
         optionPanel.add(fileBox);
