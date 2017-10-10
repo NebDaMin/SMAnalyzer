@@ -1,56 +1,48 @@
 package main.fbinterface;
 
-import com.restfb.*;
-import com.restfb.types.*;
-import java.util.ArrayList;
+import fbapi.*;
+import java.util.*;
+import org.json.*;
 
-public class FBClient extends DefaultFacebookClient {
-
-    public static AccessToken accessToken = null;
+public class FBClient {
     public static final String APP_ID = "1959837484256375";
     public static final String APP_SECRET = "b224ad6a4bae050c34fff51efbce2b60";
-    static FacebookClient fbClient;
-    public Browser browser;
+    static FbAPI fbClient;
     private ArrayList<String> PostArrayList;
 
     public FBClient() {
-        accessToken = this.obtainAppAccessToken(APP_ID, APP_SECRET);
-        fbClient = new DefaultFacebookClient(accessToken.getAccessToken(), APP_SECRET);
+        fbClient = new FbAPI(APP_ID, APP_SECRET);
         PostArrayList = new ArrayList();
     }
 
-    public void viewToken() {
-        if (accessToken == null) {
+    public void fetchRandomPagePost(String pageName, Boolean children) {
+        if (fbClient.getAccessToken() == null) {
             System.out.println("Access token is null");
         } else {
-            System.out.println(accessToken.getAccessToken());
-        }
-    }
-
-    public void fetchPagePost(String pageName, Boolean children) {
-        if (accessToken == null) {
-            System.out.println("Access token is null");
-        } else {
-            fbClient = new DefaultFacebookClient(accessToken.getAccessToken(), APP_SECRET);
-            Page page = fbClient.fetchObject(pageName, Page.class);
             int i = 0;
-            Connection<Post> pageFeed = fbClient.fetchConnection(page.getId() + "/feed", Post.class, Parameter.with("limit", 1));
-            for (Post post : pageFeed.getData()) {
-                PostArrayList.add(post.getMessage());
-                System.out.println("Message: " + post.getMessage());
-                System.out.println("Created on: " + post.getCreatedTime());
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            params.put("limit", 1);
+            JSONObject pageFeed = fbClient.getConnections(pageName, "feed", params);
+            List<JSONObject> postList = fbClient.convertJsonDataToList(pageFeed);
+            for (JSONObject post : postList) {
+                PostArrayList.add(post.getString("message"));
+                System.out.println("Post id: " + post.getString("id"));
+                System.out.println("Message: " + post.getString("message"));
+                System.out.println("Created on: " + post.getString("created_time"));
                 System.out.println();
-                Connection<Comment> comments = fbClient.fetchConnection(post.getId() + "/comments", Comment.class);
-                i = i + comments.getData().size();
-                for (Comment comment : comments.getData()) {
-                    PostArrayList.add(comment.getMessage());
-                    System.out.println("Comment: " + comment.getMessage());
+                JSONObject comments = fbClient.getConnections(post.getString("id"), "comments", null);
+                List<JSONObject> commentList = fbClient.convertJsonDataToList(comments);
+                i = i + commentList.size();
+                for (JSONObject comment : commentList) {
+                    PostArrayList.add(comment.getString("message"));
+                    System.out.println("Comment: " + comment.getString("message"));
                     if (children == true) {
-                        Connection<Comment> childComments = fbClient.fetchConnection(comment.getId() + "/comments", Comment.class);
-                        i = i + childComments.getData().size();
-                        for (Comment childComment : childComments.getData()) {
-                            PostArrayList.add(childComment.getMessage());
-                            System.out.println("Comment: " + childComment.getMessage());
+                        JSONObject childComments = fbClient.getConnections(comment.getString("id"), "comments", null);
+                        List<JSONObject> childCommentsList = fbClient.convertJsonDataToList(childComments);
+                        i = i + childCommentsList.size();
+                        for (JSONObject childComment : childCommentsList) {
+                            PostArrayList.add(childComment.getString("message"));
+                            System.out.println("Comment: " + childComment.getString("message"));
                         }
                     }
                 }
@@ -59,11 +51,45 @@ public class FBClient extends DefaultFacebookClient {
         }
     }
 
+    public void fetchSpecificPagePost(String pageName, String postId, Boolean children) {
+        if (fbClient.getAccessToken() == null) {
+            System.out.println("Access token is null");
+        } else {
+            int i = 0;
+            JSONObject page = fbClient.getObject(pageName);
+            String pageId = page.getString("id");
+            JSONObject post = fbClient.getObject(pageId + "_" + postId);
+            PostArrayList.add(post.getString("message"));
+            System.out.println("Post id: " + post.getString("id"));
+            System.out.println("Message: " + post.getString("message"));
+            System.out.println("Created on: " + post.getString("created_time"));
+            System.out.println();
+            JSONObject comments = fbClient.getConnections(post.getString("id"), "comments", null);
+            List<JSONObject> commentList = fbClient.convertJsonDataToList(comments);
+            i = i + commentList.size();
+            for (JSONObject comment : commentList) {
+                PostArrayList.add(comment.getString("message"));
+                System.out.println("Comment: " + comment.getString("message"));
+                if (children == true) {
+                    JSONObject childComments = fbClient.getConnections(comment.getString("id"), "comments", null);
+                    List<JSONObject> childCommentsList = fbClient.convertJsonDataToList(childComments);
+                    i = i + childCommentsList.size();
+                    for (JSONObject childComment : childCommentsList) {
+                        PostArrayList.add(childComment.getString("message"));
+                        System.out.println("Comment: " + childComment.getString("message"));
+                    }
+                }
+            }
+
+            System.out.println("Total comments: " + i);
+        }
+    }
+
     public ArrayList<String> getPostArray() {
         return PostArrayList;
     }
-    
-    public void clearArray(){
+
+    public void clearArray() {
         PostArrayList.clear();
     }
 }
