@@ -88,7 +88,7 @@ public class CommentListAnalyzer {
         return input;
     }
 
-    public void groupComments() {
+    public ArrayList<CommentGroup> groupComments() {
         int targetIndex = 0;
         String keyword = "";
         //set targetIndex equal to last element in list
@@ -122,12 +122,14 @@ public class CommentListAnalyzer {
                 }
             }
         }
+        Collections.sort(Groups);
         //output groups to console
-        System.out.print("Total Groups: " + Groups.size()
+        /*System.out.print("Total Groups: " + Groups.size()
                 + "\n----------------------------------\n");
         for (CommentGroup g : Groups) {
             System.out.print(g);
-        }
+        }*/
+        return Groups;
     }
 
     public void clearArray() {

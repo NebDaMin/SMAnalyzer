@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author matte
  */
-public class CommentGroup 
+public class CommentGroup implements Comparable<CommentGroup>
 {
     private ArrayList<CommentInstance> Comments;
     private String Keyword;
@@ -42,7 +42,12 @@ public class CommentGroup
     {
         String returnVal = "Keyword: "+Keyword;
         returnVal = returnVal.format("%-20s", returnVal);
-        returnVal += "Size: "+Comments.size()+"\n";
+        returnVal += " Size: "+Comments.size()+"\n";
         return returnVal;
+    }
+    
+    @Override
+    public int compareTo(CommentGroup other) {
+        return Integer.compare(other.Comments.size(), this.Comments.size());
     }
 }

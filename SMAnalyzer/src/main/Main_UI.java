@@ -13,12 +13,14 @@ import java.util.Arrays;
 import java.awt.datatransfer.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JFileChooser;
 import main.fbinterface.FBClient;
 import main.humandataanalysisproject.*;
 
 public class Main_UI extends JFrame {
+
     //UI vars
     // private JPanel mainPanel;
     private JPanel urlPanel;
@@ -86,7 +88,7 @@ public class Main_UI extends JFrame {
         pasteButton.addActionListener(ah);
         analyzeButton.addActionListener(ah);
 
-        this.setSize(500, 500);
+        this.setSize(800, 500);
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("Capstone");
@@ -143,16 +145,22 @@ public class Main_UI extends JFrame {
                                 }
                             }
                         }
-                        if(stringMap.size() == 1){
+                        if (stringMap.size() == 1) {
                             FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child);
-                        }
-                        else if(stringMap.size() == 3){
+                        } else if (stringMap.size() == 3) {
                             FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child);
                         }
 
                         Analyzer.setComments(FBClient.getPostArray());
-                        Analyzer.groupComments();
-                        //outputPanel.setVisible(true);
+                        //get group output data, format and set in outputText
+                        ArrayList<CommentGroup> groups = Analyzer.groupComments();
+                        String outputString = "Total Groups: " + groups.size();
+                        outputString += "\n----------------------------------\n";
+                        for (CommentGroup g : groups) {
+                            outputString += g;
+                        }
+                        outputText.setText(outputString);
+                        outputPanel.setVisible(true);
                     } catch (NullPointerException npe) {
                         System.out.println(npe);
                     } catch (Exception ex) {
@@ -187,16 +195,16 @@ public class Main_UI extends JFrame {
             map.put("Post Type", array[1]);
             map.put("Post Id", array[2]);
             if (array[2].equals("photos")) {
-            JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
-                    "We cannot parse photo posts yet", JOptionPane.INFORMATION_MESSAGE);
-            return null;
-        }
+                JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
+                        "We cannot parse photo posts yet", JOptionPane.INFORMATION_MESSAGE);
+                return null;
+            }
         } else {
             JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
                     "Url not recognized", JOptionPane.INFORMATION_MESSAGE);
             return null;
         }
-        
+
         return map;
     }
 
