@@ -74,7 +74,9 @@ public class CommentInstance {
                 //if currentWord doesn't exist
                 if (searchResults == -1) {
                     currentWordList.add(currentWord);
-                    UniqueWordList.add(new WordInstance(currentWord));
+                    if (!currentWord.isEmpty()) {
+                        UniqueWordList.add(new WordInstance(currentWord));
+                    }
                     currentWord = "";
                 } else {
                     for (WordInstance w : UniqueWordList) {
