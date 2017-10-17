@@ -95,6 +95,9 @@ public class CommentListAnalyzer {
         targetIndex = AllUniqueWordsFiltered.size() - 1;
         //create a group for the last x elements in list, where x is 
         //NUMBER_OF_GROUPS
+        //Issue: since AllUniqueWordsFiltered is only ever going to be one value why is there an if here?
+        //I think the intended functionality would be to group everything in its entirety,
+        //but only output as many groups as determined by the final NUMBER_OF_GROUPS
         if (AllUniqueWordsFiltered.size() > NUMBER_OF_GROUPS) {
             for (int k = 0; k < NUMBER_OF_GROUPS; k++) {
                 keyword = AllUniqueWordsFiltered.get(targetIndex).getWord();

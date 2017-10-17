@@ -6,6 +6,7 @@ public class WordInstance implements Comparable<WordInstance> {
     private int Count;
     
     public WordInstance(String s) {
+        //System.out.println("--creating word instance" + s);
         WORD = s;
         Count = 1;
     }
