@@ -3,13 +3,6 @@ package main;
 /**
  * TODO: 
  * add a silly easter egg
- * decide if I want nicer code or more readable error checking 
- * decide if I want JOptionPanes still
- * bring the above two things to the group because I am indecisive
- * fix a computer
- * buy a graphics card
- * replace a tower from the 90's
- * sigh heavily at savings
  * listen to Wintergatan and feel better
  */
 import java.awt.event.*;
@@ -38,6 +31,7 @@ public class Main_UI extends JFrame
     private JButton urlButton;
     private JButton pasteButton;
     private JButton analyzeButton;
+    private JButton clearButton;
     private JCheckBox childCommentBox;
     private JCheckBox blacklistIgnoreBox;
     private JCheckBox fileBox;
@@ -60,6 +54,7 @@ public class Main_UI extends JFrame
         pasteButton = new JButton("Paste");
         analyzeButton = new JButton("Analyze");
         openButton = new JButton("Open file...");
+        clearButton = new JButton("Clear");
         urlButton = new JButton("Url");
         childCommentBox = new JCheckBox("Include child comments");
         blacklistIgnoreBox = new JCheckBox("Ignore blacklist");
@@ -90,16 +85,18 @@ public class Main_UI extends JFrame
         this.add(outputPanel, BorderLayout.SOUTH);
         outputPanel.setVisible(false);
         outputPanel.add(new JScrollPane(outputText));
+        outputPanel.add(clearButton);
 
         openButton.addActionListener(ah);
         urlButton.addActionListener(ah);
         pasteButton.addActionListener(ah);
         analyzeButton.addActionListener(ah);
+        clearButton.addActionListener(ah);
 
         this.setSize(800, 500);
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setTitle("Capstone");
+        this.setTitle("SMAnalyzer");
 
     }
 
@@ -124,6 +121,11 @@ public class Main_UI extends JFrame
                 }
                 urlText.setText(s);
             } 
+            else if (e.getSource() == clearButton)
+            {
+                outputText.setText("");
+                urlText.setText("");
+            }
             else if (e.getSource() == analyzeButton) 
             {
                 Analyzer.clearArray();
@@ -132,7 +134,7 @@ public class Main_UI extends JFrame
 
                 if (urlString.equals(null) || urlString.equals("")) 
                 {
-                    JOptionPane.showMessageDialog(null, "There's nothing to analyze.\nPlease paste a url.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "There's nothing to analyze.\nPlease paste a url.", "Did you really hit analyze without puttng anything in?", JOptionPane.ERROR_MESSAGE);
                 } 
                 else 
                 {
@@ -191,14 +193,24 @@ public class Main_UI extends JFrame
                             outputText.setText(outputString);
                             outputPanel.setVisible(true);
                         } 
+                       catch (ArrayIndexOutOfBoundsException aioobe)
+                       {
+                           JOptionPane.showMessageDialog(Main_UI.this, "Your array can't count that high",
+                        "You pushed it too hard", JOptionPane.INFORMATION_MESSAGE);
+                           System.out.println(aioobe);
+                       }
                         catch (IndexOutOfBoundsException ioobe)
                         {
                             //this one I've seen but shouldn't ever happen if the code is working
+                            JOptionPane.showMessageDialog(Main_UI.this, "Somewhere in the universe, an index is out of bounds",
+                        "Wow you broke it great job", JOptionPane.INFORMATION_MESSAGE);
                             System.out.println(ioobe);
                         }
                         catch (IOException ioe)
                         {
                             //this thing has to be thrown for the analyzer code
+                            JOptionPane.showMessageDialog(Main_UI.this, "You tried to access a file and it didn't work",
+                        "Your files suck", JOptionPane.INFORMATION_MESSAGE);
                             System.out.println(ioe);
                         }
                         catch (NullPointerException npe)
@@ -209,7 +221,7 @@ public class Main_UI extends JFrame
                         catch (Exception ex) 
                         {
                             System.out.println(ex);
-                            JOptionPane.showMessageDialog(null, "Something Broke", "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Something Broke", "You broke it so bad that I don't even know what broke", JOptionPane.ERROR_MESSAGE);
                         }
                 }
             } else {
