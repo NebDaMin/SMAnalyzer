@@ -18,7 +18,7 @@ public class CommentListAnalyzer {
     private ArrayList<WordInstance> AllUniqueWordsFiltered;
     private ArrayList<WordInstance> BlackList;
     private ArrayList<CommentGroup> Groups;
-    private final int NUMBER_OF_GROUPS = 10;
+    private final int NUMBER_OF_GROUPS = 50;
 
     public CommentListAnalyzer() throws IOException {
         //Initialize Class Variables
@@ -48,32 +48,30 @@ public class CommentListAnalyzer {
         }
 
         //Loading the unique words from all CommentInstances into a single ArrayList that can be sorted
-        ArrayList<WordInstance> currentList;
-        for (int y = 0; y < AllComments.size(); y++) {
-            currentList = AllComments.get(y).getUniqueWordList();
-            for (int x = 0; x < currentList.size(); x++) {
-                AllUniqueWords.add(currentList.get(x));
+        ArrayList<WordInstance> allUniqueWords;
+        allUniqueWords = AllComments.get(0).getUniqueWordList();
+        for (int x = 1; x < AllComments.size(); x++) {
+            for (int y = 0; y < AllComments.get(x).getUniqueWordList().size(); y++) {
+                boolean wasIncremented = false;
+                for (int z = 0; z < allUniqueWords.size(); z++) {
+                    if (AllComments.get(x).getUniqueWordList().get(y).getWord().equals(allUniqueWords.get(z).getWord())) {
+                        allUniqueWords.get(z).increment();
+                        wasIncremented = true;
+                        break;
+                    }
+                }
+                if (wasIncremented) {  }
+                else {
+                    allUniqueWords.add(AllComments.get(x).getUniqueWordList().get(y));
+                }
             }
         }
+        AllUniqueWords = allUniqueWords;
         Collections.sort(AllUniqueWords);
 
         //Call Method to filter out the crap 
         AllUniqueWordsFiltered = filterMeaninglessWords(AllUniqueWords);
         System.out.println(AllUniqueWordsFiltered);
-
-        //Loading the sorted list of AllUniqueWordsFiltered into another ArrayList that is formatted to store
-        //Only one instance of each word but with the number of unique reoccurances preceeding it
-        //Once sorted, the highest frequency words will bubble to the top
-        //deprecate this section?
-        int currentCountForWord = 1;
-        for (int k = 0; k < AllUniqueWordsFiltered.size() - 1; k++) {
-            if (AllUniqueWordsFiltered.get(k).equals(AllUniqueWordsFiltered.get(k + 1))) {
-                currentCountForWord += 1;
-            } else {
-                //AllUniqueWordsFilteredWithCounts.add(currentCountForWord + AllUniqueWordsFiltered.get(k));
-                currentCountForWord = 1;
-            }
-        }
     }
 
     public ArrayList<WordInstance> filterMeaninglessWords(ArrayList<WordInstance> input) {
@@ -82,6 +80,7 @@ public class CommentListAnalyzer {
                 if (BlackList.get(y).getWord().equals(input.get(x).getWord())) {
                     input.remove(x);
                     x--;
+                    break;
                 }
             }
         }

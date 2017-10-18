@@ -18,7 +18,7 @@ public class CommentGroup implements Comparable<CommentGroup>
     
     public CommentGroup(String s)
     {
-       Keyword = s;
+       Keyword = s.toLowerCase();
        Comments = new ArrayList();
     }
     

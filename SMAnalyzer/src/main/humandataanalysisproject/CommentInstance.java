@@ -70,18 +70,18 @@ public class CommentInstance {
             if (comment.charAt(z) == ' ') {
                 //search currentWordList to see if currentWord exists 
                 currentWord = currentWord.toLowerCase();
-                int searchResults = currentWordList.indexOf(currentWord);
+                int searchResults = currentWordList.indexOf(currentWord.toLowerCase());
                 //if currentWord doesn't exist
                 if (searchResults == -1) {
-                    currentWordList.add(currentWord);
+                    currentWordList.add(currentWord.toLowerCase());
                     if (!currentWord.isEmpty()) {
-                        UniqueWordList.add(new WordInstance(currentWord));
+                        UniqueWordList.add(new WordInstance(currentWord.toLowerCase()));
                     }
                     currentWord = "";
                 } else {
                     for (WordInstance w : UniqueWordList) {
-                        if (w.getWord().equals(currentWord)) {
-                            w.increment();
+                        if (w.getWord().toLowerCase().equals(currentWord.toLowerCase())) {
+                            //w.increment();
                         }
                     }
                     currentWord = "";
@@ -103,7 +103,9 @@ public class CommentInstance {
         double results = checker.checkSpelling(commentTokenizer);
         double resultThreshold = results / getCommentNoPunctStringArray().length;
 
-        IsEnglish = resultThreshold < .25;
+        //fix this later
+        //IsEnglish = resultThreshold < .1;
+        IsEnglish = true;
     }
 
     //Getters
