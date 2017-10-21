@@ -18,7 +18,7 @@ public class CommentListAnalyzer {
     private ArrayList<WordInstance> AllUniqueWordsFiltered;
     private ArrayList<WordInstance> BlackList;
     private ArrayList<CommentGroup> Groups;
-    private final int NUMBER_OF_GROUPS = 50;
+    private final int NUMBER_OF_GROUPS = 10;
 
     public CommentListAnalyzer() throws IOException {
         //Initialize Class Variables
@@ -38,7 +38,7 @@ public class CommentListAnalyzer {
         }
     }
 
-    public void setComments(ArrayList<String> post) throws IOException {
+    public void setComments(ArrayList<String> post, boolean noBlacklist) throws IOException {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
             CommentInstance currentInstance = new CommentInstance(post.get(x), Dictionary.getDictionaryInstance());
@@ -69,8 +69,9 @@ public class CommentListAnalyzer {
         AllUniqueWords = allUniqueWords;
         Collections.sort(AllUniqueWords);
 
-        //Call Method to filter out the crap 
-        AllUniqueWordsFiltered = filterMeaninglessWords(AllUniqueWords);
+        //Call Method to filter out the crap if ignore blacklist is not selected
+        AllUniqueWordsFiltered = noBlacklist ? 
+                AllUniqueWords : filterMeaninglessWords(AllUniqueWords);
         System.out.println(AllUniqueWordsFiltered);
     }
 
