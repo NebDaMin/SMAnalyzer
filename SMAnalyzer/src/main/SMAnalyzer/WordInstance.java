@@ -1,4 +1,4 @@
-package main.humandataanalysisproject;
+package main.SMAnalyzer;
 
 public class WordInstance implements Comparable<WordInstance> {
     

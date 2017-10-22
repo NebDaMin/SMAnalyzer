@@ -1,4 +1,4 @@
-package main.humandataanalysisproject;
+package main.SMAnalyzer;
 
 import com.swabunga.spell.engine.*;
 import java.io.File;

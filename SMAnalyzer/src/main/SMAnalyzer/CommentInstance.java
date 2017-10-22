@@ -1,4 +1,4 @@
-package main.humandataanalysisproject;
+package main.SMAnalyzer;
 
 import java.util.ArrayList;
 import java.io.*;

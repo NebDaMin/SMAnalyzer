@@ -1,4 +1,4 @@
-package main.humandataanalysisproject;
+package main.SMAnalyzer;
 
 import com.restfb.util.StringUtils;
 import java.io.BufferedReader;

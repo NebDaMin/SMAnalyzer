@@ -3,6 +3,9 @@ package main;
 /**
  * TODO: add a silly easter egg listen to Wintergatan and feel better
  */
+import main.SMAnalyzer.CommentGroup;
+import main.SMAnalyzer.CommentListAnalyzer;
+import main.SMAnalyzer.CommentInstance;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +25,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import main.fbinterface.FBClient;
-import main.humandataanalysisproject.*;
 
 public class Main_UI extends JFrame {
 
