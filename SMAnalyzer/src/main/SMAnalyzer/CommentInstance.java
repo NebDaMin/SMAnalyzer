@@ -9,6 +9,7 @@ public class CommentInstance {
 
     //class level vars
     private String CommentRaw = "";                     //Raw comment when first initialized
+    private String CommentTime = "";
     private String CommentNoPunct = "";                 //Comment Version without punctuation
     private ArrayList<WordInstance> UniqueWordList;           //List of unique words    //Count of each words in word list
     private ArrayList<WordInstance> GeneralizedWordList;      //TODO: make a string of all word variances generalized
@@ -17,9 +18,10 @@ public class CommentInstance {
     private ArrayList<Character> CommentCharList;       //List of Chars while removing punctuation
 
     //Constructor for CommentInstance
-    public CommentInstance(String inputString, GenericSpellDictionary dictionary) throws IOException {
+    public CommentInstance(String inputString, String time, GenericSpellDictionary dictionary) throws IOException {
         //Initialize Variables
         CommentRaw = inputString;
+        CommentTime = time.replace("+0000", "").replace("T", " "); //The raw version of time is a little messy. End format is "yyyy-MM-dd HH:mm:ss"
         CommentCharList = new ArrayList<>();
         UniqueWordList = new ArrayList<>();
 
@@ -103,9 +105,16 @@ public class CommentInstance {
         double results = checker.checkSpelling(commentTokenizer);
         double resultThreshold = results / getCommentNoPunctStringArray().length;
 
-        //fix this later
-        //IsEnglish = resultThreshold < .1;
-        IsEnglish = true;
+        if(getCommentNoPunctStringArray().length == 1 && results < 0)
+        {
+            IsEnglish = true;
+        }
+        else if(resultThreshold < .3) {
+            IsEnglish = true;
+        }
+        else {
+            IsEnglish = false;
+        }
     }
 
     //Getters
@@ -113,6 +122,11 @@ public class CommentInstance {
         return this.CommentRaw;
     }
 
+    
+    public String getCommentTime() {
+        return this.CommentTime;
+    }
+    
     public String getCommentNoPunctString() {
         return this.CommentNoPunct;
     }

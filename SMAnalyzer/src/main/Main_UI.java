@@ -280,11 +280,10 @@ public class Main_UI extends JFrame {
             map.put("Page Name", array[0]);
             map.put("Post Type", array[1]);
             map.put("Post Id", array[2]);
-            if (array[2].equals("photos")) {
-                JOptionPane.showMessageDialog(Main_UI.this, "We cannot parse photo posts yet",
-                        "Wrong.", JOptionPane.INFORMATION_MESSAGE);
-                return null;
-            }
+        } else if (array.length == 5 && array[1].equals("photos")) {
+            map.put("Page Name", array[0]);
+            map.put("Post Type", array[1]);
+            map.put("Post Id", array[3]);
         } else {
             JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
                     "Uh...", JOptionPane.INFORMATION_MESSAGE);
@@ -374,6 +373,7 @@ public class Main_UI extends JFrame {
                 String outputString = "";
                 for (int k = 0; k < selectedGroup.getComments().size(); k++) {
                     outputString += comments.get(k).getCommentRaw();
+                    outputString += "\nWritten at: "+comments.get(k).getCommentTime();
                     outputString += "\n\n";
                 }
 
@@ -392,7 +392,7 @@ public class Main_UI extends JFrame {
                 while (match.find()) {
                     commentList.getStyledDocument().setCharacterAttributes(match.start(), match.end(), sas, true);
                 }
-*/
+                 */
 
                 JScrollPane scrollPane = new JScrollPane(commentList);
                 scrollPane.setPreferredSize(new Dimension(300, 300));

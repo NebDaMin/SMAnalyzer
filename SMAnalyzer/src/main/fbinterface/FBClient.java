@@ -1,6 +1,7 @@
 package main.fbinterface;
 
 import fbapi.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.json.*;
 
@@ -9,7 +10,7 @@ public class FBClient {
     public static final String APP_ID = "1959837484256375";
     public static final String APP_SECRET = "b224ad6a4bae050c34fff51efbce2b60";
     static FbAPI fbClient;
-    private ArrayList<String> PostArrayList;
+    private ArrayList<JSONObject> PostArrayList;
 
     public FBClient() {
         fbClient = new FbAPI(APP_ID, APP_SECRET);
@@ -26,13 +27,13 @@ public class FBClient {
             JSONObject pageFeed = fbClient.getConnections(pageName, "feed", params);
             List<JSONObject> postList = fbClient.convertJsonDataToList(pageFeed);
             for (JSONObject post : postList) {
-                PostArrayList.add(post.getString("message"));
+                PostArrayList.add(post);
                 System.out.println("Post id: " + post.getString("id"));
                 System.out.println("Message: " + post.getString("message"));
                 System.out.println("Created on: " + post.getString("created_time"));
                 System.out.println();
 
-                getComments(post.getString("id"));
+                getComments(post.getString("id"), children);
             }
             System.out.println("PostArrayList size: " + PostArrayList.size());
         }
@@ -48,7 +49,7 @@ public class FBClient {
             HashMap<String, Object> params = new HashMap<String, Object>();
             params.put("fields", "id,message,shares,created_time");
             JSONObject post = fbClient.getObject(pageId + "_" + postId, params);
-            PostArrayList.add(post.getString("message"));
+            PostArrayList.add(post);
             System.out.println("Post id: " + post.getString("id"));
             System.out.println("Message: " + post.getString("message"));
             System.out.println("Created on: " + post.getString("created_time"));
@@ -58,12 +59,12 @@ public class FBClient {
             }
             System.out.println();
 
-            getComments(post.getString("id"));
+            getComments(post.getString("id"), children);
             System.out.println("PostArrayList size: " + PostArrayList.size());
         }
     }
 
-    public ArrayList<String> getPostArray() {
+    public ArrayList<JSONObject> getPostArray() {
         return PostArrayList;
     }
 
@@ -71,20 +72,23 @@ public class FBClient {
         PostArrayList.clear();
     }
 
-    public int getComments(String id) {
+    public int getComments(String id, boolean children) {
         FBCommentList comments = new FBCommentList(id, fbClient, null);
         if (comments.getData() == null) {
             return 1;
         } else {
-            if (comments.getHasNext()) { //Escapes on second run because next got set to false. FIX
+            if (comments.getHasNext()) {
                 boolean searched = false;
                 while (comments.getHasNext() || searched == false) {
                     searched = true;
                     for (int i = 0; i < comments.getCount(); i++) {
                         JSONObject comment = comments.getData().getJSONObject(i);
-                        PostArrayList.add(comment.getString("message"));
-                        System.out.println("Comment: " + comment.getString("message"));
-                        getComments(comment.getString("id"));
+                        PostArrayList.add(comment);
+                        String time = comment.getString("created_time").replace("T", " ").replace("+0000", "");
+                        System.out.println("Comment: " + comment.getString("message") + "\nCreated on: " + time);
+                        if (children == true) {
+                            getComments(comment.getString("id"), children);
+                        }
                     }
                     if (comments.getHasNext()) {
                         comments = new FBCommentList(id, fbClient, comments.getAfter());
@@ -94,9 +98,12 @@ public class FBClient {
             } else {
                 for (int i = 0; i < comments.getCount(); i++) {
                     JSONObject comment = comments.getData().getJSONObject(i);
-                    PostArrayList.add(comment.getString("message"));
-                    System.out.println("Comment: " + comment.getString("message"));
-                    getComments(comment.getString("id"));
+                    PostArrayList.add(comment);
+                    String time = comment.getString("created_time").replace("T", " ").replace("+0000", "");
+                    System.out.println("Comment: " + comment.getString("message") + "\nCreated on: " + time);
+                    if (children == true) {
+                        getComments(comment.getString("id"), children);
+                    }
                 }
             }
         }
