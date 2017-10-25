@@ -4,9 +4,13 @@ public class WordInstance implements Comparable<WordInstance> {
     
     private final String WORD;
     private int Count;
+    private boolean HasCapFirstChar = false;
     
     public WordInstance(String s) {
         //System.out.println("--creating word instance" + s);
+        char theChar = s.charAt(0);
+        if (theChar >= 'A' && theChar <= 'Z')
+            HasCapFirstChar = true;
         WORD = s.toLowerCase();
         Count = 1;
     }
@@ -22,6 +26,11 @@ public class WordInstance implements Comparable<WordInstance> {
     public int getCount() {
         return Count;
     }
+    
+    public boolean getHasCapFirstChar() {
+        return HasCapFirstChar;
+    }
+            
     
     @Override
     public String toString() {

@@ -42,7 +42,8 @@ public class CommentListAnalyzer {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
             CommentInstance currentInstance = new CommentInstance(post.get(x).getString("message"), post.get(x).getString("created_time"), Dictionary.getDictionaryInstance());
-            if (currentInstance.getIsEnglish()) {
+            //Filtering out non english words and instances of Only Names in comments.
+            if (currentInstance.getIsEnglish() == true && currentInstance.getIsOnlyName() == false) {
                 AllComments.add(currentInstance);
             }
         }
@@ -50,10 +51,11 @@ public class CommentListAnalyzer {
         //Loading the unique words from all CommentInstances into a single ArrayList that can be sorted
         ArrayList<WordInstance> allUniqueWords;
         allUniqueWords = AllComments.get(0).getUniqueWordList();
-        for (int x = 1; x < AllComments.size(); x++) {
-            for (int y = 0; y < AllComments.get(x).getUniqueWordList().size(); y++) {
+        //This is started at 1 because the UniqueWordList is already seeded with the original post
+        for (int x = 1; x < AllComments.size(); x++) { //iterate through All comments
+            for (int y = 0; y < AllComments.get(x).getUniqueWordList().size(); y++) { //for each comment in all comments get the unique word list
                 boolean wasIncremented = false;
-                for (int z = 0; z < allUniqueWords.size(); z++) {
+                for (int z = 0; z < allUniqueWords.size(); z++) { //for each uniqe word in each comment's unique word list iterate through the "alluniquewords" list
                     if (AllComments.get(x).getUniqueWordList().get(y).getWord().equals(allUniqueWords.get(z).getWord())) {
                         allUniqueWords.get(z).increment();
                         wasIncremented = true;
