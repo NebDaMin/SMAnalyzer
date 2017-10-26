@@ -1,0 +1,14 @@
+happy
+1
+unhappy
+-1
+bad
+-1
+not
+-1
+stupid
+-1
+nice
+1
+cool
+1

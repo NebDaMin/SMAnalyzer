@@ -10,38 +10,51 @@ import org.json.JSONObject;
 public class CommentListAnalyzer {
 
     //Declare Class Variables
-    private final String DictionaryPath = "externalfiles/BigAssDictionaryFromPrinceton.txt";
-    private final String BlackListPath = "externalfiles/BlackList.txt";
+    //for now I have decided to go the same import route for our positivity word list as all our other external files.
+    private final String POSITIVITYWORDSPATH = "externalfiles/PositivityWords.txt";
+    private final String DICTIONARYPATH = "externalfiles/BigAssDictionaryFromPrinceton.txt";
+    private final String BLACKLISTPATH = "externalfiles/BlackList.txt";
     private ArrayList<CommentInstance> AllComments;
     private final DictionaryInstance Dictionary;
     private ArrayList<WordInstance> AllUniqueWords;
     private ArrayList<WordInstance> AllUniqueWordsFiltered;
     private ArrayList<WordInstance> BlackList;
+    //I am leveraging our WordInstance class to associate a number value with each word. 
+    //This number will be encoded into the text file from which we read all words we want to define as positive or negative.
+    private ArrayList<WordInstance> PositivityWords;
     private ArrayList<CommentGroup> Groups;
     private final int NUMBER_OF_GROUPS = 10;
 
     public CommentListAnalyzer() throws IOException {
         //Initialize Class Variables
-        Dictionary = new DictionaryInstance(DictionaryPath, "English");
+        Dictionary = new DictionaryInstance(DICTIONARYPATH, "English");
         AllComments = new ArrayList();
         AllUniqueWords = new ArrayList();
         AllUniqueWordsFiltered = new ArrayList();
         BlackList = new ArrayList();
+        PositivityWords = new ArrayList();
         Groups = new ArrayList();
 
         //Import words into BlackList
         BufferedReader br;
-        br = new BufferedReader(new FileReader(BlackListPath));
+        br = new BufferedReader(new FileReader(BLACKLISTPATH));
         String sCurrentLine;
         while ((sCurrentLine = br.readLine()) != null) {
             BlackList.add(new WordInstance(sCurrentLine));
+        }
+        
+        //Import words and values into PositivityWords
+        br = new BufferedReader(new FileReader(POSITIVITYWORDSPATH));
+        while ((sCurrentLine = br.readLine()) != null) {
+            //This might be a cheap solution for now, basically we just need to add a 1 or -1 the line after each word in this file
+            PositivityWords.add(new WordInstance(sCurrentLine,Integer.parseInt(br.readLine())));
         }
     }
 
     public void setComments(ArrayList<JSONObject> post, boolean noBlacklist) throws IOException {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
-            CommentInstance currentInstance = new CommentInstance(post.get(x).getString("message"), post.get(x).getString("created_time"), Dictionary.getDictionaryInstance());
+            CommentInstance currentInstance = new CommentInstance(post.get(x).getString("message"), post.get(x).getString("created_time"), Dictionary.getDictionaryInstance(),PositivityWords);
             //Filtering out non english words and instances of Only Names in comments.
             if (currentInstance.getIsEnglish() == true && currentInstance.getIsOnlyName() == false) {
                 AllComments.add(currentInstance);

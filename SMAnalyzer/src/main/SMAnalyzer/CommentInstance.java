@@ -8,18 +8,19 @@ import com.swabunga.spell.engine.*;
 public class CommentInstance {
 
     //class level vars
-    private String CommentRaw = "";                     //Raw comment when first initialized
-    private String CommentTime = "";
-    private String CommentNoPunct = "";                 //Comment Version without punctuation
-    private ArrayList<WordInstance> UniqueWordList;           //List of unique words    //Count of each words in word list
-    private ArrayList<WordInstance> GeneralizedWordList;      //TODO: make a string of all word variances generalized
-    private boolean IsEnglish;                          //Is comment english
-    private boolean IsOnlyName;                         //Is a persons name only
-    private char[] PunctWhitelist;                      //Array to store whitelist of english characters
-    private ArrayList<Character> CommentCharList;       //List of Chars while removing punctuation
+    private String CommentRaw = "";                         //Raw comment when first initialized
+    private String CommentTime = "";                        //Placeholder for the time value to be sent from the facebook API
+    private String CommentNoPunct = "";                     //Comment Version without punctuation
+    private ArrayList<WordInstance> UniqueWordList;         //List of unique words    //Count of each words in word list
+    private ArrayList<WordInstance> GeneralizedWordList;    //TODO: make a string of all word variances generalized
+    private boolean IsEnglish;                              //Is comment english
+    private boolean IsOnlyName;                             //Is a persons name only
+    private final char[] PunctWhitelist;                    //Array to store whitelist of english characters
+    private ArrayList<Character> CommentCharList;           //List of Chars while removing punctuation
+    private int PositivityLevel = 0;                        //This is the int that will determine the positivity level
 
     //Constructor for CommentInstance
-    public CommentInstance(String inputString, String time, GenericSpellDictionary dictionary) throws IOException {
+    public CommentInstance(String inputString, String time, GenericSpellDictionary dictionary, ArrayList<WordInstance> positivityWordList) throws IOException {
         //Initialize Variables
         CommentRaw = inputString;
         CommentTime = time.replace("+0000", "").replace("T", " "); //The raw version of time is a little messy. End format is "yyyy-MM-dd HH:mm:ss"
@@ -38,6 +39,7 @@ public class CommentInstance {
         populateUniqueWordList();
         identifyIsEnglish(dictionary);
         identifyIsName();
+        identifyPositivityLevel(positivityWordList);
     }
 
     //This method takes the comment and saves a version of it that doesnt include punctuation
@@ -105,28 +107,32 @@ public class CommentInstance {
         {
             IsEnglish = true;
         }
-        else if(resultThreshold < .34) {
-            IsEnglish = true;
-        }
-        else {
-            IsEnglish = false;
-        }
+        else IsEnglish = resultThreshold < .34;
     }
     
     private void identifyIsName() {
         if (UniqueWordList.size() == 2)
         {
-            if (UniqueWordList.get(0).getHasCapFirstChar() == true && UniqueWordList.get(1).getHasCapFirstChar() == true) {
-                IsOnlyName = true;
-            }
-            else {
-                IsOnlyName = false;
-            }
+            IsOnlyName = UniqueWordList.get(0).getHasCapFirstChar() == true && UniqueWordList.get(1).getHasCapFirstChar() == true;
         }
         else {
             IsOnlyName = false;
         }
     }       
+    
+    //Matteo take a look at this
+    //Basically I use the "getCount" method from the word instance to add to the overall positivity level in a comment.
+    //We still need to add logic for modifiers such as "not" and so on.
+    private void identifyPositivityLevel(ArrayList<WordInstance> positivityWordList) {
+        PositivityLevel = 0;
+        for (int x = 0; x < UniqueWordList.size(); x++) {
+            for (int y = 0; y < positivityWordList.size(); y++) {
+                if (UniqueWordList.get(x).getWord().equals(positivityWordList.get(y).getWord())) {
+                    PositivityLevel += positivityWordList.get(y).getCount();
+                }
+            }
+        }
+    }
 
     //Getters
     public String getCommentRaw() {
@@ -153,6 +159,10 @@ public class CommentInstance {
     public boolean getIsOnlyName() {
         return IsOnlyName;
     }
+    
+    public int getPositivityLevel() {
+        return PositivityLevel;
+    }    
 
     public ArrayList<WordInstance> getUniqueWordList() {
         return UniqueWordList;

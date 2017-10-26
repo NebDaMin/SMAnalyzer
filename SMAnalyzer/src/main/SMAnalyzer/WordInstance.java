@@ -7,12 +7,19 @@ public class WordInstance implements Comparable<WordInstance> {
     private boolean HasCapFirstChar = false;
     
     public WordInstance(String s) {
-        //System.out.println("--creating word instance" + s);
         char theChar = s.charAt(0);
         if (theChar >= 'A' && theChar <= 'Z')
             HasCapFirstChar = true;
         WORD = s.toLowerCase();
         Count = 1;
+    }
+    
+    public WordInstance(String s, int c) {
+        char theChar = s.charAt(0);
+        if (theChar >= 'A' && theChar <= 'Z')
+            HasCapFirstChar = true;
+        WORD = s.toLowerCase();
+        Count = c;
     }
     
     public void increment() {
