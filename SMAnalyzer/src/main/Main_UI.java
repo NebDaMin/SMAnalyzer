@@ -374,25 +374,35 @@ public class Main_UI extends JFrame {
                 for (int k = 0; k < selectedGroup.getComments().size(); k++) {
                     outputString += comments.get(k).getCommentRaw();
                     outputString += "\nWritten at: "+comments.get(k).getCommentTime();
+                    if(comments.get(k).getPositivityLevel()<0) {
+                        outputString += "\nThis comment is flagged as negative.";
+                    }
+                    else if(comments.get(k).getPositivityLevel()>0) {
+                        outputString += "\nThis comment is flagged as positive.";
+                    }
+                    else {
+                        outputString += "\nThis comment is flagged as neutral.";
+                    }
                     outputString += "\n\n";
                 }
 
                 JTextPane commentList = new JTextPane();
                 commentList.setText(outputString);
                 commentList.setEditable(false);
-                /*Code to display instances of the keyword in bold
-                  work in progress
+                //Code to display instances of the keyword in bold
+                  //work in progress
                 
                 SimpleAttributeSet sas = new SimpleAttributeSet();
                 StyleConstants.setBold(sas, true);
 
                 Pattern word = Pattern.compile(selectedGroup.getKeyword());
-                Matcher match = word.matcher(outputString);
+                Matcher match = word.matcher(outputString.toLowerCase());
 
                 while (match.find()) {
-                    commentList.getStyledDocument().setCharacterAttributes(match.start(), match.end(), sas, true);
+                    System.out.println(match.group() + ", " + match.start() + ", " + match.end());
+                    commentList.getStyledDocument().setCharacterAttributes(match.start(), match.end()-match.start(), sas, true);
                 }
-                 */
+                
 
                 JScrollPane scrollPane = new JScrollPane(commentList);
                 scrollPane.setPreferredSize(new Dimension(300, 300));

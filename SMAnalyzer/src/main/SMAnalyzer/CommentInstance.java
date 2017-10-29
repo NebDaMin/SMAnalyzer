@@ -5,7 +5,7 @@ import java.io.*;
 import com.swabunga.spell.event.*;
 import com.swabunga.spell.engine.*;
 
-public class CommentInstance {
+public class CommentInstance implements Comparable<CommentInstance> {
 
     //class level vars
     private String CommentRaw = "";                         //Raw comment when first initialized
@@ -132,6 +132,11 @@ public class CommentInstance {
                 }
             }
         }
+    }
+    
+    @Override
+    public int compareTo(CommentInstance other) {
+        return this.CommentTime.compareTo(other.CommentTime);
     }
 
     //Getters

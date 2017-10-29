@@ -131,16 +131,25 @@ public class CommentListAnalyzer {
         ArrayList<WordInstance> wordList;
         for (CommentGroup g : Groups) {
             keyword = g.getKeyword();
-            for (CommentInstance c : AllComments) {
-                wordList = c.getUniqueWordList();
+            for (int k = 1; k<AllComments.size();k++) {
+                wordList = AllComments.get(k).getUniqueWordList();
                 for (WordInstance w : wordList) {
                     if (w.getWord().equals(keyword)) {
-                        g.addComment(c);
+                        g.addComment(AllComments.get(k));
                     }
                 }
             }
         }
+        for(int k = 0; k < Groups.size();k++) {
+            if(Groups.get(k).getComments().size() < 1) {
+                Groups.remove(k);
+                k--;
+            }
+        }
         Collections.sort(Groups);
+        for (CommentGroup g : Groups) {
+            Collections.sort(g.getComments());
+        }
         //output groups to console
         /*System.out.print("Total Groups: " + Groups.size()
                 + "\n----------------------------------\n");
