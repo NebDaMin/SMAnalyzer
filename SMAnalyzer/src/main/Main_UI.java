@@ -38,7 +38,14 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import main.fbinterface.FBClient;
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 public class Main_UI extends JFrame {
 
@@ -52,6 +59,8 @@ public class Main_UI extends JFrame {
     private JButton openButton, urlButton, pasteButton, analyzeButton, clearButton;
     private PrintWriter out;
     private JScrollPane jsp;
+    public final int BAR_CHART = 0;
+    public final int PIE_CHART = 1;
     //restFB vars
     private FBClient FBClient;
 
@@ -405,16 +414,15 @@ public class Main_UI extends JFrame {
                 dialogPanel.setLayout(new GridLayout(2, 1));
 
                 JLabel commentListLabel = new JLabel("Comment Text");
-                Graph graph = new Graph(0, "Groups and their percentages");
-               // ChartPanel chart = new ChartPanel(graph);
+                
                 JLabel rightPlaceHolder = new JLabel("Other output?");
                 rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
 
-                
-                JLabel bottomPlaceHolder = new JLabel("Here there be graphs");
-                bottomPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
-                bottomPlaceHolder.setPreferredSize(new Dimension(600, 300));
+                JFreeChart graph = Graph(0, "Groups and their percentages");
+                ChartPanel chart = new ChartPanel(graph);
+               // graph.setHorizontalAlignment(SwingConstants.CENTER);
+                chart.setPreferredSize(new Dimension(600, 300));
 
                 ArrayList<CommentInstance> comments = new ArrayList();
                 CommentGroup selectedGroup = groups.get(Main_UI.this.outputTable.getSelectedRow());
@@ -466,7 +474,7 @@ public class Main_UI extends JFrame {
                 topPanel.add(rightPlaceHolder);
 
                 JPanel bottomPanel = new JPanel();
-                bottomPanel.add(bottomPlaceHolder);
+                bottomPanel.add(chart);
 
                 dialogPanel.add(topPanel);
                 dialogPanel.add(bottomPanel);
@@ -490,7 +498,58 @@ public class Main_UI extends JFrame {
             super.fireEditingStopped();
         }
     }
+    public JFreeChart Graph(int chartType, String chartTitle) 
+   {
+       if(chartType == BAR_CHART)
+       {
+           //title, categoryAxisLabel, valueAxisLabel, dataset, orientation, legend, tooltips, urls 
+           JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createDataset(BAR_CHART), PlotOrientation.VERTICAL, true, true, false);
+            final CategoryPlot plot = barChart.getCategoryPlot();
+            final BarRenderer renderer = (BarRenderer) plot.getRenderer();
+      
+            renderer.setSeriesPaint(0, Color.black);
+            renderer.setSeriesPaint(1, Color.magenta);
+            renderer.setSeriesPaint(2, Color.cyan); 
+            return barChart;
+       }
+  
+       else if(chartType == PIE_CHART)
+       {
+           return null;
+       }
+       else
+       {
+           return null;
+       }
+   }
+    //values for bar chart
+   private CategoryDataset createDataset(int chartType) 
+   {
+  
+        final String wordUno = "Uno";        
+        final String wordDos = "Dos";        
+        final String wordTres = "Tres";        
+      
+        final String pos = "Positive";
+        final String neu = "Neutral";
+        final String neg = "Negative";
+      
+        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();  
 
+        dataset.addValue(15, neg, wordUno);        
+        dataset.addValue(22, neu, wordUno);        
+        dataset.addValue(66, pos, wordUno);                  
+
+        dataset.addValue(75, neg, wordDos);        
+        dataset.addValue(11, neu, wordDos);       
+        dataset.addValue(20, pos, wordDos); 
+
+        dataset.addValue(5, neg, wordTres);        
+        dataset.addValue(15, neu, wordTres);        
+        dataset.addValue(88, pos, wordTres);
+
+        return dataset; 
+   }
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }
