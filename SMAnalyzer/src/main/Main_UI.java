@@ -3,6 +3,8 @@ package main;
 /**
  * TODO: 
  * have a secret coding party
+ * secretly implement youtube, twitter, and reddit functionality
+ * laugh maniacally 
  * force a graph in a panel
  * add pie functionality
  * add an option for different giraffes
@@ -283,6 +285,10 @@ public class Main_UI extends JFrame {
        {
          return parseYoutubeUrl(s);  
        }
+       else if (s.contains("twitter.com"))
+       {
+         return parseTwitterUrl(s);
+       }
        else
        {
           JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
@@ -341,6 +347,29 @@ public class Main_UI extends JFrame {
             map.put("Username", array[1]);
             
         } 
+        else 
+        {
+            JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
+                    "Uh...", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        return map;
+    }
+    HashMap<String, String> parseTwitterUrl(String s)
+    {
+        int last = s.lastIndexOf("twitter.com/");
+        int ytLength = "twitter.com/".length();
+        
+        String sub = s.substring(last + ytLength, s.length());
+        String[] array = sub.split("/");
+        HashMap<String, String> map = new HashMap<String, String>();
+       
+        if (array.length == 3) 
+        {
+            map.put("Username", array[0]);
+            map.put("Status", array[1]);
+            map.put("Post Id", array[2]);
+        }    
         else 
         {
             JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
