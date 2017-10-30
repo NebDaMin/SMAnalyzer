@@ -1,7 +1,20 @@
 package main;
 
 /**
- * TODO: add a silly easter egg listen to Wintergatan and feel better
+ * TODO: 
+ * have a secret coding party
+ * force a graph in a panel
+ * add pie functionality
+ * add an option for different giraffes
+ * menus for days
+ * the menu is MASSIVE wow fix that
+ * Save to file stuff
+ * Read from file stuff
+ * completely rewrite the graph file to make it modular and not hard coded
+ * add more cheeky message boxes
+ * maybe think about making the main ui file not so friggin big
+ * add a silly easter egg 
+ * 
  */
 import main.SMAnalyzer.CommentGroup;
 import main.SMAnalyzer.CommentListAnalyzer;
@@ -25,24 +38,18 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import main.fbinterface.FBClient;
+import org.jfree.chart.ChartPanel;
 
 public class Main_UI extends JFrame {
 
     //UI vars
-    // private JPanel mainPanel;
-    //private JPanel urlPanel;
-    //private JPanel optionPanel;
     private JPanel mainPanel;
+    private JMenuBar menu;
+    private JMenu options, file;
+    private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile; 
+    private JMenuItem loadFile;
     private JTable outputTable;
-    private JButton openButton;
-    private JButton urlButton;
-    private JButton pasteButton;
-    private JButton analyzeButton;
-    private JButton clearButton;
-    private JCheckBox childCommentBox;
-    private JCheckBox blacklistIgnoreBox;
-    private JCheckBox fileBox;
-    private JCheckBox testBox;
+    private JButton openButton, urlButton, pasteButton, analyzeButton, clearButton;
     private PrintWriter out;
     private JScrollPane jsp;
     //restFB vars
@@ -61,30 +68,41 @@ public class Main_UI extends JFrame {
         urlText = new JTextField(20);
         pasteButton = new JButton("Paste");
         analyzeButton = new JButton("Analyze");
-        openButton = new JButton("Open file...");
+        //openButton = new JButton("Open file...");
         clearButton = new JButton("Clear");
         urlButton = new JButton("Url");
-        childCommentBox = new JCheckBox("Include child comments");
-        blacklistIgnoreBox = new JCheckBox("Ignore blacklist");
-        fileBox = new JCheckBox("Save to File");
-        testBox = new JCheckBox("placeholder");
         outputTable = new JTable();
         jsp = new JScrollPane(outputTable);
         mainPanel = new JPanel();
 
-        this.setLayout(new GridLayout(2, 1));
-
+        //menu init
+        menu = new JMenuBar();
+        
+        file = new JMenu("File");
+        file.setMnemonic('F');
+        loadFile = new JMenuItem("Load File...");
+        loadFile.setMnemonic('L');
+        file.add(loadFile);
+        saveFile = new JCheckBoxMenuItem ("Save to File");
+        file.add(saveFile);
+        menu.add(file);
+        
+        options = new JMenu("Options");
+        options.setMnemonic('O');
+        childCommentBox = new JCheckBoxMenuItem("Child Comments");
+        blacklistIgnoreBox = new JCheckBoxMenuItem("Ignore BlackList");
+        options.add(childCommentBox);
+        options.add(blacklistIgnoreBox);
+        menu.add(options);
+        this.add(menu);
+        this.setLayout(new GridLayout(3, 1));
+        
         FBClient = new FBClient();
         Analyzer = new CommentListAnalyzer();
 
         outputTable.setVisible(false);
         clearButton.setVisible(true);
         outputTable.setPreferredScrollableViewportSize(new Dimension(400, 150));
-
-        childCommentBox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        blacklistIgnoreBox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        fileBox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        testBox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         GroupLayout layout = new GroupLayout(mainPanel);
         mainPanel.setLayout(layout);
@@ -94,44 +112,30 @@ public class Main_UI extends JFrame {
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addComponent(urlLabel)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(urlText)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(childCommentBox)
-                                        .addComponent(blacklistIgnoreBox))
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(fileBox)
-                                        .addComponent(testBox))))
+                    .addComponent(urlText))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(pasteButton)
-                        .addComponent(analyzeButton)
-                        .addComponent(clearButton))
+                    .addComponent(pasteButton)
+                    .addComponent(analyzeButton)
+                    .addComponent(clearButton))
         );
         layout.linkSize(SwingConstants.HORIZONTAL, pasteButton, analyzeButton, clearButton);
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(urlLabel)
-                        .addComponent(urlText)
-                        .addComponent(pasteButton))
+                    .addComponent(urlLabel)
+                    .addComponent(urlText)
+                    .addComponent(pasteButton))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(childCommentBox)
-                                        .addComponent(fileBox))
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(blacklistIgnoreBox)
-                                        .addComponent(testBox)))
-                        .addComponent(analyzeButton))
+                    .addComponent(analyzeButton))
                 .addComponent(clearButton)
         );
         this.add(mainPanel);
 
-        openButton.addActionListener(ah);
         urlButton.addActionListener(ah);
         pasteButton.addActionListener(ah);
         analyzeButton.addActionListener(ah);
         clearButton.addActionListener(ah);
+        loadFile.addActionListener(ah);
 
         this.pack();
         this.setLocation(700, 300);
@@ -174,8 +178,7 @@ public class Main_UI extends JFrame {
                     HashMap<String, String> stringMap = parseUrl(urlString);
                     Boolean child = childCommentBox.isSelected();
                     Boolean blacklist = blacklistIgnoreBox.isSelected();
-                    Boolean file = fileBox.isSelected();
-
+                    Boolean file = saveFile.isSelected();
                     if (file) {
                         JFileChooser chooser = new JFileChooser();
                         chooser.setCurrentDirectory(new File("."));
@@ -262,12 +265,25 @@ public class Main_UI extends JFrame {
     }
 
     public HashMap<String, String> parseUrl(String s) {
-        if (!s.contains("facebook.com")) {
-            JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
-                    "We only do facebook", JOptionPane.INFORMATION_MESSAGE);
-            return null;
+        
+        if (s.contains("facebook.com")) 
+        {
+         return parseFacebookUrl(s);
         }
-
+       else if(s.contains("youtube.com"))
+       {
+         return parseYoutubeUrl(s);  
+       }
+       else
+       {
+          JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
+                    "We only do facebook or youtube", JOptionPane.INFORMATION_MESSAGE);
+            return null; 
+       }
+        
+    }
+    HashMap<String, String> parseFacebookUrl(String s)
+    {
         int last = s.lastIndexOf("facebook.com/");
         int fbLength = "facebook.com/".length();
 
@@ -292,7 +308,38 @@ public class Main_UI extends JFrame {
 
         return map;
     }
-
+    HashMap<String, String> parseYoutubeUrl(String s)
+    {
+        int last = s.lastIndexOf("youtube.com/");
+        int ytLength = "youtube.com/".length();
+        
+        String sub = s.substring(last + ytLength, s.length());
+        String[] array = sub.split("/");
+        HashMap<String, String> map = new HashMap<String, String>();
+        if (array.length == 1) 
+        {
+            array[0].replace("watch?v=","");
+            map.put("Video Id", array[0]);
+        } 
+        else if (array.length == 2) 
+        {
+            map.put("Page Type", array[0]);
+            map.put("Channel Id", array[1]);
+        } 
+        else if (array.length == 3) 
+        {
+            map.put("Page Type", array[0]);
+            map.put("Username", array[1]);
+            
+        } 
+        else 
+        {
+            JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
+                    "Uh...", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        return map;
+    }
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer() {
@@ -358,11 +405,13 @@ public class Main_UI extends JFrame {
                 dialogPanel.setLayout(new GridLayout(2, 1));
 
                 JLabel commentListLabel = new JLabel("Comment Text");
-
+                Graph graph = new Graph(0, "Groups and their percentages");
+               // ChartPanel chart = new ChartPanel(graph);
                 JLabel rightPlaceHolder = new JLabel("Other output?");
                 rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
 
+                
                 JLabel bottomPlaceHolder = new JLabel("Here there be graphs");
                 bottomPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 bottomPlaceHolder.setPreferredSize(new Dimension(600, 300));
