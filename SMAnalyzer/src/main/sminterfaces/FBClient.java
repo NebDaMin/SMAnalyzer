@@ -10,7 +10,7 @@ public class FBClient {
     public static final String APP_ID = "1959837484256375";
     public static final String APP_SECRET = "b224ad6a4bae050c34fff51efbce2b60";
     static FbAPI fbClient;
-    private ArrayList<JSONObject> PostArrayList;
+    private ArrayList<NormalizedComment> PostArrayList;
 
     public FBClient() {
         fbClient = new FbAPI(APP_ID, APP_SECRET);
@@ -27,7 +27,9 @@ public class FBClient {
             JSONObject pageFeed = fbClient.getConnections(pageName, "feed", params);
             List<JSONObject> postList = fbClient.convertJsonDataToList(pageFeed);
             for (JSONObject post : postList) {
-                PostArrayList.add(post);
+                NormalizedComment normComment = new NormalizedComment();
+                normComment.setFromFacebook(post);
+                PostArrayList.add(normComment);
                 System.out.println("Post id: " + post.getString("id"));
                 System.out.println("Message: " + post.getString("message"));
                 System.out.println("Created on: " + post.getString("created_time"));
@@ -49,7 +51,9 @@ public class FBClient {
             HashMap<String, Object> params = new HashMap<String, Object>();
             params.put("fields", "id,message,shares,created_time");
             JSONObject post = fbClient.getObject(pageId + "_" + postId, params);
-            PostArrayList.add(post);
+            NormalizedComment normComment = new NormalizedComment();
+            normComment.setFromFacebook(post);
+            PostArrayList.add(normComment);
             System.out.println("Post id: " + post.getString("id"));
             System.out.println("Message: " + post.getString("message"));
             System.out.println("Created on: " + post.getString("created_time"));
@@ -64,7 +68,7 @@ public class FBClient {
         }
     }
 
-    public ArrayList<JSONObject> getPostArray() {
+    public ArrayList<NormalizedComment> getPostArray() {
         return PostArrayList;
     }
 
@@ -83,7 +87,9 @@ public class FBClient {
                     searched = true;
                     for (int i = 0; i < comments.getCount(); i++) {
                         JSONObject comment = comments.getData().getJSONObject(i);
-                        PostArrayList.add(comment);
+                        NormalizedComment normComment = new NormalizedComment();
+                        normComment.setFromFacebook(comment);
+                        PostArrayList.add(normComment);
                         String time = comment.getString("created_time").replace("T", " ").replace("+0000", "");
                         System.out.println("Comment: " + comment.getString("message") + "\nCreated on: " + time);
                         if (children == true) {
@@ -98,7 +104,9 @@ public class FBClient {
             } else {
                 for (int i = 0; i < comments.getCount(); i++) {
                     JSONObject comment = comments.getData().getJSONObject(i);
-                    PostArrayList.add(comment);
+                    NormalizedComment normComment = new NormalizedComment();
+                    normComment.setFromFacebook(comment);
+                    PostArrayList.add(normComment);
                     String time = comment.getString("created_time").replace("T", " ").replace("+0000", "");
                     System.out.println("Comment: " + comment.getString("message") + "\nCreated on: " + time);
                     if (children == true) {

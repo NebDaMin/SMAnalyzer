@@ -7,7 +7,7 @@ public class NormalizedComment {
     String media;
     String id;
     String message;
-    String posted_at;
+    String created_time;
     String shares;
 
     public void setFromFacebook(JSONObject fb) {
@@ -15,7 +15,7 @@ public class NormalizedComment {
         try {
             this.id = fb.getString("id");
             this.message = fb.getString("message");
-            this.posted_at = fb.getString("created_time");
+            this.created_time = fb.getString("created_time").replace("+0000", "").replace("T", " ");
             this.shares = fb.getJSONObject("shares").getString("count");
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
@@ -45,5 +45,21 @@ public class NormalizedComment {
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+    
+    public String getMedia(){
+        return media;
+    }
+    
+    public String getId(){
+        return id;
+    }
+    
+    public String getMessage(){
+        return message;
+    }
+    
+    public String getTime(){
+        return created_time;
     }
 }

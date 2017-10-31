@@ -2,6 +2,7 @@ package main.sminterfaces;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import smsdk.*;
@@ -10,7 +11,7 @@ public class YTClient {
 
     private static final String API_KEY = "AIzaSyBsAXJxBUV4VvMFSe8GxXnmxgkwiTU7Yhs";
     static YtAPI ytClient;
-    private ArrayList<JSONObject> PostArrayList;
+    private ArrayList<NormalizedComment> PostArrayList;
 
     public YTClient() {
         ytClient = new YtAPI(API_KEY);
@@ -34,16 +35,22 @@ public class YTClient {
         JSONObject comments = ytClient.getObject("commentThreads", params);
         ArrayList<JSONObject> commentsList = ytClient.convertJsonItemsToList(comments);
         for (JSONObject comment : commentsList) {
-            PostArrayList.add(comment);
+            NormalizedComment normComment = new NormalizedComment();
+            normComment.setFromYoutube(comment);            
+            PostArrayList.add(normComment);
             System.out.println("Comment id: " + comment.getString("id"));
             System.out.println("Message: " + comment.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("textDisplay"));
             System.out.println("Created on: " + comment.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("publishedAt"));
             System.out.println();
         }
     }
-    
-    
+
     public void clearArray() {
         PostArrayList.clear();
     }
+
+    public ArrayList<NormalizedComment> getPostArray() {
+        return PostArrayList;
+    }
+
 }

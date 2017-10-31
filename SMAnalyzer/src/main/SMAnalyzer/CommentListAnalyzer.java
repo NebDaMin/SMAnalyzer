@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import org.json.JSONObject;
+import main.sminterfaces.NormalizedComment;
 
 public class CommentListAnalyzer {
 
@@ -51,10 +51,10 @@ public class CommentListAnalyzer {
         }
     }
 
-    public void setComments(ArrayList<JSONObject> post, boolean noBlacklist) throws IOException {
+    public void setComments(ArrayList<NormalizedComment> post, boolean noBlacklist) throws IOException {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
-            CommentInstance currentInstance = new CommentInstance(post.get(x).getString("message"), post.get(x).getString("created_time"), Dictionary.getDictionaryInstance(),PositivityWords);
+            CommentInstance currentInstance = new CommentInstance(post.get(x).getMessage(), post.get(x).getTime(), Dictionary.getDictionaryInstance(),PositivityWords);
             //Filtering out non english words and instances of Only Names in comments.
             if (currentInstance.getIsEnglish() == true && currentInstance.getIsOnlyName() == false) {
                 AllComments.add(currentInstance);
