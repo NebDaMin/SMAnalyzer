@@ -68,6 +68,7 @@ public class Main_UI extends JFrame {
     private JButton openButton, urlButton, pasteButton, analyzeButton, clearButton;
     private PrintWriter out;
     private JScrollPane jsp;
+    private GridBagConstraints layoutConstraints;
     public final int BAR_CHART = 0;
     public final int PIE_CHART = 1;
     //restFB vars
@@ -112,9 +113,14 @@ public class Main_UI extends JFrame {
         options.add(childCommentBox);
         options.add(blacklistIgnoreBox);
         menu.add(options);
-        this.add(menu);
-        this.setLayout(new GridLayout(3, 1));
         
+        this.setLayout(new GridBagLayout());
+        layoutConstraints = new GridBagConstraints();
+        layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+        layoutConstraints.gridy = 0;
+        this.add(menu, layoutConstraints);
+        
+                
         FBClient = new FBClient();
         Analyzer = new CommentListAnalyzer();
 
@@ -147,7 +153,9 @@ public class Main_UI extends JFrame {
                     .addComponent(analyzeButton))
                 .addComponent(clearButton)
         );
-        this.add(mainPanel);
+        layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+        layoutConstraints.gridy = 1;
+        this.add(mainPanel,layoutConstraints);
 
         urlButton.addActionListener(ah);
         pasteButton.addActionListener(ah);
@@ -248,7 +256,9 @@ public class Main_UI extends JFrame {
                         Dimension d = outputTable.getPreferredSize();
                         jsp.setPreferredSize(
                                 new Dimension(d.width, outputTable.getRowHeight() * row + 1));
-                        Main_UI.this.add(jsp);
+                        layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+                        layoutConstraints.gridy = 2;
+                        Main_UI.this.add(jsp,layoutConstraints);
                         Main_UI.this.pack();
                         Main_UI.this.mainPanel.setCursor(null);
 
