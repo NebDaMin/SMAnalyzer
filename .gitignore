@@ -1,5 +1,6 @@
 
 *.properties
+manifest.mf
 HumanDataAnalysisProject/*
 SMAnalyzer/nbproject/*
 SMAnalyzer/build/*
