@@ -40,14 +40,20 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import main.fbinterface.FBClient;
+import static org.jfree.chart.ChartColor.DARK_GREEN;
+import static org.jfree.chart.ChartColor.DARK_MAGENTA;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.util.Rotation;
 import org.json.JSONException;
 
 public class Main_UI extends JFrame {
@@ -456,7 +462,7 @@ public class Main_UI extends JFrame {
                 rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
 
-                JFreeChart graph = Graph(0, "Groups and their percentages");
+                JFreeChart graph = Graph(1, "Groups and their percentages");
                 ChartPanel chart = new ChartPanel(graph);
                // graph.setHorizontalAlignment(SwingConstants.CENTER);
                 chart.setPreferredSize(new Dimension(600, 300));
@@ -540,7 +546,7 @@ public class Main_UI extends JFrame {
        if(chartType == BAR_CHART)
        {
            //title, categoryAxisLabel, valueAxisLabel, dataset, orientation, legend, tooltips, urls 
-           JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createDataset(BAR_CHART), PlotOrientation.VERTICAL, true, true, false);
+           JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(BAR_CHART), PlotOrientation.VERTICAL, true, true, false);
             final CategoryPlot plot = barChart.getCategoryPlot();
             final BarRenderer renderer = (BarRenderer) plot.getRenderer();
       
@@ -552,7 +558,14 @@ public class Main_UI extends JFrame {
   
        else if(chartType == PIE_CHART)
        {
-           return null;
+           PieDataset dataset = createPieDataset();
+        
+           JFreeChart pieChart  = createPieChart(dataset, chartTitle);
+           ChartPanel chartPanel = new ChartPanel(pieChart);
+           chartPanel.setPreferredSize(new Dimension(500,300));
+           setContentPane(chartPanel);
+           
+           return pieChart;
        }
        else
        {
@@ -560,7 +573,7 @@ public class Main_UI extends JFrame {
        }
    }
     //values for bar chart
-   private CategoryDataset createDataset(int chartType) 
+   private CategoryDataset createBarDataset(int chartType) 
    {
   
         final String wordUno = "Uno";        
@@ -587,6 +600,39 @@ public class Main_UI extends JFrame {
 
         return dataset; 
    }
+   
+   //values for pie graph
+   public PieDataset createPieDataset()
+    {
+        DefaultPieDataset result = new DefaultPieDataset();
+        
+        result.setValue("Positive", 33); 
+        result.setValue("Neutral", 22);
+        result.setValue("Negative", 45);
+        
+        return result;
+    }
+   
+   //uncomment 3D to get the 3D version
+    public JFreeChart createPieChart(PieDataset dataset, String title)
+    {
+        JFreeChart chart = ChartFactory.createPieChart/*3D*/(title, dataset, true, true, false);
+               
+        PiePlot/*3D*/ plot = (PiePlot/*3D*/) chart.getPlot(); 
+        
+        //You can put different colors or comment these out to have the original colors
+        plot.setSectionPaint("Positive", DARK_GREEN);
+        plot.setSectionPaint("Neutral", DARK_MAGENTA);
+        plot.setSectionPaint("Negative", Color.black);        
+                
+        plot.setStartAngle(0);
+        plot.setDirection(Rotation.CLOCKWISE); 
+        plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
+        
+        return chart;
+    }       
+
+   
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }
