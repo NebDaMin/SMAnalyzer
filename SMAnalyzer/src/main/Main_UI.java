@@ -48,6 +48,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.json.JSONException;
 
 public class Main_UI extends JFrame {
 
@@ -175,6 +176,7 @@ public class Main_UI extends JFrame {
                 urlText.setText("");
                 outputTable.setVisible(false);
                 Main_UI.this.remove(jsp);
+                Main_UI.this.repaint();
                 //clearButton.setVisible(false);
                 Main_UI.this.pack();
             } else if (e.getSource() == analyzeButton) {
@@ -246,7 +248,13 @@ public class Main_UI extends JFrame {
 
                         outputTable.setVisible(true);
                         clearButton.setVisible(true);
-                    } catch (ArrayIndexOutOfBoundsException aioobe) {
+                    }
+                     catch(JSONException jse)
+                     {
+                         JOptionPane.showMessageDialog(Main_UI.this, "Womp womp",
+                                "That page doesn't even exist. Maybe try proofreading next time", JOptionPane.INFORMATION_MESSAGE);
+                     }
+                     catch (ArrayIndexOutOfBoundsException aioobe) {
                         JOptionPane.showMessageDialog(Main_UI.this, "Your array can't count that high",
                                 "You pushed it too hard", JOptionPane.INFORMATION_MESSAGE);
                         System.out.println(aioobe);
