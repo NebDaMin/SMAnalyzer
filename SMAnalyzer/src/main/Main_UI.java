@@ -229,14 +229,14 @@ public class Main_UI extends JFrame {
                         //get group output data
                         ArrayList<CommentGroup> groups = Analyzer.groupComments();
                         //format into arrays for JTable constructor
-                        Object[][] tableData = new Object[groups.size()][3];
-                        Object[] columnNames = {"Group Keyword", "Number of Comments", "",};
+                        Object[][] tableData = new Object[groups.size()][4];
+                        Object[] columnNames = {"Group Keyword", "Number of Comments", ""," "};
                         int row = 0;
                         for (CommentGroup g : groups) {
                             tableData[row][0] = g.getKeyword();
                             tableData[row][1] = g.getComments().size();
                             tableData[row][2] = "More Info";
-                            //tableData[row][3] = "Add to blacklist";
+                            tableData[row][3] = "Add to blacklist";
                             row++;
                         }
                         //create and populate table
@@ -244,9 +244,9 @@ public class Main_UI extends JFrame {
                         outputTable.getColumn("").setCellRenderer(new ButtonRenderer());
                         outputTable.getColumn("").setCellEditor(
                                 new ButtonEditor(new JCheckBox(), groups));
-                       /* outputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
+                        outputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
                         outputTable.getColumn(" ").setCellEditor(
-                                new ButtonEditor(new JCheckBox(), groups));*/
+                                new ButtonEditor(new JCheckBox(), groups));
                         jsp = new JScrollPane(outputTable);
                         Dimension d = outputTable.getPreferredSize();
                         jsp.setPreferredSize(
@@ -509,7 +509,6 @@ public class Main_UI extends JFrame {
                 jd.add(dialogPanel);
                 jd.setLocation(650, 200);
                 jd.pack();
-                
                 jd.show();
             }
             isPushed = false;
