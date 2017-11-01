@@ -255,9 +255,11 @@ public class Main_UI extends JFrame {
                         layoutConstraints.gridy = 2;
                         Main_UI.this.add(jsp, layoutConstraints);
                         Main_UI.this.pack();
+                       
                         Main_UI.this.mainPanel.setCursor(null);
 
                         outputTable.setVisible(true);
+                         Main_UI.this.repaint();
                         clearButton.setVisible(true);
                     } catch (JSONException jse) {
                         JOptionPane.showMessageDialog(Main_UI.this, "Womp womp",
@@ -540,10 +542,6 @@ public class Main_UI extends JFrame {
             PieDataset dataset = createPieDataset();
 
             JFreeChart pieChart = createPieChart(dataset, chartTitle);
-            ChartPanel chartPanel = new ChartPanel(pieChart);
-            chartPanel.setPreferredSize(new Dimension(500, 300));
-            setContentPane(chartPanel);
-
             return pieChart;
         } else {
             return null;
