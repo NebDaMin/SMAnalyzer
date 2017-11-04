@@ -1,12 +1,18 @@
 package main;
 
 /**
- * TODO: have a secret coding party secretly implement youtube, twitter, and
- * reddit functionality laugh maniacally force a graph in a panel add pie
- * functionality add an option for different giraffes menus for days the menu is
- * MASSIVE wow fix that Save to file stuff Read from file stuff completely
- * rewrite the graph file to make it modular and not hard coded add more cheeky
- * message boxes maybe think about making the main ui file not so friggin big
+ * TODO: have a secret coding party 
+ * laugh maniacally 
+ * force a graph in a panel 
+ * add pie functionality 
+ * add an option for different giraffes 
+ * menus for days 
+ * Save to file stuff
+ * Read from file stuff completely
+ * rewrite the graph file to make it modular and not hard coded 
+ * add more cheeky
+ * message boxes 
+ * maybe think about making the main ui file not so friggin big
  * add a silly easter egg
  *
  */
@@ -39,6 +45,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
@@ -53,8 +60,10 @@ public class Main_UI extends JFrame {
     //UI vars
     private JPanel mainPanel;
     private JMenuBar menu;
-    private JMenu options, file;
+    private JMenu options, file, graphs;
     private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile;
+    private JRadioButtonMenuItem barGraph, pieGraph, threedPieGraph;
+    private ButtonGroup graphGroups;
     private JMenuItem loadFile;
     private JTable outputTable;
     private JButton openButton, urlButton, pasteButton, analyzeButton, clearButton;
@@ -85,7 +94,7 @@ public class Main_UI extends JFrame {
         outputTable = new JTable();
         jsp = new JScrollPane(outputTable);
         mainPanel = new JPanel();
-
+        
         //menu init
         menu = new JMenuBar();
 
@@ -97,7 +106,7 @@ public class Main_UI extends JFrame {
         saveFile = new JCheckBoxMenuItem("Save to File");
         file.add(saveFile);
         menu.add(file);
-
+        
         options = new JMenu("Options");
         options.setMnemonic('O');
         childCommentBox = new JCheckBoxMenuItem("Child Comments");
@@ -105,6 +114,21 @@ public class Main_UI extends JFrame {
         options.add(childCommentBox);
         options.add(blacklistIgnoreBox);
         menu.add(options);
+        
+        graphs = new JMenu("Graphs");
+        graphs.setMnemonic('G');
+        barGraph= new JRadioButtonMenuItem("Bar Graph");
+        pieGraph= new JRadioButtonMenuItem("Pie Graph");
+        threedPieGraph= new JRadioButtonMenuItem("3D Pie Graph");
+        graphGroups = new ButtonGroup();
+        graphGroups.add(barGraph);
+        graphGroups.add(pieGraph);
+        graphGroups.add(threedPieGraph);
+        barGraph.setSelected(true);
+        graphs.add(barGraph);
+        graphs.add(pieGraph);
+        graphs.add(threedPieGraph);
+        menu.add(graphs);
 
         this.setLayout(new GridBagLayout());
         layoutConstraints = new GridBagConstraints();
@@ -449,8 +473,11 @@ public class Main_UI extends JFrame {
                 JLabel rightPlaceHolder = new JLabel("Other output?");
                 rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
-
-                JFreeChart graph = Graph(1, "Groups and their percentages");
+                JFreeChart graph;
+                if(barGraph.isSelected())graph = Graph(0, "Groups and their percentages", false);
+                else if(pieGraph.isSelected()) graph = Graph(1, "Groups and their percentages", false);
+                else graph = Graph(1, "Groups and their percentages", true);
+           
                 ChartPanel chart = new ChartPanel(graph);
                 // graph.setHorizontalAlignment(SwingConstants.CENTER);
                 chart.setPreferredSize(new Dimension(600, 300));
@@ -527,7 +554,7 @@ public class Main_UI extends JFrame {
         }
     }
 
-    public JFreeChart Graph(int chartType, String chartTitle) {
+    public JFreeChart Graph(int chartType, String chartTitle, boolean threed) {
         if (chartType == BAR_CHART) {
             //title, categoryAxisLabel, valueAxisLabel, dataset, orientation, legend, tooltips, urls 
             JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(BAR_CHART), PlotOrientation.VERTICAL, true, true, false);
@@ -540,8 +567,8 @@ public class Main_UI extends JFrame {
             return barChart;
         } else if (chartType == PIE_CHART) {
             PieDataset dataset = createPieDataset();
-
-            JFreeChart pieChart = createPieChart(dataset, chartTitle);
+            
+            JFreeChart pieChart = createPieChart(dataset, chartTitle, threed);
             return pieChart;
         } else {
             return null;
@@ -588,11 +615,11 @@ public class Main_UI extends JFrame {
     }
 
     //uncomment 3D to get the 3D version
-    public JFreeChart createPieChart(PieDataset dataset, String title) {
-        JFreeChart chart = ChartFactory.createPieChart/*3D*/(title, dataset, true, true, false);
-
-        PiePlot/*3D*/ plot = (PiePlot/*3D*/) chart.getPlot();
-
+    public JFreeChart createPieChart(PieDataset dataset, String title, boolean threed) {
+        
+        if (threed){
+        JFreeChart chart = ChartFactory.createPieChart3D(title, dataset, true, true, false);
+        PiePlot3D plot = (PiePlot3D) chart.getPlot();
         //You can put different colors or comment these out to have the original colors
         plot.setSectionPaint("Positive", DARK_GREEN);
         plot.setSectionPaint("Neutral", DARK_MAGENTA);
@@ -603,6 +630,21 @@ public class Main_UI extends JFrame {
         plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
 
         return chart;
+        }
+        else {
+            JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
+        PiePlot plot = (PiePlot) chart.getPlot();
+        //You can put different colors or comment these out to have the original colors
+        plot.setSectionPaint("Positive", DARK_GREEN);
+        plot.setSectionPaint("Neutral", DARK_MAGENTA);
+        plot.setSectionPaint("Negative", Color.black);
+
+        plot.setStartAngle(0);
+        plot.setDirection(Rotation.CLOCKWISE);
+        plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
+
+        return chart;
+        }
     }
 
     public static void main(String args[]) throws IOException {
