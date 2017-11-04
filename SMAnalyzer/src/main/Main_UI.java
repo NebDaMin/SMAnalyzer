@@ -206,7 +206,6 @@ public class Main_UI extends JFrame {
                 outputTable.setVisible(false);
                 Main_UI.this.remove(jsp);
                 Main_UI.this.repaint();
-                //clearButton.setVisible(false);
                 Main_UI.this.pack();
             } else if (e.getSource() == analyzeButton) {
                 Analyzer.clearArray();
@@ -221,32 +220,11 @@ public class Main_UI extends JFrame {
                     Boolean child = childCommentBox.isSelected();
                     Boolean blacklist = blacklistIgnoreBox.isSelected();
                     Boolean file = saveFile.isSelected();
-                    if (file) {
-                        JFileChooser chooser = new JFileChooser();
-                        chooser.setCurrentDirectory(new File("."));
-                        int result = chooser.showSaveDialog(Main_UI.this);
-                        if (result == JFileChooser.APPROVE_OPTION) {
-                            File f = chooser.getSelectedFile();
-                            if (f.exists() == true) {
-                                int n = JOptionPane.showConfirmDialog(Main_UI.this,
-                                        "This file already exists. Would you like to overwrite this file?",
-                                        "Confirmation", JOptionPane.YES_NO_OPTION);
-                                if (n == JOptionPane.YES_OPTION) {
-                                    try {
-                                        out = new PrintWriter(new FileOutputStream(f, false));
-                                        out.close();
-                                    } catch (IOException ex) {
-                                        JOptionPane.showMessageDialog(Main_UI.this, "File could not be opened.",
-                                                "Get a better file", JOptionPane.INFORMATION_MESSAGE);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                   
                     if (stringMap.size() == 1) {
-                        FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child);
+                        FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child, file);
                     } else if (stringMap.size() == 3) {
-                        FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child);
+                        FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child, file);
                     }
                     try {
                         Analyzer.setComments(FBClient.getPostArray(), blacklist);
@@ -427,11 +405,8 @@ public class Main_UI extends JFrame {
     class ButtonEditor extends DefaultCellEditor {
 
         protected JButton button;
-
         private String label;
-
         private boolean isPushed;
-
         private ArrayList<CommentGroup> groups;
 
         public ButtonEditor(JCheckBox checkBox, ArrayList<CommentGroup> groups) {
@@ -557,7 +532,7 @@ public class Main_UI extends JFrame {
     public JFreeChart Graph(int chartType, String chartTitle, boolean threed) {
         if (chartType == BAR_CHART) {
             //title, categoryAxisLabel, valueAxisLabel, dataset, orientation, legend, tooltips, urls 
-            JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(BAR_CHART), PlotOrientation.VERTICAL, true, true, false);
+            JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(), PlotOrientation.VERTICAL, true, true, false);
             final CategoryPlot plot = barChart.getCategoryPlot();
             final BarRenderer renderer = (BarRenderer) plot.getRenderer();
 
@@ -576,7 +551,7 @@ public class Main_UI extends JFrame {
     }
 
     //values for bar chart
-    private CategoryDataset createBarDataset(int chartType) {
+    private CategoryDataset createBarDataset() {
 
         final String wordUno = "Uno";
         final String wordDos = "Dos";
