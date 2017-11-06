@@ -1,19 +1,11 @@
 package main;
 
 /**
- * TODO: have a secret coding party 
- * laugh maniacally 
- * force a graph in a panel 
- * add pie functionality 
- * add an option for different giraffes 
- * menus for days 
- * Save to file stuff
- * Read from file stuff completely
- * rewrite the graph file to make it modular and not hard coded 
- * add more cheeky
- * message boxes 
- * maybe think about making the main ui file not so friggin big
- * add a silly easter egg
+ * TODO: have a secret coding party laugh maniacally force a graph in a panel
+ * add pie functionality add an option for different giraffes menus for days
+ * Save to file stuff Read from file stuff completely rewrite the graph file to
+ * make it modular and not hard coded add more cheeky message boxes maybe think
+ * about making the main ui file not so friggin big add a silly easter egg
  *
  */
 import main.SMAnalyzer.CommentGroup;
@@ -94,7 +86,7 @@ public class Main_UI extends JFrame {
         outputTable = new JTable();
         jsp = new JScrollPane(outputTable);
         mainPanel = new JPanel();
-        
+
         //menu init
         menu = new JMenuBar();
 
@@ -106,7 +98,7 @@ public class Main_UI extends JFrame {
         saveFile = new JCheckBoxMenuItem("Save to File");
         file.add(saveFile);
         menu.add(file);
-        
+
         options = new JMenu("Options");
         options.setMnemonic('O');
         childCommentBox = new JCheckBoxMenuItem("Child Comments");
@@ -114,12 +106,12 @@ public class Main_UI extends JFrame {
         options.add(childCommentBox);
         options.add(blacklistIgnoreBox);
         menu.add(options);
-        
+
         graphs = new JMenu("Graphs");
         graphs.setMnemonic('G');
-        barGraph= new JRadioButtonMenuItem("Bar Graph");
-        pieGraph= new JRadioButtonMenuItem("Pie Graph");
-        threedPieGraph= new JRadioButtonMenuItem("3D Pie Graph");
+        barGraph = new JRadioButtonMenuItem("Bar Graph");
+        pieGraph = new JRadioButtonMenuItem("Pie Graph");
+        threedPieGraph = new JRadioButtonMenuItem("3D Pie Graph");
         graphGroups = new ButtonGroup();
         graphGroups.add(barGraph);
         graphGroups.add(pieGraph);
@@ -218,75 +210,17 @@ public class Main_UI extends JFrame {
                 } else {
                     HashMap<String, String> stringMap = parseUrl(urlString);
                     Boolean child = childCommentBox.isSelected();
-                    Boolean blacklist = blacklistIgnoreBox.isSelected();
+                    Boolean isBlacklistEnabled = !blacklistIgnoreBox.isSelected();
                     Boolean file = saveFile.isSelected();
-                   
+
                     if (stringMap.size() == 1) {
                         FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child, file);
                     } else if (stringMap.size() == 3) {
                         FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child, file);
                     }
-                    try {
-                        Analyzer.setComments(FBClient.getPostArray(), blacklist);
-                        //get group output data
-                        ArrayList<CommentGroup> groups = Analyzer.groupComments();
-                        //format into arrays for JTable constructor
-                        Object[][] tableData = new Object[groups.size()][4];
-                        Object[] columnNames = {"Group Keyword", "Number of Comments", ""," "};
-                        int row = 0;
-                        for (CommentGroup g : groups) {
-                            tableData[row][0] = g.getKeyword();
-                            tableData[row][1] = g.getComments().size();
-                            tableData[row][2] = "More Info";
-                            tableData[row][3] = "Add to blacklist";
-                            row++;
-                        }
-                        //create and populate table
-                        outputTable = new JTable(tableData, columnNames);
-                        outputTable.getColumn("").setCellRenderer(new ButtonRenderer());
-                        outputTable.getColumn("").setCellEditor(
-                                new ButtonEditor(new JCheckBox(), groups));
-                        outputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
-                        outputTable.getColumn(" ").setCellEditor(
-                                new ButtonEditor(new JCheckBox(), groups));
-                        jsp = new JScrollPane(outputTable);
-                        Dimension d = outputTable.getPreferredSize();
-                        jsp.setPreferredSize(
-                                new Dimension(d.width, outputTable.getRowHeight() * row + 1));
-                        layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
-                        layoutConstraints.gridy = 2;
-                        Main_UI.this.add(jsp, layoutConstraints);
-                        Main_UI.this.pack();
-                       
-                        Main_UI.this.mainPanel.setCursor(null);
 
-                        outputTable.setVisible(true);
-                         Main_UI.this.repaint();
-                        clearButton.setVisible(true);
-                    } catch (JSONException jse) {
-                        JOptionPane.showMessageDialog(Main_UI.this, "Womp womp",
-                                "That page doesn't even exist. Maybe try proofreading next time", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (ArrayIndexOutOfBoundsException aioobe) {
-                        JOptionPane.showMessageDialog(Main_UI.this, "Your array can't count that high",
-                                "You pushed it too hard", JOptionPane.INFORMATION_MESSAGE);
-                        System.out.println(aioobe);
-                    } catch (IndexOutOfBoundsException ioobe) {
-                        //this one I've seen but shouldn't ever happen if the code is working
-                        JOptionPane.showMessageDialog(Main_UI.this, "Somewhere in the universe, an index is out of bounds",
-                                "Wow you broke it great job", JOptionPane.INFORMATION_MESSAGE);
-                        System.out.println(ioobe);
-                    } catch (IOException ioe) {
-                        //this thing has to be thrown for the analyzer code
-                        JOptionPane.showMessageDialog(Main_UI.this, "You tried to access a file and it didn't work",
-                                "Your files suck", JOptionPane.INFORMATION_MESSAGE);
-                        System.out.println(ioe);
-                    } catch (NullPointerException npe) {
-                        //the facebook stuff usually gives this error if bad happens
-                        System.out.println(npe);
-                    } catch (Exception ex) {
-                        System.out.println(ex);
-                        JOptionPane.showMessageDialog(null, "Something Broke", "You broke it so bad that I don't even know what broke", JOptionPane.ERROR_MESSAGE);
-                    }
+                    //action handling moved down to method for reuse
+                    analyzeAndDisplay(isBlacklistEnabled);
                 }
             } else {
                 JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
@@ -382,6 +316,71 @@ public class Main_UI extends JFrame {
         return map;
     }
 
+    void analyzeAndDisplay(Boolean isBlacklistEnabled) {
+        try {
+            Analyzer.setComments(FBClient.getPostArray(), isBlacklistEnabled);
+            //get group output data
+            ArrayList<CommentGroup> groups = Analyzer.groupComments();
+            //format into arrays for JTable constructor
+            Object[][] tableData = new Object[groups.size()][4];
+            Object[] columnNames = {"Group Keyword", "Number of Comments", "", " "};
+            int row = 0;
+            for (CommentGroup g : groups) {
+                tableData[row][0] = g.getKeyword();
+                tableData[row][1] = g.getComments().size();
+                tableData[row][2] = "More Info";
+                tableData[row][3] = "Add to blacklist";
+                row++;
+            }
+            //create and populate table
+            outputTable = new JTable(tableData, columnNames);
+            JButton infoButton = new JButton("More Info");
+            JButton blacklistButton = new JButton("Add to Blacklist");
+            outputTable.getColumn("").setCellRenderer(new ButtonRenderer());
+            outputTable.getColumn("").setCellEditor(
+                    new ButtonEditor(new JCheckBox(), groups, infoButton));
+            outputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
+            outputTable.getColumn(" ").setCellEditor(
+                    new ButtonEditor(new JCheckBox(), groups, blacklistButton));
+            jsp = new JScrollPane(outputTable);
+            Dimension d = outputTable.getPreferredSize();
+            jsp.setPreferredSize(new Dimension(500, 200));
+            layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+            layoutConstraints.gridy = 2;
+            Main_UI.this.add(jsp, layoutConstraints);
+            Main_UI.this.pack();
+
+            Main_UI.this.mainPanel.setCursor(null);
+
+            outputTable.setVisible(true);
+            Main_UI.this.repaint();
+            clearButton.setVisible(true);
+        } catch (JSONException jse) {
+            JOptionPane.showMessageDialog(Main_UI.this, "Womp womp",
+                    "That page doesn't even exist. Maybe try proofreading next time", JOptionPane.INFORMATION_MESSAGE);
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            JOptionPane.showMessageDialog(Main_UI.this, "Your array can't count that high",
+                    "You pushed it too hard", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println(aioobe);
+        } catch (IndexOutOfBoundsException ioobe) {
+            //this one I've seen but shouldn't ever happen if the code is working
+            JOptionPane.showMessageDialog(Main_UI.this, "Somewhere in the universe, an index is out of bounds",
+                    "Wow you broke it great job", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println(ioobe);
+        } catch (IOException ioe) {
+            //this thing has to be thrown for the analyzer code
+            JOptionPane.showMessageDialog(Main_UI.this, "You tried to access a file and it didn't work",
+                    "Your files suck", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println(ioe);
+        } catch (NullPointerException npe) {
+            //the facebook stuff usually gives this error if bad happens
+            System.out.println(npe);
+        } catch (Exception ex) {
+            System.out.println(ex);
+            JOptionPane.showMessageDialog(null, "Something Broke", "You broke it so bad that I don't even know what broke", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer() {
@@ -409,10 +408,10 @@ public class Main_UI extends JFrame {
         private boolean isPushed;
         private ArrayList<CommentGroup> groups;
 
-        public ButtonEditor(JCheckBox checkBox, ArrayList<CommentGroup> groups) {
+        public ButtonEditor(JCheckBox checkBox, ArrayList<CommentGroup> groups, JButton aButton) {
             super(checkBox);
             this.groups = groups;
-            button = new JButton();
+            button = aButton;
             button.setOpaque(true);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -437,7 +436,7 @@ public class Main_UI extends JFrame {
         }
 
         public Object getCellEditorValue() {
-            if (isPushed) {
+            if (isPushed && label.equals("More Info")) {
                 // 
                 // action handling for more info button
                 JPanel dialogPanel = new JPanel();
@@ -449,10 +448,14 @@ public class Main_UI extends JFrame {
                 rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
                 JFreeChart graph;
-                if(barGraph.isSelected())graph = Graph(0, "Groups and their percentages", false);
-                else if(pieGraph.isSelected()) graph = Graph(1, "Groups and their percentages", false);
-                else graph = Graph(1, "Groups and their percentages", true);
-           
+                if (barGraph.isSelected()) {
+                    graph = Graph(0, "Groups and their percentages", false);
+                } else if (pieGraph.isSelected()) {
+                    graph = Graph(1, "Groups and their percentages", false);
+                } else {
+                    graph = Graph(1, "Groups and their percentages", true);
+                }
+
                 ChartPanel chart = new ChartPanel(graph);
                 // graph.setHorizontalAlignment(SwingConstants.CENTER);
                 chart.setPreferredSize(new Dimension(600, 300));
@@ -477,9 +480,8 @@ public class Main_UI extends JFrame {
                 JTextPane commentList = new JTextPane();
                 commentList.setText(outputString);
                 commentList.setEditable(false);
+                
                 //Code to display instances of the keyword in bold
-                //work in progress
-
                 SimpleAttributeSet sas = new SimpleAttributeSet();
                 StyleConstants.setBold(sas, true);
 
@@ -514,6 +516,16 @@ public class Main_UI extends JFrame {
                 jd.setLocation(650, 200);
                 jd.pack();
                 jd.show();
+            } else if (isPushed && label.equals("Add to blacklist")) {
+                try {
+                    Analyzer.addToBlacklist(groups.get(Main_UI.this.outputTable.getSelectedRow()).getKeyword());
+                    Analyzer.clearArray();
+                    Main_UI.this.remove(jsp);
+                    analyzeAndDisplay(true);
+                } catch (IOException ioe) {
+                    JOptionPane.showMessageDialog(Main_UI.this, "File not found",
+                            "You done messed up the temp blacklist path", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
             isPushed = false;
             return new String(label);
@@ -542,7 +554,7 @@ public class Main_UI extends JFrame {
             return barChart;
         } else if (chartType == PIE_CHART) {
             PieDataset dataset = createPieDataset();
-            
+
             JFreeChart pieChart = createPieChart(dataset, chartTitle, threed);
             return pieChart;
         } else {
@@ -591,34 +603,33 @@ public class Main_UI extends JFrame {
 
     //uncomment 3D to get the 3D version
     public JFreeChart createPieChart(PieDataset dataset, String title, boolean threed) {
-        
-        if (threed){
-        JFreeChart chart = ChartFactory.createPieChart3D(title, dataset, true, true, false);
-        PiePlot3D plot = (PiePlot3D) chart.getPlot();
-        //You can put different colors or comment these out to have the original colors
-        plot.setSectionPaint("Positive", DARK_GREEN);
-        plot.setSectionPaint("Neutral", DARK_MAGENTA);
-        plot.setSectionPaint("Negative", Color.black);
 
-        plot.setStartAngle(0);
-        plot.setDirection(Rotation.CLOCKWISE);
-        plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
+        if (threed) {
+            JFreeChart chart = ChartFactory.createPieChart3D(title, dataset, true, true, false);
+            PiePlot3D plot = (PiePlot3D) chart.getPlot();
+            //You can put different colors or comment these out to have the original colors
+            plot.setSectionPaint("Positive", DARK_GREEN);
+            plot.setSectionPaint("Neutral", DARK_MAGENTA);
+            plot.setSectionPaint("Negative", Color.black);
 
-        return chart;
-        }
-        else {
+            plot.setStartAngle(0);
+            plot.setDirection(Rotation.CLOCKWISE);
+            plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
+
+            return chart;
+        } else {
             JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
-        PiePlot plot = (PiePlot) chart.getPlot();
-        //You can put different colors or comment these out to have the original colors
-        plot.setSectionPaint("Positive", DARK_GREEN);
-        plot.setSectionPaint("Neutral", DARK_MAGENTA);
-        plot.setSectionPaint("Negative", Color.black);
+            PiePlot plot = (PiePlot) chart.getPlot();
+            //You can put different colors or comment these out to have the original colors
+            plot.setSectionPaint("Positive", DARK_GREEN);
+            plot.setSectionPaint("Neutral", DARK_MAGENTA);
+            plot.setSectionPaint("Negative", Color.black);
 
-        plot.setStartAngle(0);
-        plot.setDirection(Rotation.CLOCKWISE);
-        plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
+            plot.setStartAngle(0);
+            plot.setDirection(Rotation.CLOCKWISE);
+            plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
 
-        return chart;
+            return chart;
         }
     }
 
