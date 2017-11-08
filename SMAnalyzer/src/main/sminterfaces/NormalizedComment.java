@@ -16,7 +16,8 @@ public class NormalizedComment {
             this.id = fb.getString("id");
             this.message = fb.getString("message");
             this.created_time = fb.getString("created_time").replace("+0000", "").replace("T", " ");
-            this.shares = fb.getJSONObject("shares").getString("count");
+            if(fb.has("shares")){ this.shares = fb.getJSONObject("shares").getString("count"); }
+            else { this.shares = "0"; }
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
