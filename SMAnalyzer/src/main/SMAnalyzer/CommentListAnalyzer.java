@@ -23,7 +23,6 @@ public class CommentListAnalyzer {
     private ArrayList<WordInstance> AllUniqueWordsFiltered;
     private ArrayList<WordInstance> BlackList;
     private ArrayList<WordInstance> TempBlacklist;
-    //I am leveraging our WordInstance class to associate a number value with each word.
     //This number will be encoded into the text file from which we read all words we want to define as positive or negative.
     private ArrayList<WordInstance> PositivityWords;
     private ArrayList<CommentGroup> Groups;
@@ -152,7 +151,7 @@ public class CommentListAnalyzer {
                 }
             }
         }
-
+        
         for(int k = 0; k < Groups.size();k++) {
             if(Groups.get(k).getComments().size() < 1) {
                 Groups.remove(k);

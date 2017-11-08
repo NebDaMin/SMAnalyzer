@@ -1,13 +1,11 @@
 package main;
 
 /**
- * TODO: have a secret coding party secretly implement youtube, twitter, and
- * reddit functionality laugh maniacally force a graph in a panel add pie
- * functionality add an option for different giraffes menus for days the menu is
- * MASSIVE wow fix that Save to file stuff Read from file stuff completely
- * rewrite the graph file to make it modular and not hard coded add more cheeky
- * message boxes maybe think about making the main ui file not so friggin big
- * add a silly easter egg
+ * TODO: have a secret coding party laugh maniacally force a graph in a panel
+ * add pie functionality add an option for different giraffes menus for days
+ * Save to file stuff Read from file stuff completely rewrite the graph file to
+ * make it modular and not hard coded add more cheeky message boxes maybe think
+ * about making the main ui file not so friggin big add a silly easter egg
  *
  */
 import main.SMAnalyzer.CommentGroup;
@@ -459,7 +457,7 @@ public class Main_UI extends JFrame {
 
         public Object getCellEditorValue() {
             if (isPushed && label.equals("More Info")) {
-                //
+
                 // action handling for more info button
                 JPanel dialogPanel = new JPanel();
                 dialogPanel.setLayout(new GridLayout(2, 1));
@@ -565,7 +563,7 @@ public class Main_UI extends JFrame {
 
     public JFreeChart Graph(int chartType, String chartTitle, boolean threed) {
         if (chartType == BAR_CHART) {
-            //title, categoryAxisLabel, valueAxisLabel, dataset, orientation, legend, tooltips, urls
+
             JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(), PlotOrientation.VERTICAL, true, true, false);
             final CategoryPlot plot = barChart.getCategoryPlot();
             final BarRenderer renderer = (BarRenderer) plot.getRenderer();
@@ -636,6 +634,7 @@ public class Main_UI extends JFrame {
             plot.setDirection(Rotation.CLOCKWISE);
             plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1
 
+
             return chart;
         } else {
             JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
@@ -648,6 +647,7 @@ public class Main_UI extends JFrame {
             plot.setStartAngle(0);
             plot.setDirection(Rotation.CLOCKWISE);
             plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1
+
 
             return chart;
         }
