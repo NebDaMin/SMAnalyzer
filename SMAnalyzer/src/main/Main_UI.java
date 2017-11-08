@@ -306,7 +306,6 @@ public class Main_UI extends JFrame {
         } else if (array.length == 3) {
             map.put("Page Type", array[0]);
             map.put("Id", array[1]);
-
         } else {
             JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
                     "Uh...", JOptionPane.INFORMATION_MESSAGE);
@@ -597,7 +596,6 @@ public class Main_UI extends JFrame {
         final String neg = "Negative";
 
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
         dataset.addValue(15, neg, wordUno);
         dataset.addValue(22, neu, wordUno);
         dataset.addValue(66, pos, wordUno);
@@ -605,7 +603,6 @@ public class Main_UI extends JFrame {
         dataset.addValue(75, neg, wordDos);
         dataset.addValue(11, neu, wordDos);
         dataset.addValue(20, pos, wordDos);
-
         dataset.addValue(5, neg, wordTres);
         dataset.addValue(15, neu, wordTres);
         dataset.addValue(88, pos, wordTres);
