@@ -1,12 +1,22 @@
 package main;
 
 /**
- * TODO: have a secret coding party laugh maniacally force a graph in a panel
- * add pie functionality add an option for different giraffes menus for days
- * Save to file stuff Read from file stuff completely rewrite the graph file to
- * make it modular and not hard coded add more cheeky message boxes maybe think
- * about making the main ui file not so friggin big add a silly easter egg
- *
+ * TODO:
+ * put giraffes in own class
+ * put the table in own class and turn them
+ * destroy Matteo for consistently de-formatting my todo list
+ * make giraffes modular
+ * aight imports don't have to be that big you guys jesus
+ * clean all the things
+ * sweep everything under the rug
+ * put the rug in the closet
+ * burn the closet
+ * SMANALYZE
+ * SMadd the SMeaster SMegg
+ * SMmore SMaction SMhandling
+ * SMprovide SMadditional SMsupport to SMteamates
+ * SMstart the SMrobot SMsingularity
+ * SMcomplete SManalysis
  */
 import main.SMAnalyzer.CommentGroup;
 import main.SMAnalyzer.CommentListAnalyzer;
@@ -47,7 +57,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;
-import org.json.JSONException;
+
 
 public class Main_UI extends JFrame {
 
@@ -56,7 +66,7 @@ public class Main_UI extends JFrame {
     private JMenuBar menu;
     private JMenu options, file, graphs;
     private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile;
-    private JRadioButtonMenuItem barGraph, pieGraph, threedPieGraph;
+    private JRadioButtonMenuItem barGraph, pieGraph, threeDPieGraph;
     private ButtonGroup graphGroups;
     private JMenuItem loadFile;
     private JTable outputTable;
@@ -116,15 +126,15 @@ public class Main_UI extends JFrame {
         graphs.setMnemonic('G');
         barGraph = new JRadioButtonMenuItem("Bar Graph");
         pieGraph = new JRadioButtonMenuItem("Pie Graph");
-        threedPieGraph = new JRadioButtonMenuItem("3D Pie Graph");
+        threeDPieGraph = new JRadioButtonMenuItem("3D Pie Graph");
         graphGroups = new ButtonGroup();
         graphGroups.add(barGraph);
         graphGroups.add(pieGraph);
-        graphGroups.add(threedPieGraph);
+        graphGroups.add(threeDPieGraph);
         barGraph.setSelected(true);
         graphs.add(barGraph);
         graphs.add(pieGraph);
-        graphs.add(threedPieGraph);
+        graphs.add(threeDPieGraph);
         menu.add(graphs);
 
         this.setLayout(new GridBagLayout());
@@ -375,9 +385,7 @@ public class Main_UI extends JFrame {
             outputTable.setVisible(true);
             Main_UI.this.repaint();
             clearButton.setVisible(true);
-        } catch (JSONException jse) {
-            JOptionPane.showMessageDialog(Main_UI.this, "Womp womp",
-                    "That page doesn't even exist. Maybe try proofreading next time", JOptionPane.INFORMATION_MESSAGE);
+        
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             JOptionPane.showMessageDialog(Main_UI.this, "Your array can't count that high",
                     "You pushed it too hard", JOptionPane.INFORMATION_MESSAGE);
@@ -468,12 +476,13 @@ public class Main_UI extends JFrame {
                 rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
                 JFreeChart graph;
+                GraphInstance g = new GraphInstance();
                 if (barGraph.isSelected()) {
-                    graph = Graph(0, "Groups and their percentages", false);
+                   graph = g.Graph(0, "Groups and their percentages", false);
                 } else if (pieGraph.isSelected()) {
-                    graph = Graph(1, "Groups and their percentages", false);
+                    graph = g.Graph(1, "Groups and their percentages", false);
                 } else {
-                    graph = Graph(1, "Groups and their percentages", true);
+                    graph = g.Graph(1, "Groups and their percentages", true);
                 }
 
                 ChartPanel chart = new ChartPanel(graph);
@@ -560,99 +569,6 @@ public class Main_UI extends JFrame {
             super.fireEditingStopped();
         }
     }
-
-    public JFreeChart Graph(int chartType, String chartTitle, boolean threed) {
-        if (chartType == BAR_CHART) {
-
-            JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(), PlotOrientation.VERTICAL, true, true, false);
-            final CategoryPlot plot = barChart.getCategoryPlot();
-            final BarRenderer renderer = (BarRenderer) plot.getRenderer();
-
-            renderer.setSeriesPaint(0, Color.black);
-            renderer.setSeriesPaint(1, Color.magenta);
-            renderer.setSeriesPaint(2, Color.cyan);
-            return barChart;
-        } else if (chartType == PIE_CHART) {
-            PieDataset dataset = createPieDataset();
-
-            JFreeChart pieChart = createPieChart(dataset, chartTitle, threed);
-            return pieChart;
-        } else {
-            return null;
-        }
-    }
-
-    //values for bar chart
-    private CategoryDataset createBarDataset() {
-
-        final String wordUno = "Uno";
-        final String wordDos = "Dos";
-        final String wordTres = "Tres";
-
-        final String pos = "Positive";
-        final String neu = "Neutral";
-        final String neg = "Negative";
-
-        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(15, neg, wordUno);
-        dataset.addValue(22, neu, wordUno);
-        dataset.addValue(66, pos, wordUno);
-
-        dataset.addValue(75, neg, wordDos);
-        dataset.addValue(11, neu, wordDos);
-        dataset.addValue(20, pos, wordDos);
-        dataset.addValue(5, neg, wordTres);
-        dataset.addValue(15, neu, wordTres);
-        dataset.addValue(88, pos, wordTres);
-
-        return dataset;
-    }
-
-    //values for pie graph
-    public PieDataset createPieDataset() {
-        DefaultPieDataset result = new DefaultPieDataset();
-
-        result.setValue("Positive", 33);
-        result.setValue("Neutral", 22);
-        result.setValue("Negative", 45);
-
-        return result;
-    }
-
-    //uncomment 3D to get the 3D version
-    public JFreeChart createPieChart(PieDataset dataset, String title, boolean threed) {
-
-        if (threed) {
-            JFreeChart chart = ChartFactory.createPieChart3D(title, dataset, true, true, false);
-            PiePlot3D plot = (PiePlot3D) chart.getPlot();
-            //You can put different colors or comment these out to have the original colors
-            plot.setSectionPaint("Positive", DARK_GREEN);
-            plot.setSectionPaint("Neutral", DARK_MAGENTA);
-            plot.setSectionPaint("Negative", Color.black);
-
-            plot.setStartAngle(0);
-            plot.setDirection(Rotation.CLOCKWISE);
-            plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1
-
-
-            return chart;
-        } else {
-            JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
-            PiePlot plot = (PiePlot) chart.getPlot();
-            //You can put different colors or comment these out to have the original colors
-            plot.setSectionPaint("Positive", DARK_GREEN);
-            plot.setSectionPaint("Neutral", DARK_MAGENTA);
-            plot.setSectionPaint("Negative", Color.black);
-
-            plot.setStartAngle(0);
-            plot.setDirection(Rotation.CLOCKWISE);
-            plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1
-
-
-            return chart;
-        }
-    }
-
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }

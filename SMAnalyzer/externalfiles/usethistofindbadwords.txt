@@ -1,13 +1,3 @@
-
-toilet                                   : 6
-correct                                   : 6
-locking                                   : 6
-color                                   : 6
-powerful                                   : 6
-short                                   : 6
-task                                   : 6
-darkness                                   : 6
-neck                                   : 6
 simply                                   : 6
 accept                                   : 6
 politician                                   : 6
@@ -19,12 +9,10 @@ surrender                                   : 6
 nbc                                   : 6
 campaigns                                   : 6
 youve                                   : 6
-previous                                   : 6
 changes                                   : 6
 dumb                                   : 6
 blind                                   : 6
 nfl                                   : 6
-games                                   : 6
 christian                                   : 6
 wanted                                   : 6
 request                                   : 6
