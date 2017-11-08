@@ -1,6 +1,6 @@
-package main.fbinterface;
+package main.sminterfaces;
 
-import fbapi.*;
+import smsdk.*;
 import java.util.*;
 import org.json.*;
 

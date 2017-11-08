@@ -23,7 +23,7 @@ public class CommentInstance implements Comparable<CommentInstance> {
     public CommentInstance(String inputString, String time, GenericSpellDictionary dictionary, ArrayList<WordInstance> positivityWordList) throws IOException {
         //Initialize Variables
         CommentRaw = inputString;
-        CommentTime = time.replace("+0000", "").replace("T", " "); //The raw version of time is a little messy. End format is "yyyy-MM-dd HH:mm:ss"
+        CommentTime = time; 
         CommentCharList = new ArrayList<>();
         UniqueWordList = new ArrayList<>();
 

@@ -29,7 +29,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import main.fbinterface.FBClient;
+import main.sminterfaces.FBClient;
+import main.sminterfaces.YTClient;
+import main.sminterfaces.TwitterClient;
 import static org.jfree.chart.ChartColor.DARK_GREEN;
 import static org.jfree.chart.ChartColor.DARK_MAGENTA;
 import org.jfree.chart.ChartFactory;
@@ -66,6 +68,9 @@ public class Main_UI extends JFrame {
     public final int PIE_CHART = 1;
     //restFB vars
     private FBClient FBClient;
+    private YTClient YTClient;
+    private TwitterClient TwitterClient;
+    private String Site;
 
     //HumanDataAnalysisProject
     private CommentListAnalyzer Analyzer;
@@ -129,6 +134,8 @@ public class Main_UI extends JFrame {
         this.add(menu, layoutConstraints);
 
         FBClient = new FBClient();
+        YTClient = new YTClient();
+        //TwitterClient = new TwitterClient();
         Analyzer = new CommentListAnalyzer();
 
         outputTable.setVisible(false);
@@ -202,6 +209,8 @@ public class Main_UI extends JFrame {
             } else if (e.getSource() == analyzeButton) {
                 Analyzer.clearArray();
                 FBClient.clearArray();
+                YTClient.clearArray();
+                //TwitterClient.clearArray();
                 String urlString = urlText.getText();
                 Main_UI.this.mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -213,10 +222,16 @@ public class Main_UI extends JFrame {
                     Boolean isBlacklistEnabled = !blacklistIgnoreBox.isSelected();
                     Boolean file = saveFile.isSelected();
 
-                    if (stringMap.size() == 1) {
-                        FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child, file);
-                    } else if (stringMap.size() == 3) {
-                        FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child, file);
+                    if (Site.equals("facebook")) {
+                        if (stringMap.size() == 1) {
+                            FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child, file);
+                        } else if (stringMap.size() == 3) {
+                            FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child, file);
+                        }
+                    } else if (Site.equals("youtube")) {
+                        YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"));
+                    } else if (Site.equals("twitter")) {
+                        //TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
 
                     //action handling moved down to method for reuse
@@ -230,19 +245,20 @@ public class Main_UI extends JFrame {
     }
 
     public HashMap<String, String> parseUrl(String s) {
-
         if (s.contains("facebook.com")) {
+            setSite("facebook");
             return parseFacebookUrl(s);
         } else if (s.contains("youtube.com")) {
+            setSite("youtube");
             return parseYoutubeUrl(s);
         } else if (s.contains("twitter.com")) {
+            setSite("twitter");
             return parseTwitterUrl(s);
         } else {
             JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
-                    "We only do facebook or youtube", JOptionPane.INFORMATION_MESSAGE);
+                    "We only do facebook, youtube, or twitter", JOptionPane.INFORMATION_MESSAGE);
             return null;
         }
-
     }
 
     HashMap<String, String> parseFacebookUrl(String s) {
@@ -279,15 +295,15 @@ public class Main_UI extends JFrame {
         String[] array = sub.split("/");
         HashMap<String, String> map = new HashMap<String, String>();
         if (array.length == 1) {
-            array[0].replace("watch?v=", "");
-            map.put("Video Id", array[0]);
+            map.put("Page Type", "video");
+            array[0] = array[0].replace("watch?v=", "");
+            map.put("Id", array[0]);
         } else if (array.length == 2) {
             map.put("Page Type", array[0]);
-            map.put("Channel Id", array[1]);
+            map.put("Id", array[1]);
         } else if (array.length == 3) {
             map.put("Page Type", array[0]);
-            map.put("Username", array[1]);
-
+            map.put("Id", array[1]);
         } else {
             JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
                     "Uh...", JOptionPane.INFORMATION_MESSAGE);
@@ -314,6 +330,10 @@ public class Main_UI extends JFrame {
             return null;
         }
         return map;
+    }
+
+    public void setSite(String site) {
+        this.Site = site;
     }
 
     void analyzeAndDisplay(Boolean isBlacklistEnabled) {
@@ -437,7 +457,7 @@ public class Main_UI extends JFrame {
 
         public Object getCellEditorValue() {
             if (isPushed && label.equals("More Info")) {
-                // 
+
                 // action handling for more info button
                 JPanel dialogPanel = new JPanel();
                 dialogPanel.setLayout(new GridLayout(2, 1));
@@ -480,7 +500,7 @@ public class Main_UI extends JFrame {
                 JTextPane commentList = new JTextPane();
                 commentList.setText(outputString);
                 commentList.setEditable(false);
-                
+
                 //Code to display instances of the keyword in bold
                 SimpleAttributeSet sas = new SimpleAttributeSet();
                 StyleConstants.setBold(sas, true);
@@ -543,7 +563,7 @@ public class Main_UI extends JFrame {
 
     public JFreeChart Graph(int chartType, String chartTitle, boolean threed) {
         if (chartType == BAR_CHART) {
-            //title, categoryAxisLabel, valueAxisLabel, dataset, orientation, legend, tooltips, urls 
+
             JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(), PlotOrientation.VERTICAL, true, true, false);
             final CategoryPlot plot = barChart.getCategoryPlot();
             final BarRenderer renderer = (BarRenderer) plot.getRenderer();
@@ -574,7 +594,6 @@ public class Main_UI extends JFrame {
         final String neg = "Negative";
 
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
         dataset.addValue(15, neg, wordUno);
         dataset.addValue(22, neu, wordUno);
         dataset.addValue(66, pos, wordUno);
@@ -582,7 +601,6 @@ public class Main_UI extends JFrame {
         dataset.addValue(75, neg, wordDos);
         dataset.addValue(11, neu, wordDos);
         dataset.addValue(20, pos, wordDos);
-
         dataset.addValue(5, neg, wordTres);
         dataset.addValue(15, neu, wordTres);
         dataset.addValue(88, pos, wordTres);
@@ -614,7 +632,8 @@ public class Main_UI extends JFrame {
 
             plot.setStartAngle(0);
             plot.setDirection(Rotation.CLOCKWISE);
-            plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
+            plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1
+
 
             return chart;
         } else {
@@ -627,7 +646,8 @@ public class Main_UI extends JFrame {
 
             plot.setStartAngle(0);
             plot.setDirection(Rotation.CLOCKWISE);
-            plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1  
+            plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1
+
 
             return chart;
         }
@@ -636,5 +656,4 @@ public class Main_UI extends JFrame {
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }
-
 }
