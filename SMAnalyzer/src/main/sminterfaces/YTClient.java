@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import smsdk.*;
 
@@ -36,12 +37,28 @@ public class YTClient {
         ArrayList<JSONObject> commentsList = ytClient.convertJsonItemsToList(comments);
         for (JSONObject comment : commentsList) {
             NormalizedComment normComment = new NormalizedComment();
-            normComment.setFromYoutube(comment);            
-            PostArrayList.add(normComment);
-            System.out.println("Comment id: " + comment.getString("id"));
-            System.out.println("Message: " + comment.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("textDisplay"));
-            System.out.println("Created on: " + comment.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("publishedAt"));
-            System.out.println();
+            normComment.setFromFacebook(comment);
+            System.out.println("Parent Comment: " + comment.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("textOriginal") + "\r\n");
+            if (comment.has("replies")) {
+                try {
+                    ArrayList<JSONObject> replies = new ArrayList<JSONObject>();
+                    for (int i = 0; i < comment.getJSONObject("replies").getJSONArray("comments").length(); i++) {
+                        replies.add(Utility.parseJson(comment.getJSONObject("replies").getJSONArray("comments").get(i).toString()));
+                    }
+
+                    for (JSONObject reply : replies) {
+                        System.out.print("   | ");
+                        System.out.print("\r\n    -> ");
+                        System.out.println(reply.getJSONObject("snippet").getString("textOriginal"));
+                    }
+
+                    System.out.println();
+                } catch (JSONException jex) {
+                    System.out.println(jex);
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }
         }
     }
 

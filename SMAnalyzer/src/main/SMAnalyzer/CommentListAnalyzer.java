@@ -1,8 +1,11 @@
 package main.SMAnalyzer;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import main.sminterfaces.NormalizedComment;
@@ -19,7 +22,8 @@ public class CommentListAnalyzer {
     private ArrayList<WordInstance> AllUniqueWords;
     private ArrayList<WordInstance> AllUniqueWordsFiltered;
     private ArrayList<WordInstance> BlackList;
-    //I am leveraging our WordInstance class to associate a number value with each word. 
+    private ArrayList<WordInstance> TempBlacklist;
+    //I am leveraging our WordInstance class to associate a number value with each word.
     //This number will be encoded into the text file from which we read all words we want to define as positive or negative.
     private ArrayList<WordInstance> PositivityWords;
     private ArrayList<CommentGroup> Groups;
@@ -32,6 +36,7 @@ public class CommentListAnalyzer {
         AllUniqueWords = new ArrayList();
         AllUniqueWordsFiltered = new ArrayList();
         BlackList = new ArrayList();
+        TempBlacklist = new ArrayList();
         PositivityWords = new ArrayList();
         Groups = new ArrayList();
 
@@ -42,16 +47,16 @@ public class CommentListAnalyzer {
         while ((sCurrentLine = br.readLine()) != null) {
             BlackList.add(new WordInstance(sCurrentLine));
         }
-        
+
         //Import words and values into PositivityWords
         br = new BufferedReader(new FileReader(POSITIVITYWORDSPATH));
         while ((sCurrentLine = br.readLine()) != null) {
             //This might be a cheap solution for now, basically we just need to add a 1 or -1 the line after each word in this file
-            PositivityWords.add(new WordInstance(sCurrentLine,Integer.parseInt(br.readLine())));
+            PositivityWords.add(new WordInstance(sCurrentLine, Integer.parseInt(br.readLine())));
         }
     }
 
-    public void setComments(ArrayList<NormalizedComment> post, boolean noBlacklist) throws IOException {
+    public void setComments(ArrayList<NormalizedComment> post, boolean isBlacklistEnabled) throws IOException {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
             CommentInstance currentInstance = new CommentInstance(post.get(x).getMessage(), post.get(x).getTime(), Dictionary.getDictionaryInstance(),PositivityWords);
@@ -75,8 +80,8 @@ public class CommentListAnalyzer {
                         break;
                     }
                 }
-                if (wasIncremented) {  }
-                else {
+                if (wasIncremented) {
+                } else {
                     allUniqueWords.add(AllComments.get(x).getUniqueWordList().get(y));
                 }
             }
@@ -85,8 +90,8 @@ public class CommentListAnalyzer {
         Collections.sort(AllUniqueWords);
 
         //Call Method to filter out the crap if ignore blacklist is not selected
-        AllUniqueWordsFiltered = noBlacklist ? 
-                AllUniqueWords : filterMeaninglessWords(AllUniqueWords);
+        AllUniqueWordsFiltered = isBlacklistEnabled
+                ? filterMeaninglessWords(AllUniqueWords) : AllUniqueWords ;
         System.out.println(AllUniqueWordsFiltered);
     }
 
@@ -94,6 +99,13 @@ public class CommentListAnalyzer {
         for (int x = 0; x < input.size(); x++) {
             for (int y = 0; y < BlackList.size(); y++) {
                 if (BlackList.get(y).getWord().equals(input.get(x).getWord())) {
+                    input.remove(x);
+                    x--;
+                    break;
+                }
+            }
+            for (int z = 0; z < TempBlacklist.size(); z++) {
+                if (TempBlacklist.get(z).getWord().equals(input.get(x).getWord())) {
                     input.remove(x);
                     x--;
                     break;
@@ -108,7 +120,7 @@ public class CommentListAnalyzer {
         String keyword = "";
         //set targetIndex equal to last element in list
         targetIndex = AllUniqueWordsFiltered.size() - 1;
-        //create a group for the last x elements in list, where x is 
+        //create a group for the last x elements in list, where x is
         //NUMBER_OF_GROUPS
         //Issue: since AllUniqueWordsFiltered is only ever going to be one value why is there an if here?
         //I think the intended functionality would be to group everything in its entirety,
@@ -131,7 +143,7 @@ public class CommentListAnalyzer {
         ArrayList<WordInstance> wordList;
         for (CommentGroup g : Groups) {
             keyword = g.getKeyword();
-            for (int k = 1; k<AllComments.size();k++) {
+            for (int k = 1; k < AllComments.size(); k++) {
                 wordList = AllComments.get(k).getUniqueWordList();
                 for (WordInstance w : wordList) {
                     if (w.getWord().equals(keyword)) {
@@ -140,6 +152,7 @@ public class CommentListAnalyzer {
                 }
             }
         }
+
         for(int k = 0; k < Groups.size();k++) {
             if(Groups.get(k).getComments().size() < 1) {
                 Groups.remove(k);
@@ -157,6 +170,10 @@ public class CommentListAnalyzer {
             System.out.print(g);
         }*/
         return Groups;
+    }
+
+    public void addToBlacklist(String wordToAdd) throws IOException {
+       TempBlacklist.add(new WordInstance(wordToAdd));
     }
 
     public void clearArray() {
