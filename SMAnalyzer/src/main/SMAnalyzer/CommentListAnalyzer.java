@@ -18,6 +18,7 @@ public class CommentListAnalyzer {
     private final String DICTIONARYPATH = "externalfiles/BigAssDictionaryFromPrinceton.txt";
     private final String BLACKLISTPATH = "externalfiles/BlackList.txt";
     private ArrayList<CommentInstance> AllComments;
+    private ArrayList<CommentInstance> NonEnglishComments;
     private final DictionaryInstance Dictionary;
     private ArrayList<WordInstance> AllUniqueWords;
     private ArrayList<WordInstance> AllUniqueWordsFiltered;
@@ -32,6 +33,7 @@ public class CommentListAnalyzer {
         //Initialize Class Variables
         Dictionary = new DictionaryInstance(DICTIONARYPATH, "English");
         AllComments = new ArrayList();
+        NonEnglishComments = new ArrayList();
         AllUniqueWords = new ArrayList();
         AllUniqueWordsFiltered = new ArrayList();
         BlackList = new ArrayList();
@@ -60,8 +62,16 @@ public class CommentListAnalyzer {
         for (int x = 0; x < post.size(); x++) {
             CommentInstance currentInstance = new CommentInstance(post.get(x).getMessage(), post.get(x).getTime(), Dictionary.getDictionaryInstance(),PositivityWords);
             //Filtering out non english words and instances of Only Names in comments.
+            //We should somehow rerun this code when we apply words to the TempDictionary
+            //Im not sure how the existing rerun functionality is working with the blacklist. Figured I'd mention this to be sure.
             if (currentInstance.getIsEnglish() == true && currentInstance.getIsOnlyName() == false) {
                 AllComments.add(currentInstance);
+            }
+            else 
+            {
+                //We can use this to catch non english comments in case we want to investigate them at some point
+                //Maybe we can give the user the option to view these "non english" comments to identify potential words to add to the TempDictionary
+                NonEnglishComments.add(currentInstance);
             }
         }
 
