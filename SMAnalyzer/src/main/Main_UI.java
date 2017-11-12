@@ -1,13 +1,22 @@
 package main;
 
 /**
- * TODO: put giraffes in own class put the table in own class and turn them
- * destroy Matteo for consistently de-formatting my todo list make giraffes
- * modular aight imports don't have to be that big you guys jesus clean all the
- * things sweep everything under the rug put the rug in the closet burn the
- * closet SMANALYZE SMadd the SMeaster SMegg SMmore SMaction SMhandling
- * SMprovide SMadditional SMsupport to SMteamates SMstart the SMrobot
- * SMsingularity SMcomplete SManalysis
+ * TODO: 
+ * put giraffes in own class 
+ * put the table in own class and turn them
+ * destroy Matteo for consistently de-formatting my todo list 
+ * make giraffes modular 
+ * aight imports don't have to be that big you guys jesus 
+ * clean all the things
+ * sweep everything under the rug 
+ * put the rug in the closet 
+ * burn the closet 
+ * SMANALYZE 
+ * SMadd the SMeaster SMegg 
+ * SMmore SMaction SMhandling
+ * SMprovide SMadditional SMsupport to SMteamates 
+ * SMstart the SMrobot SMsingularity 
+ * SMcomplete SManalysis
  */
 import main.SMAnalyzer.CommentGroup;
 import main.SMAnalyzer.CommentListAnalyzer;
@@ -15,39 +24,21 @@ import main.SMAnalyzer.CommentInstance;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
-import java.util.Arrays;
 import java.awt.datatransfer.*;
 import java.io.*;
-import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 import main.sminterfaces.FBClient;
 import main.sminterfaces.YTClient;
 import main.sminterfaces.TwitterClient;
-import static org.jfree.chart.ChartColor.DARK_GREEN;
-import static org.jfree.chart.ChartColor.DARK_MAGENTA;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.PiePlot3D;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.general.PieDataset;
-import org.jfree.util.Rotation;
 
 public class Main_UI extends JFrame {
 
