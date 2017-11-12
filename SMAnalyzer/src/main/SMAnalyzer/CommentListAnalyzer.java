@@ -28,6 +28,7 @@ public class CommentListAnalyzer {
     private ArrayList<WordInstance> PositivityWords;
     private ArrayList<CommentGroup> Groups;
     private final int NUMBER_OF_GROUPS = 10;
+    private Boolean hasBeenAnalyzed;
 
     public CommentListAnalyzer() throws IOException {
         //Initialize Class Variables
@@ -40,6 +41,7 @@ public class CommentListAnalyzer {
         TempBlacklist = new ArrayList();
         PositivityWords = new ArrayList();
         Groups = new ArrayList();
+        hasBeenAnalyzed = false;
 
         //Import words into BlackList
         BufferedReader br;
@@ -60,15 +62,13 @@ public class CommentListAnalyzer {
     public void setComments(ArrayList<NormalizedComment> post, boolean isBlacklistEnabled) throws IOException {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
-            CommentInstance currentInstance = new CommentInstance(post.get(x).getMessage(), post.get(x).getTime(), Dictionary.getDictionaryInstance(),PositivityWords);
+            CommentInstance currentInstance = new CommentInstance(post.get(x).getMessage(), post.get(x).getTime(), Dictionary.getDictionaryInstance(), PositivityWords);
             //Filtering out non english words and instances of Only Names in comments.
             //We should somehow rerun this code when we apply words to the TempDictionary
             //Im not sure how the existing rerun functionality is working with the blacklist. Figured I'd mention this to be sure.
             if (currentInstance.getIsEnglish() == true && currentInstance.getIsOnlyName() == false) {
                 AllComments.add(currentInstance);
-            }
-            else 
-            {
+            } else {
                 //We can use this to catch non english comments in case we want to investigate them at some point
                 //Maybe we can give the user the option to view these "non english" comments to identify potential words to add to the TempDictionary
                 NonEnglishComments.add(currentInstance);
@@ -100,8 +100,9 @@ public class CommentListAnalyzer {
 
         //Call Method to filter out the crap if ignore blacklist is not selected
         AllUniqueWordsFiltered = isBlacklistEnabled
-                ? filterMeaninglessWords(AllUniqueWords) : AllUniqueWords ;
+                ? filterMeaninglessWords(AllUniqueWords) : AllUniqueWords;
         System.out.println(AllUniqueWordsFiltered);
+        hasBeenAnalyzed = true;
     }
 
     public ArrayList<WordInstance> filterMeaninglessWords(ArrayList<WordInstance> input) {
@@ -161,9 +162,9 @@ public class CommentListAnalyzer {
                 }
             }
         }
-        
-        for(int k = 0; k < Groups.size();k++) {
-            if(Groups.get(k).getComments().size() < 1) {
+
+        for (int k = 0; k < Groups.size(); k++) {
+            if (Groups.get(k).getComments().size() < 1) {
                 Groups.remove(k);
                 k--;
             }
@@ -182,7 +183,19 @@ public class CommentListAnalyzer {
     }
 
     public void addToBlacklist(String wordToAdd) throws IOException {
-       TempBlacklist.add(new WordInstance(wordToAdd));
+        TempBlacklist.add(new WordInstance(wordToAdd));
+    }
+
+    public void addToDictionary(String wordToAdd) {
+        Dictionary.addTempWordToDict(wordToAdd);
+    }
+
+    public boolean getHasBeenAnalyzed() {
+        return hasBeenAnalyzed;
+    }
+
+    public ArrayList<CommentInstance> getComments() {
+        return AllComments;
     }
 
     public void clearArray() {

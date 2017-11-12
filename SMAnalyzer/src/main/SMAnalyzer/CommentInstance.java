@@ -22,6 +22,8 @@ public class CommentInstance implements Comparable<CommentInstance> {
     //Constructor for CommentInstance
     public CommentInstance(String inputString, String time, GenericSpellDictionary dictionary, ArrayList<WordInstance> positivityWordList) throws IOException {
         //Initialize Variables
+        inputString = inputString.replaceAll(System.getProperty("line.separator"), "");
+        inputString = inputString.replaceAll("|", "");
         CommentRaw = inputString;
         CommentTime = time; 
         CommentCharList = new ArrayList<>();

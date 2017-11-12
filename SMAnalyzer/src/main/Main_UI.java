@@ -1,22 +1,13 @@
 package main;
 
 /**
- * TODO:
- * put giraffes in own class
- * put the table in own class and turn them
- * destroy Matteo for consistently de-formatting my todo list
- * make giraffes modular
- * aight imports don't have to be that big you guys jesus
- * clean all the things
- * sweep everything under the rug
- * put the rug in the closet
- * burn the closet
- * SMANALYZE
- * SMadd the SMeaster SMegg
- * SMmore SMaction SMhandling
- * SMprovide SMadditional SMsupport to SMteamates
- * SMstart the SMrobot SMsingularity
- * SMcomplete SManalysis
+ * TODO: put giraffes in own class put the table in own class and turn them
+ * destroy Matteo for consistently de-formatting my todo list make giraffes
+ * modular aight imports don't have to be that big you guys jesus clean all the
+ * things sweep everything under the rug put the rug in the closet burn the
+ * closet SMANALYZE SMadd the SMeaster SMegg SMmore SMaction SMhandling
+ * SMprovide SMadditional SMsupport to SMteamates SMstart the SMrobot
+ * SMsingularity SMcomplete SManalysis
  */
 import main.SMAnalyzer.CommentGroup;
 import main.SMAnalyzer.CommentListAnalyzer;
@@ -58,7 +49,6 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;
 
-
 public class Main_UI extends JFrame {
 
     //UI vars
@@ -68,11 +58,12 @@ public class Main_UI extends JFrame {
     private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile;
     private JRadioButtonMenuItem barGraph, pieGraph, threeDPieGraph;
     private ButtonGroup graphGroups;
-    private JMenuItem loadFile;
+    private JMenuItem loadFile, dictionaryAdd, exportToFile;
     private JTable outputTable;
     private JButton openButton, urlButton, pasteButton, analyzeButton, clearButton;
     private PrintWriter out;
     private JScrollPane jsp;
+    private JFileChooser jfc;
     private GridBagConstraints layoutConstraints;
     public final int BAR_CHART = 0;
     public final int PIE_CHART = 1;
@@ -91,6 +82,7 @@ public class Main_UI extends JFrame {
     public Main_UI() throws IOException {
         //init
         ActionHandler ah = new ActionHandler();
+        jfc = new JFileChooser("savedfiles");
         urlLabel = new JLabel("Url: ");
         urlText = new JTextField(20);
         pasteButton = new JButton("Paste");
@@ -110,6 +102,9 @@ public class Main_UI extends JFrame {
         loadFile = new JMenuItem("Load File...");
         loadFile.setMnemonic('L');
         file.add(loadFile);
+        exportToFile = new JMenuItem("Export to file");
+        exportToFile.setEnabled(false);
+        file.add(exportToFile);
         saveFile = new JCheckBoxMenuItem("Save to File");
         file.add(saveFile);
         menu.add(file);
@@ -118,8 +113,10 @@ public class Main_UI extends JFrame {
         options.setMnemonic('O');
         childCommentBox = new JCheckBoxMenuItem("Child Comments");
         blacklistIgnoreBox = new JCheckBoxMenuItem("Ignore BlackList");
+        dictionaryAdd = new JMenuItem("Add to dictionary");
         options.add(childCommentBox);
         options.add(blacklistIgnoreBox);
+        options.add(dictionaryAdd);
         menu.add(options);
 
         graphs = new JMenu("Graphs");
@@ -186,6 +183,8 @@ public class Main_UI extends JFrame {
         analyzeButton.addActionListener(ah);
         clearButton.addActionListener(ah);
         loadFile.addActionListener(ah);
+        dictionaryAdd.addActionListener(ah);
+        exportToFile.addActionListener(ah);
 
         this.pack();
         this.setLocation(700, 300);
@@ -213,9 +212,49 @@ public class Main_UI extends JFrame {
             } else if (e.getSource() == clearButton) {
                 urlText.setText("");
                 outputTable.setVisible(false);
+                exportToFile.setEnabled(false);
+                loadFile.setEnabled(true);
                 Main_UI.this.remove(jsp);
                 Main_UI.this.repaint();
                 Main_UI.this.pack();
+            } else if (e.getSource() == dictionaryAdd) {
+                JFrame inputFrame = new JFrame("Add to dictionary");
+                String wordToAdd = JOptionPane.showInputDialog(inputFrame, "Please type the word to be added below");
+                if (wordToAdd != null) {
+                    Analyzer.addToDictionary(wordToAdd);
+                }
+            } else if (e.getSource() == exportToFile) {
+                ArrayList<CommentInstance> comments = Analyzer.getComments();
+                int returnVal = jfc.showSaveDialog(Main_UI.this);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        FileWriter fw = new FileWriter(jfc.getSelectedFile() + ".txt");
+                        for (CommentInstance c : comments) {
+                            fw.write(c.getCommentRaw());
+                            fw.write(System.lineSeparator());
+                        }
+                        fw.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            } else if (e.getSource() == loadFile) {
+                ArrayList<String> comments = new ArrayList();
+                String sCurrentLine;
+                int returnVal = jfc.showOpenDialog(Main_UI.this);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        BufferedReader br = new BufferedReader(new FileReader(jfc.getSelectedFile()));
+                        while((sCurrentLine = br.readLine()) != null) {
+                            comments.add(sCurrentLine);
+                        }
+                        for(String s : comments) {
+                            System.out.println(s);
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             } else if (e.getSource() == analyzeButton) {
                 Analyzer.clearArray();
                 FBClient.clearArray();
@@ -230,6 +269,8 @@ public class Main_UI extends JFrame {
                     HashMap<String, String> stringMap = parseUrl(urlString);
                     Boolean child = childCommentBox.isSelected();
                     Boolean isBlacklistEnabled = !blacklistIgnoreBox.isSelected();
+                    exportToFile.setEnabled(true);
+                    loadFile.setEnabled(false);
                     Boolean file = saveFile.isSelected();
 
                     if (Site.equals("facebook")) {
@@ -385,7 +426,7 @@ public class Main_UI extends JFrame {
             outputTable.setVisible(true);
             Main_UI.this.repaint();
             clearButton.setVisible(true);
-        
+
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             JOptionPane.showMessageDialog(Main_UI.this, "Your array can't count that high",
                     "You pushed it too hard", JOptionPane.INFORMATION_MESSAGE);
@@ -478,7 +519,7 @@ public class Main_UI extends JFrame {
                 JFreeChart graph;
                 GraphInstance g = new GraphInstance();
                 if (barGraph.isSelected()) {
-                   graph = g.Graph(0, "Groups and their percentages", false);
+                    graph = g.Graph(0, "Groups and their percentages", false);
                 } else if (pieGraph.isSelected()) {
                     graph = g.Graph(1, "Groups and their percentages", false);
                 } else {
@@ -569,6 +610,7 @@ public class Main_UI extends JFrame {
             super.fireEditingStopped();
         }
     }
+
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }
