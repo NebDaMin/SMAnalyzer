@@ -28,10 +28,10 @@ import org.jfree.util.Rotation;
 public class GraphInstance {
           public final int BAR_CHART = 0;
           public final int PIE_CHART = 1;
-   public JFreeChart Graph(int chartType, String chartTitle, boolean threeD) {   
-        if (chartType == BAR_CHART) {
+   public JFreeChart Graph(int chartType, String chartTitle, boolean threeD, int pos, int neg, int net) {   
+       /* if (chartType == BAR_CHART) {
 
-            JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(), PlotOrientation.VERTICAL, true, true, false);
+            JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(pos, neg, net), PlotOrientation.VERTICAL, true, true, false);
             final CategoryPlot plot = barChart.getCategoryPlot();
             final BarRenderer renderer = (BarRenderer) plot.getRenderer();
 
@@ -39,49 +39,49 @@ public class GraphInstance {
             renderer.setSeriesPaint(1, Color.magenta);
             renderer.setSeriesPaint(2, Color.cyan);
             return barChart;
-        } else if (chartType == PIE_CHART) {
-            PieDataset dataset = createPieDataset();
+        } else if (chartType == PIE_CHART) {*/
+            PieDataset dataset = createPieDataset(pos, neg, net);
 
             JFreeChart pieChart = createPieChart(dataset, chartTitle, threeD);
             return pieChart;
-        } else {
+        /*} else {
             return null;
-        }
+        }*/
     }
 
     //values for bar chart
-    private CategoryDataset createBarDataset() {
+    private CategoryDataset createBarDataset(int pos, int neg, int net) {
 
         final String wordUno = "Uno";
         final String wordDos = "Dos";
         final String wordTres = "Tres";
 
-        final String pos = "Positive";
-        final String neu = "Neutral";
-        final String neg = "Negative";
+        final String positiveString = "Positive";
+        final String neutralString = "Neutral";
+        final String negativeString = "Negative";
 
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(15, neg, wordUno);
-        dataset.addValue(22, neu, wordUno);
-        dataset.addValue(66, pos, wordUno);
+        dataset.addValue(15, negativeString, wordUno);
+        dataset.addValue(22, neutralString, wordUno);
+        dataset.addValue(66, positiveString, wordUno);
 
-        dataset.addValue(75, neg, wordDos);
-        dataset.addValue(11, neu, wordDos);
-        dataset.addValue(20, pos, wordDos);
-        dataset.addValue(5, neg, wordTres);
-        dataset.addValue(15, neu, wordTres);
-        dataset.addValue(88, pos, wordTres);
+        dataset.addValue(75, negativeString, wordDos);
+        dataset.addValue(11, neutralString, wordDos);
+        dataset.addValue(20, positiveString, wordDos);
+        dataset.addValue(5,  negativeString, wordTres);
+        dataset.addValue(15, neutralString, wordTres);
+        dataset.addValue(88, positiveString, wordTres);
 
         return dataset;
     }
 
     //values for pie graph
-    public PieDataset createPieDataset() {
+    public PieDataset createPieDataset(int pos, int neg, int net) {
         DefaultPieDataset result = new DefaultPieDataset();
 
-        result.setValue("Positive", 33);
-        result.setValue("Neutral", 22);
-        result.setValue("Negative", 45);
+        result.setValue("Positive", pos);
+        result.setValue("Neutral", net);
+        result.setValue("Negative", neg);
 
         return result;
     }

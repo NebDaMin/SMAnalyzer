@@ -47,7 +47,7 @@ public class Main_UI extends JFrame {
     private JMenuBar menu;
     private JMenu options, file, graphs;
     private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile;
-    private JRadioButtonMenuItem barGraph, pieGraph, threeDPieGraph;
+    private JRadioButtonMenuItem /*barGraph,*/ pieGraph, threeDPieGraph;
     private ButtonGroup graphGroups;
     private JMenuItem loadFile, dictionaryAdd, exportToFile;
     private JTable outputTable;
@@ -112,15 +112,15 @@ public class Main_UI extends JFrame {
 
         graphs = new JMenu("Graphs");
         graphs.setMnemonic('G');
-        barGraph = new JRadioButtonMenuItem("Bar Graph");
+        //barGraph = new JRadioButtonMenuItem("Bar Graph");
         pieGraph = new JRadioButtonMenuItem("Pie Graph");
         threeDPieGraph = new JRadioButtonMenuItem("3D Pie Graph");
         graphGroups = new ButtonGroup();
-        graphGroups.add(barGraph);
+        //graphGroups.add(barGraph);
         graphGroups.add(pieGraph);
         graphGroups.add(threeDPieGraph);
-        barGraph.setSelected(true);
-        graphs.add(barGraph);
+        pieGraph.setSelected(true);
+        //graphs.add(barGraph);
         graphs.add(pieGraph);
         graphs.add(threeDPieGraph);
         menu.add(graphs);
@@ -201,13 +201,8 @@ public class Main_UI extends JFrame {
                 }
                 urlText.setText(s);
             } else if (e.getSource() == clearButton) {
+                ClearUI();
                 urlText.setText("");
-                outputTable.setVisible(false);
-                exportToFile.setEnabled(false);
-                loadFile.setEnabled(true);
-                Main_UI.this.remove(jsp);
-                Main_UI.this.repaint();
-                Main_UI.this.pack();
             } else if (e.getSource() == dictionaryAdd) {
                 JFrame inputFrame = new JFrame("Add to dictionary");
                 String wordToAdd = JOptionPane.showInputDialog(inputFrame, "Please type the word to be added below");
@@ -250,6 +245,7 @@ public class Main_UI extends JFrame {
                 Analyzer.clearArray();
                 FBClient.clearArray();
                 YTClient.clearArray();
+                ClearUI();
                 //TwitterClient.clearArray();
                 String urlString = urlText.getText();
                 Main_UI.this.mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -507,37 +503,42 @@ public class Main_UI extends JFrame {
                 JLabel rightPlaceHolder = new JLabel("Other output?");
                 rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
-                JFreeChart graph;
-                GraphInstance g = new GraphInstance();
-                if (barGraph.isSelected()) {
-                    graph = g.Graph(0, "Groups and their percentages", false);
-                } else if (pieGraph.isSelected()) {
-                    graph = g.Graph(1, "Groups and their percentages", false);
-                } else {
-                    graph = g.Graph(1, "Groups and their percentages", true);
-                }
-
-                ChartPanel chart = new ChartPanel(graph);
-                // graph.setHorizontalAlignment(SwingConstants.CENTER);
-                chart.setPreferredSize(new Dimension(600, 300));
-
+                
                 ArrayList<CommentInstance> comments = new ArrayList();
                 CommentGroup selectedGroup = groups.get(Main_UI.this.outputTable.getSelectedRow());
                 comments = selectedGroup.getComments();
                 String outputString = "";
+                int pos=0;
+                int neg=0;
+                int net=0;
                 for (int k = 0; k < selectedGroup.getComments().size(); k++) {
                     outputString += comments.get(k).getCommentRaw();
                     outputString += "\nWritten at: " + comments.get(k).getCommentTime();
                     if (comments.get(k).getPositivityLevel() < 0) {
                         outputString += "\nThis comment is flagged as negative.";
+                        neg++;
                     } else if (comments.get(k).getPositivityLevel() > 0) {
                         outputString += "\nThis comment is flagged as positive.";
+                        pos++;
                     } else {
                         outputString += "\nThis comment is flagged as neutral.";
+                        net++;
                     }
                     outputString += "\n\n";
                 }
+                JFreeChart graph;
+                GraphInstance g = new GraphInstance();
+                /*if (barGraph.isSelected()) {
+                    graph = g.Graph(0, "Level of Positivity", false, pos, neg, net);
+                } else*/ if (pieGraph.isSelected()) {
+                    graph = g.Graph(1, "Level Of Positivity", false, pos, neg, net);
+                } else {
+                    graph = g.Graph(1, "Level of Positivity", true, pos, neg, net);
+                }
 
+                ChartPanel chart = new ChartPanel(graph);
+                // graph.setHorizontalAlignment(SwingConstants.CENTER);
+                chart.setPreferredSize(new Dimension(600, 300));
                 JTextPane commentList = new JTextPane();
                 commentList.setText(outputString);
                 commentList.setEditable(false);
@@ -601,7 +602,15 @@ public class Main_UI extends JFrame {
             super.fireEditingStopped();
         }
     }
-
+        public void ClearUI()
+        {
+                outputTable.setVisible(false);
+                exportToFile.setEnabled(false);
+                loadFile.setEnabled(true);
+                Main_UI.this.remove(jsp);
+                Main_UI.this.repaint();
+                Main_UI.this.pack();
+        }
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }
