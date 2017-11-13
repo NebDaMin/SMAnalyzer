@@ -16,8 +16,11 @@ public class NormalizedComment {
             this.id = fb.getString("id");
             this.message = fb.getString("message");
             this.created_time = fb.getString("created_time").replace("+0000", "").replace("T", " ");
-            if(fb.has("shares")){ this.shares = fb.getJSONObject("shares").getString("count"); }
-            else { this.shares = "0"; }
+            if (fb.has("shares")) {
+                this.shares = fb.getJSONObject("shares").getString("count");
+            } else {
+                this.shares = "0";
+            }
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
@@ -26,6 +29,16 @@ public class NormalizedComment {
     public void setFromYoutube(JSONObject yt) {
         this.media = "youtube";
         try {
+            this.id = yt.getString("id");
+            if (yt.has("snippet")) {
+                if (yt.getJSONObject("snippet").has("topLevelComment")) {
+                    this.message = yt.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("textOriginal");
+                    this.created_time = yt.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("publishedAt");
+                } else if (yt.getJSONObject("snippet").has("textOriginal")) {
+                    this.message = yt.getJSONObject("snippet").getString("textOriginal");
+                    this.created_time = yt.getJSONObject("snippet").getString("publishedAt");
+                }
+            }
             
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
@@ -47,20 +60,20 @@ public class NormalizedComment {
             System.out.println(ex.getMessage());
         }
     }
-    
-    public String getMedia(){
+
+    public String getMedia() {
         return media;
     }
-    
-    public String getId(){
+
+    public String getId() {
         return id;
     }
-    
-    public String getMessage(){
+
+    public String getMessage() {
         return message;
     }
-    
-    public String getTime(){
+
+    public String getTime() {
         return created_time;
     }
 }

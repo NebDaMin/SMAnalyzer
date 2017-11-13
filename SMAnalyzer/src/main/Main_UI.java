@@ -1,22 +1,13 @@
 package main;
 
 /**
- * TODO: 
- * put giraffes in own class 
- * put the table in own class and turn them
- * destroy Matteo for consistently de-formatting my todo list 
- * make giraffes modular 
- * aight imports don't have to be that big you guys jesus 
- * clean all the things
- * sweep everything under the rug 
- * put the rug in the closet 
- * burn the closet 
- * SMANALYZE 
- * SMadd the SMeaster SMegg 
- * SMmore SMaction SMhandling
- * SMprovide SMadditional SMsupport to SMteamates 
- * SMstart the SMrobot SMsingularity 
- * SMcomplete SManalysis
+ * TODO: put giraffes in own class put the table in own class and turn them
+ * destroy Matteo for consistently de-formatting my todo list make giraffes
+ * modular aight imports don't have to be that big you guys jesus clean all the
+ * things sweep everything under the rug put the rug in the closet burn the
+ * closet SMANALYZE SMadd the SMeaster SMegg SMmore SMaction SMhandling
+ * SMprovide SMadditional SMsupport to SMteamates SMstart the SMrobot
+ * SMsingularity SMcomplete SManalysis
  */
 import main.SMAnalyzer.CommentGroup;
 import main.SMAnalyzer.CommentListAnalyzer;
@@ -231,10 +222,10 @@ public class Main_UI extends JFrame {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         BufferedReader br = new BufferedReader(new FileReader(jfc.getSelectedFile()));
-                        while((sCurrentLine = br.readLine()) != null) {
+                        while ((sCurrentLine = br.readLine()) != null) {
                             comments.add(sCurrentLine);
                         }
-                        for(String s : comments) {
+                        for (String s : comments) {
                             System.out.println(s);
                         }
                     } catch (IOException ex) {
@@ -292,6 +283,9 @@ public class Main_UI extends JFrame {
         } else if (s.contains("twitter.com")) {
             setSite("twitter");
             return parseTwitterUrl(s);
+        } else if (s.contains("reddit.com") || s.contains("redd.it")) {
+            setSite("reddit");
+            return parseRedditUrl(s);
         } else {
             JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
                     "We only do facebook, youtube, or twitter", JOptionPane.INFORMATION_MESSAGE);
@@ -352,9 +346,9 @@ public class Main_UI extends JFrame {
 
     HashMap<String, String> parseTwitterUrl(String s) {
         int last = s.lastIndexOf("twitter.com/");
-        int ytLength = "twitter.com/".length();
+        int twtLength = "twitter.com/".length();
 
-        String sub = s.substring(last + ytLength, s.length());
+        String sub = s.substring(last + twtLength, s.length());
         String[] array = sub.split("/");
         HashMap<String, String> map = new HashMap<String, String>();
 
@@ -370,13 +364,55 @@ public class Main_UI extends JFrame {
         return map;
     }
 
+    //This probably doesn't quite work yet but oh well
+    HashMap<String, String> parseRedditUrl(String s) {
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        if (s.contains("reddit.com")) {
+            int last = s.lastIndexOf("reddit.com/");
+            int redLength = "reddit.com/".length();
+
+            String sub = s.substring(last + redLength, s.length());
+            String[] array = sub.split("/");
+
+            if (array.length == 3) {
+                map.put("Subreddit", array[1]);
+                map.put("Post Id", array[3]);
+            } else {
+                JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
+                        "Uh...", JOptionPane.INFORMATION_MESSAGE);
+                return null;
+            }
+        } else if (s.contains("redd.it")) {
+            int last = s.lastIndexOf("redd.it/");
+            int redLength = "redd.it/".length();
+
+            String sub = s.substring(last + redLength, s.length());
+            String[] array = sub.split("/");
+
+            map.put("Post Id", array[0]);
+        }
+        return map;
+    }
+
     public void setSite(String site) {
         this.Site = site;
     }
 
     void analyzeAndDisplay(Boolean isBlacklistEnabled) {
         try {
-            Analyzer.setComments(FBClient.getPostArray(), isBlacklistEnabled);
+            if (Site.equals("facebook")) {
+                if (!FBClient.getPostArray().isEmpty()) {
+                    Analyzer.setComments(FBClient.getPostArray(), isBlacklistEnabled);
+                }
+            } else if (Site.equals("youtube")) {
+                if (!YTClient.getPostArray().isEmpty()) {
+                    Analyzer.setComments(YTClient.getPostArray(), isBlacklistEnabled);
+                }
+            } else {
+                JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
+                        "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
+            }
             //get group output data
             ArrayList<CommentGroup> groups = Analyzer.groupComments();
             //format into arrays for JTable constructor
@@ -503,14 +539,14 @@ public class Main_UI extends JFrame {
                 JLabel rightPlaceHolder = new JLabel("Other output?");
                 rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
                 rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
-                
+
                 ArrayList<CommentInstance> comments = new ArrayList();
                 CommentGroup selectedGroup = groups.get(Main_UI.this.outputTable.getSelectedRow());
                 comments = selectedGroup.getComments();
                 String outputString = "";
-                int pos=0;
-                int neg=0;
-                int net=0;
+                int pos = 0;
+                int neg = 0;
+                int net = 0;
                 for (int k = 0; k < selectedGroup.getComments().size(); k++) {
                     outputString += comments.get(k).getCommentRaw();
                     outputString += "\nWritten at: " + comments.get(k).getCommentTime();
@@ -602,15 +638,16 @@ public class Main_UI extends JFrame {
             super.fireEditingStopped();
         }
     }
-        public void ClearUI()
-        {
-                outputTable.setVisible(false);
-                exportToFile.setEnabled(false);
-                loadFile.setEnabled(true);
-                Main_UI.this.remove(jsp);
-                Main_UI.this.repaint();
-                Main_UI.this.pack();
-        }
+
+    public void ClearUI() {
+        outputTable.setVisible(false);
+        exportToFile.setEnabled(false);
+        loadFile.setEnabled(true);
+        Main_UI.this.remove(jsp);
+        Main_UI.this.repaint();
+        Main_UI.this.pack();
+    }
+
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }

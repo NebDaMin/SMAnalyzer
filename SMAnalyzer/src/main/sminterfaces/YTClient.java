@@ -3,6 +3,8 @@ package main.sminterfaces;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import javax.swing.JOptionPane;
+import static main.sminterfaces.FBClient.fbClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,31 +36,43 @@ public class YTClient {
         params.put("textFormat", "plainText");
         params.put("part", "snippet,replies");
         JSONObject comments = ytClient.getObject("commentThreads", params);
-        ArrayList<JSONObject> commentsList = ytClient.convertJsonItemsToList(comments);
-        for (JSONObject comment : commentsList) {
-            NormalizedComment normComment = new NormalizedComment();
-            normComment.setFromFacebook(comment);
-            System.out.println("Parent Comment: " + comment.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("textOriginal") + "\r\n");
-            if (comment.has("replies")) {
-                try {
-                    ArrayList<JSONObject> replies = new ArrayList<JSONObject>();
-                    for (int i = 0; i < comment.getJSONObject("replies").getJSONArray("comments").length(); i++) {
-                        replies.add(Utility.parseJson(comment.getJSONObject("replies").getJSONArray("comments").get(i).toString()));
-                    }
+        if (comments.length() != 0) {
+            ArrayList<JSONObject> commentsList = ytClient.convertJsonItemsToList(comments);
+            boolean searched = false;
+            while (comments.has("nextPageToken") || searched == false) {
+                searched = true;
+                for (JSONObject comment : commentsList) {
+                    NormalizedComment normComment = new NormalizedComment();
+                    normComment.setFromYoutube(comment);
+                    PostArrayList.add(normComment);
+                    System.out.println("Parent Comment: " + comment.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("textOriginal") + "\r\n");
+                    if (comment.has("replies")) {
+                        try {
+                            ArrayList<JSONObject> replies = ytClient.convertJsonReplyToList(comment.getJSONObject("replies"));
+                            for (JSONObject reply : replies) {
+                                NormalizedComment normReply = new NormalizedComment();
+                                normReply.setFromYoutube(reply);
+                                PostArrayList.add(normReply);
+                            }
 
-                    for (JSONObject reply : replies) {
-                        System.out.print("   | ");
-                        System.out.print("\r\n    -> ");
-                        System.out.println(reply.getJSONObject("snippet").getString("textOriginal"));
+                            System.out.println();
+                        } catch (JSONException jex) {
+                            System.out.println(jex);
+                        } catch (Exception ex) {
+                            System.out.println(ex);
+                        }
                     }
-
-                    System.out.println();
-                } catch (JSONException jex) {
-                    System.out.println(jex);
-                } catch (Exception ex) {
-                    System.out.println(ex);
+                }
+                if (comments.has("nextPageToken")) {
+                    params.put("pageToken", comments.getString("nextPageToken"));
+                    comments = ytClient.getObject("commentThreads", params);
+                    commentsList = ytClient.convertJsonItemsToList(comments);
+                    searched = false;
                 }
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Uh....",
+                    "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

@@ -24,7 +24,6 @@ public class FBClient {
         if (fbClient.getAccessToken() == null) {
             System.out.println("Access token is null");
         } else {
-            int i = 0;
             HashMap<String, Object> params = new HashMap<String, Object>();
             params.put("limit", 1);
             JSONObject pageFeed = fbClient.getConnections(pageName, "feed", params);
@@ -48,7 +47,6 @@ public class FBClient {
         if (fbClient.getAccessToken() == null) {
             System.out.println("Access token is null");
         } else {
-            int i = 0;
             JSONObject page = fbClient.getObject(pageName);
             String pageId = page.getString("id");
             HashMap<String, Object> params = new HashMap<String, Object>();
