@@ -55,7 +55,7 @@ public class CommentListAnalyzer {
         br = new BufferedReader(new FileReader(POSITIVITYWORDSPATH));
         while ((sCurrentLine = br.readLine()) != null) {
             //This might be a cheap solution for now, basically we just need to add a 1 or -1 the line after each word in this file
-            PositivityWords.add(new WordInstance(sCurrentLine, Integer.parseInt(br.readLine())));
+            PositivityWords.add(new WordInstance(sCurrentLine, Integer.parseInt(br.readLine().trim())));
         }
     }
 
