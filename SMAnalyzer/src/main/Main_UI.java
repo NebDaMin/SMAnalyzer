@@ -1,14 +1,5 @@
 package main;
 
-/**
- * TODO: put giraffes in own class put the table in own class and turn them
- * destroy Matteo for consistently de-formatting my todo list make giraffes
- * modular aight imports don't have to be that big you guys jesus clean all the
- * things sweep everything under the rug put the rug in the closet burn the
- * closet SMANALYZE SMadd the SMeaster SMegg SMmore SMaction SMhandling
- * SMprovide SMadditional SMsupport to SMteamates SMstart the SMrobot
- * SMsingularity SMcomplete SManalysis
- */
 import main.SMAnalyzer.CommentGroup;
 import main.SMAnalyzer.CommentListAnalyzer;
 import main.SMAnalyzer.CommentInstance;
@@ -19,31 +10,21 @@ import java.awt.datatransfer.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import main.sminterfaces.FBClient;
 import main.sminterfaces.YTClient;
 import main.sminterfaces.TwitterClient;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
 
 public class Main_UI extends JFrame {
 
     //UI vars
     private JPanel mainPanel;
     private JMenuBar menu;
-    private JMenu options, file, graphs;
+    private JMenu options, file;
     private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile;
-    private JRadioButtonMenuItem /*barGraph,*/ pieGraph, threeDPieGraph;
-    private ButtonGroup graphGroups;
     private JMenuItem loadFile, dictionaryAdd, exportToFile;
     JTable outputTable;
-    private JButton openButton, urlButton, pasteButton, analyzeButton, clearButton;
-    private PrintWriter out;
+    private JButton urlButton, pasteButton, analyzeButton, clearButton;
     private JScrollPane jsp;
     private JFileChooser jfc;
     private GridBagConstraints layoutConstraints;
@@ -53,7 +34,7 @@ public class Main_UI extends JFrame {
     private FBClient FBClient;
     private YTClient YTClient;
     private TwitterClient TwitterClient;
-    private String Site;
+    private Parse parse;
 
     //HumanDataAnalysisProject
     private CommentListAnalyzer Analyzer;
@@ -69,7 +50,6 @@ public class Main_UI extends JFrame {
         urlText = new JTextField(20);
         pasteButton = new JButton("Paste");
         analyzeButton = new JButton("Analyze");
-        //openButton = new JButton("Open file...");
         clearButton = new JButton("Clear");
         urlButton = new JButton("Url");
         outputTable = new JTable();
@@ -100,21 +80,6 @@ public class Main_UI extends JFrame {
         options.add(blacklistIgnoreBox);
         options.add(dictionaryAdd);
         menu.add(options);
-
-        graphs = new JMenu("Graphs");
-        graphs.setMnemonic('G');
-        //barGraph = new JRadioButtonMenuItem("Bar Graph");
-        pieGraph = new JRadioButtonMenuItem("Pie Graph");
-        threeDPieGraph = new JRadioButtonMenuItem("3D Pie Graph");
-        graphGroups = new ButtonGroup();
-        //graphGroups.add(barGraph);
-        graphGroups.add(pieGraph);
-        graphGroups.add(threeDPieGraph);
-        pieGraph.setSelected(true);
-        //graphs.add(barGraph);
-        graphs.add(pieGraph);
-        graphs.add(threeDPieGraph);
-        menu.add(graphs);
 
         this.setLayout(new GridBagLayout());
         layoutConstraints = new GridBagConstraints();
@@ -174,7 +139,6 @@ public class Main_UI extends JFrame {
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("SMAnalyzer");
-
     }
 
     private class ActionHandler implements ActionListener {
@@ -244,22 +208,23 @@ public class Main_UI extends JFrame {
                 if (urlString.equals(null) || urlString.equals("")) {
                     JOptionPane.showMessageDialog(null, "There's nothing to analyze.\nPlease paste a url.", "Did you really hit analyze without puttng anything in?", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    HashMap<String, String> stringMap = parseUrl(urlString);
+                    parse = new Parse();
+                    HashMap<String, String> stringMap = parse.parseUrl(urlString);
                     Boolean child = childCommentBox.isSelected();
                     Boolean isBlacklistEnabled = !blacklistIgnoreBox.isSelected();
                     exportToFile.setEnabled(true);
                     loadFile.setEnabled(false);
                     Boolean file = saveFile.isSelected();
 
-                    if (Site.equals("facebook")) {
+                    if (parse.getSite().equals("facebook")) {
                         if (stringMap.size() == 1) {
                             FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child, file);
                         } else if (stringMap.size() == 3) {
                             FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child, file);
                         }
-                    } else if (Site.equals("youtube")) {
+                    } else if (parse.getSite().equals("youtube")) {
                         YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"));
-                    } else if (Site.equals("twitter")) {
+                    } else if (parse.getSite().equals("twitter")) {
                         //TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
 
@@ -272,140 +237,13 @@ public class Main_UI extends JFrame {
             }
         }
     }
-
-    public HashMap<String, String> parseUrl(String s) {
-        if (s.contains("facebook.com")) {
-            setSite("facebook");
-            return parseFacebookUrl(s);
-        } else if (s.contains("youtube.com")) {
-            setSite("youtube");
-            return parseYoutubeUrl(s);
-        } else if (s.contains("twitter.com")) {
-            setSite("twitter");
-            return parseTwitterUrl(s);
-        } else if (s.contains("reddit.com") || s.contains("redd.it")) {
-            setSite("reddit");
-            return parseRedditUrl(s);
-        } else {
-            JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
-                    "We only do facebook, youtube, or twitter", JOptionPane.INFORMATION_MESSAGE);
-            return null;
-        }
-    }
-
-    HashMap<String, String> parseFacebookUrl(String s) {
-        int last = s.lastIndexOf("facebook.com/");
-        int fbLength = "facebook.com/".length();
-
-        String sub = s.substring(last + fbLength, s.length());
-        String[] array = sub.split("/");
-        HashMap<String, String> map = new HashMap<String, String>();
-        if (array.length == 1) {
-            map.put("Page Name", array[0]);
-        } else if (array.length == 3) {
-            map.put("Page Name", array[0]);
-            map.put("Post Type", array[1]);
-            map.put("Post Id", array[2]);
-        } else if (array.length == 5 && array[1].equals("photos")) {
-            map.put("Page Name", array[0]);
-            map.put("Post Type", array[1]);
-            map.put("Post Id", array[3]);
-        } else {
-            JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
-                    "Uh...", JOptionPane.INFORMATION_MESSAGE);
-            return null;
-        }
-
-        return map;
-    }
-
-    HashMap<String, String> parseYoutubeUrl(String s) {
-        int last = s.lastIndexOf("youtube.com/");
-        int ytLength = "youtube.com/".length();
-
-        String sub = s.substring(last + ytLength, s.length());
-        String[] array = sub.split("/");
-        HashMap<String, String> map = new HashMap<String, String>();
-        if (array.length == 1) {
-            map.put("Page Type", "video");
-            array[0] = array[0].replace("watch?v=", "");
-            map.put("Id", array[0]);
-        } else if (array.length == 2) {
-            map.put("Page Type", array[0]);
-            map.put("Id", array[1]);
-        } else if (array.length == 3) {
-            map.put("Page Type", array[0]);
-            map.put("Id", array[1]);
-        } else {
-            JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
-                    "Uh...", JOptionPane.INFORMATION_MESSAGE);
-            return null;
-        }
-        return map;
-    }
-
-    HashMap<String, String> parseTwitterUrl(String s) {
-        int last = s.lastIndexOf("twitter.com/");
-        int twtLength = "twitter.com/".length();
-
-        String sub = s.substring(last + twtLength, s.length());
-        String[] array = sub.split("/");
-        HashMap<String, String> map = new HashMap<String, String>();
-
-        if (array.length == 3) {
-            map.put("Username", array[0]);
-            map.put("Status", array[1]);
-            map.put("Post Id", array[2]);
-        } else {
-            JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
-                    "Uh...", JOptionPane.INFORMATION_MESSAGE);
-            return null;
-        }
-        return map;
-    }
-
-    //This probably doesn't quite work yet but oh well
-    HashMap<String, String> parseRedditUrl(String s) {
-        HashMap<String, String> map = new HashMap<String, String>();
-
-        if (s.contains("reddit.com")) {
-            int last = s.lastIndexOf("reddit.com/");
-            int redLength = "reddit.com/".length();
-
-            String sub = s.substring(last + redLength, s.length());
-            String[] array = sub.split("/");
-
-            if (array.length == 3) {
-                map.put("Subreddit", array[1]);
-                map.put("Post Id", array[3]);
-            } else {
-                JOptionPane.showMessageDialog(Main_UI.this, "Url not recognized",
-                        "Uh...", JOptionPane.INFORMATION_MESSAGE);
-                return null;
-            }
-        } else if (s.contains("redd.it")) {
-            int last = s.lastIndexOf("redd.it/");
-            int redLength = "redd.it/".length();
-
-            String sub = s.substring(last + redLength, s.length());
-            String[] array = sub.split("/");
-
-            map.put("Post Id", array[0]);
-        }
-        return map;
-    }
-
-    public void setSite(String site) {
-        this.Site = site;
-    }
-
     void analyzeAndDisplay(Boolean isBlacklistEnabled) {
         try {
-            if (Site.equals("facebook")) {
+            if (parse.getSite().equals("facebook")) {
                 if (!FBClient.getPostArray().isEmpty()) {
                     Analyzer.setComments(FBClient.getPostArray(), isBlacklistEnabled);
                 }
-            } else if (Site.equals("youtube")) {
+            } else if (parse.getSite().equals("youtube")) {
                 if (!YTClient.getPostArray().isEmpty()) {
                     Analyzer.setComments(YTClient.getPostArray(), isBlacklistEnabled);
                 }
@@ -443,9 +281,7 @@ public class Main_UI extends JFrame {
             layoutConstraints.gridy = 2;
             Main_UI.this.add(jsp, layoutConstraints);
             Main_UI.this.pack();
-
             Main_UI.this.mainPanel.setCursor(null);
-
             outputTable.setVisible(true);
             Main_UI.this.repaint();
             clearButton.setVisible(true);
@@ -480,7 +316,6 @@ public class Main_UI extends JFrame {
         Main_UI.this.repaint();
         Main_UI.this.pack();
     }
-
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }
