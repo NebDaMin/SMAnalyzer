@@ -197,6 +197,10 @@ public class CommentListAnalyzer {
     public ArrayList<CommentInstance> getComments() {
         return AllComments;
     }
+    
+    public ArrayList<WordInstance> getFilteredWord() {
+        return AllUniqueWordsFiltered;
+    }
 
     public void clearArray() {
         AllComments.clear();
