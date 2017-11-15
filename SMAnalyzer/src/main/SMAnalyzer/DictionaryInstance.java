@@ -31,7 +31,7 @@ public class DictionaryInstance {
     //Turns out that the dictionary object was not nearly as complicated as I thought. At least for our v1 implementation
     //Here are some getters and setters to make use of.
     public void addTempWordToDict(String tempWord) {
-        TheDictionary.addWord(tempWord);
+        TheDictionary.addWord("\n------------------\n" + tempWord);
         CurrentTempDictionary.add(tempWord);
     }
 
