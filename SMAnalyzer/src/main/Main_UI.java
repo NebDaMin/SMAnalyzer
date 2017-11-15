@@ -547,21 +547,23 @@ public class Main_UI extends JFrame {
                 int pos = 0;
                 int neg = 0;
                 int net = 0;
+                outputString = "<html>";
                 for (int k = 0; k < selectedGroup.getComments().size(); k++) {
-                    outputString += comments.get(k).getCommentRaw();
-                    outputString += "\nWritten at: " + comments.get(k).getCommentTime();
+                    outputString += "<p>"+comments.get(k).getCommentRaw()+"</p>";
+                    outputString += "<p>Written at: " + comments.get(k).getCommentTime()+"</p>";
                     if (comments.get(k).getPositivityLevel() < 0) {
-                        outputString += "\nThis comment is flagged as negative.";
+                        outputString += "<br/><p>This comment is flagged as negative.</p>";
                         neg++;
                     } else if (comments.get(k).getPositivityLevel() > 0) {
-                        outputString += "\nThis comment is flagged as positive.";
+                        outputString += "<br/><p>This comment is flagged as positive.</p>";
                         pos++;
                     } else {
-                        outputString += "\nThis comment is flagged as neutral.";
+                        outputString += "<br/><p>This comment is flagged as neutral.</p>";
                         net++;
                     }
-                    outputString += "\n\n";
+                    outputString += "<br/>";
                 }
+                outputString += "</html>";
                 JFreeChart graph;
                 GraphInstance g = new GraphInstance();
                 /*if (barGraph.isSelected()) {
@@ -576,6 +578,7 @@ public class Main_UI extends JFrame {
                 // graph.setHorizontalAlignment(SwingConstants.CENTER);
                 chart.setPreferredSize(new Dimension(600, 300));
                 JTextPane commentList = new JTextPane();
+                commentList.setContentType("text/html");
                 commentList.setText(outputString);
                 commentList.setEditable(false);
 

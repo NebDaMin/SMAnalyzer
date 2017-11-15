@@ -6,10 +6,14 @@
 package main;
 
 import java.awt.Color;
+import java.text.DecimalFormat;
 import static org.jfree.chart.ChartColor.DARK_GREEN;
 import static org.jfree.chart.ChartColor.DARK_MAGENTA;
+import static org.jfree.chart.ChartColor.DARK_RED;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PiePlot3D;
@@ -26,10 +30,12 @@ import org.jfree.util.Rotation;
  * @author Amber
  */
 public class GraphInstance {
-          public final int BAR_CHART = 0;
-          public final int PIE_CHART = 1;
-   public JFreeChart Graph(int chartType, String chartTitle, boolean threeD, int pos, int neg, int net) {   
-       /* if (chartType == BAR_CHART) {
+
+    public final int BAR_CHART = 0;
+    public final int PIE_CHART = 1;
+
+    public JFreeChart Graph(int chartType, String chartTitle, boolean threeD, int pos, int neg, int net) {
+        /* if (chartType == BAR_CHART) {
 
             JFreeChart barChart = ChartFactory.createBarChart(chartTitle, "Word", "Percentage", createBarDataset(pos, neg, net), PlotOrientation.VERTICAL, true, true, false);
             final CategoryPlot plot = barChart.getCategoryPlot();
@@ -40,10 +46,10 @@ public class GraphInstance {
             renderer.setSeriesPaint(2, Color.cyan);
             return barChart;
         } else if (chartType == PIE_CHART) {*/
-            PieDataset dataset = createPieDataset(pos, neg, net);
+        PieDataset dataset = createPieDataset(pos, neg, net);
 
-            JFreeChart pieChart = createPieChart(dataset, chartTitle, threeD);
-            return pieChart;
+        JFreeChart pieChart = createPieChart(dataset, chartTitle, threeD);
+        return pieChart;
         /*} else {
             return null;
         }*/
@@ -68,7 +74,7 @@ public class GraphInstance {
         dataset.addValue(75, negativeString, wordDos);
         dataset.addValue(11, neutralString, wordDos);
         dataset.addValue(20, positiveString, wordDos);
-        dataset.addValue(5,  negativeString, wordTres);
+        dataset.addValue(5, negativeString, wordTres);
         dataset.addValue(15, neutralString, wordTres);
         dataset.addValue(88, positiveString, wordTres);
 
@@ -94,13 +100,17 @@ public class GraphInstance {
             PiePlot3D plot = (PiePlot3D) chart.getPlot();
             //You can put different colors or comment these out to have the original colors
             plot.setSectionPaint("Positive", DARK_GREEN);
-            plot.setSectionPaint("Neutral", DARK_MAGENTA);
-            plot.setSectionPaint("Negative", Color.black);
-
+            plot.setSectionPaint("Neutral", Color.BLACK);
+            plot.setSectionPaint("Negative", DARK_RED);
+            plot.setExplodePercent("Positive", 0.10);
+            plot.setExplodePercent("Neutral", 0.10);
+            plot.setExplodePercent("Negative", 0.10);
+            plot.setSimpleLabels(true);
             plot.setStartAngle(0);
             plot.setDirection(Rotation.CLOCKWISE);
             plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1
-
+            PieSectionLabelGenerator gen = new StandardPieSectionLabelGenerator("{0}: {1} ({2})", new DecimalFormat("0"), new DecimalFormat("0%"));
+            plot.setLabelGenerator(gen);
 
             return chart;
         } else {
@@ -108,15 +118,19 @@ public class GraphInstance {
             PiePlot plot = (PiePlot) chart.getPlot();
             //You can put different colors or comment these out to have the original colors
             plot.setSectionPaint("Positive", DARK_GREEN);
-            plot.setSectionPaint("Neutral", DARK_MAGENTA);
-            plot.setSectionPaint("Negative", Color.black);
-
+            plot.setSectionPaint("Neutral", Color.BLACK);
+            plot.setSectionPaint("Negative", DARK_RED);
+            plot.setExplodePercent("Positive", 0.10);
+            plot.setExplodePercent("Neutral", 0.10);
+            plot.setExplodePercent("Negative", 0.10);
+            plot.setSimpleLabels(true);
             plot.setStartAngle(0);
             plot.setDirection(Rotation.CLOCKWISE);
             plot.setForegroundAlpha(0.5f); //sets the transparency of the graph -> 0 to 1
-
+            PieSectionLabelGenerator gen = new StandardPieSectionLabelGenerator("{0}: {1} ({2})", new DecimalFormat("0"), new DecimalFormat("0%"));
+            plot.setLabelGenerator(gen);
 
             return chart;
         }
-    }  
+    }
 }
