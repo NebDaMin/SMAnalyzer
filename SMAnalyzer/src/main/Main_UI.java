@@ -41,7 +41,7 @@ public class Main_UI extends JFrame {
     private JRadioButtonMenuItem /*barGraph,*/ pieGraph, threeDPieGraph;
     private ButtonGroup graphGroups;
     private JMenuItem loadFile, dictionaryAdd, exportToFile;
-    private JTable outputTable;
+    JTable outputTable;
     private JButton openButton, urlButton, pasteButton, analyzeButton, clearButton;
     private PrintWriter out;
     private JScrollPane jsp;
@@ -432,10 +432,10 @@ public class Main_UI extends JFrame {
             JButton blacklistButton = new JButton("Add to Blacklist");
             outputTable.getColumn("").setCellRenderer(new ButtonRenderer());
             outputTable.getColumn("").setCellEditor(
-                    new ButtonEditor(new JCheckBox(), groups, infoButton));
+                    new ButtonEditor(new JCheckBox(), groups, infoButton, this, Analyzer, jsp));
             outputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
             outputTable.getColumn(" ").setCellEditor(
-                    new ButtonEditor(new JCheckBox(), groups, blacklistButton));
+                    new ButtonEditor(new JCheckBox(), groups, blacklistButton, this, Analyzer, jsp));
             jsp = new JScrollPane(outputTable);
             Dimension d = outputTable.getPreferredSize();
             jsp.setPreferredSize(new Dimension(500, 200));
@@ -472,176 +472,6 @@ public class Main_UI extends JFrame {
             JOptionPane.showMessageDialog(null, "Something Broke", "You broke it so bad that I don't even know what broke", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    class ButtonRenderer extends JButton implements TableCellRenderer {
-
-        public ButtonRenderer() {
-            setOpaque(true);
-        }
-
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            if (isSelected) {
-                setForeground(table.getSelectionForeground());
-                setBackground(table.getSelectionBackground());
-            } else {
-                setForeground(table.getForeground());
-                setBackground(UIManager.getColor("Button.background"));
-            }
-            setText((value == null) ? "" : value.toString());
-            return this;
-        }
-    }
-
-    class ButtonEditor extends DefaultCellEditor {
-
-        protected JButton button;
-        private String label;
-        private boolean isPushed;
-        private ArrayList<CommentGroup> groups;
-
-        public ButtonEditor(JCheckBox checkBox, ArrayList<CommentGroup> groups, JButton aButton) {
-            super(checkBox);
-            this.groups = groups;
-            button = aButton;
-            button.setOpaque(true);
-            button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
-                }
-            });
-        }
-
-        public Component getTableCellEditorComponent(JTable table, Object value,
-                boolean isSelected, int row, int column) {
-            if (isSelected) {
-                button.setForeground(table.getSelectionForeground());
-                button.setBackground(table.getSelectionBackground());
-            } else {
-                button.setForeground(table.getForeground());
-                button.setBackground(table.getBackground());
-            }
-            label = (value == null) ? "" : value.toString();
-            button.setText(label);
-            isPushed = true;
-            return button;
-        }
-
-        public Object getCellEditorValue() {
-            if (isPushed && label.equals("More Info")) {
-
-                // action handling for more info button
-                JPanel dialogPanel = new JPanel();
-                dialogPanel.setLayout(new GridLayout(2, 1));
-
-                JLabel commentListLabel = new JLabel("Comment Text");
-
-                JLabel rightPlaceHolder = new JLabel("Other output?");
-                rightPlaceHolder.setHorizontalAlignment(SwingConstants.CENTER);
-                rightPlaceHolder.setPreferredSize(new Dimension(300, 300));
-
-                ArrayList<CommentInstance> comments = new ArrayList();
-                CommentGroup selectedGroup = groups.get(Main_UI.this.outputTable.getSelectedRow());
-                comments = selectedGroup.getComments();
-                String outputString = "";
-                int pos = 0;
-                int neg = 0;
-                int net = 0;
-                outputString = "<html>";
-                for (int k = 0; k < selectedGroup.getComments().size(); k++) {
-                    outputString += "<p>"+comments.get(k).getCommentRaw()+"</p>";
-                    outputString += "<p>Written at: " + comments.get(k).getCommentTime()+"</p>";
-                    if (comments.get(k).getPositivityLevel() < 0) {
-                        outputString += "<br/><p>This comment is flagged as negative.</p>";
-                        neg++;
-                    } else if (comments.get(k).getPositivityLevel() > 0) {
-                        outputString += "<br/><p>This comment is flagged as positive.</p>";
-                        pos++;
-                    } else {
-                        outputString += "<br/><p>This comment is flagged as neutral.</p>";
-                        net++;
-                    }
-                    outputString += "<br/>";
-                }
-                outputString += "</html>";
-                JFreeChart graph;
-                GraphInstance g = new GraphInstance();
-                /*if (barGraph.isSelected()) {
-                    graph = g.Graph(0, "Level of Positivity", false, pos, neg, net);
-                } else*/ if (pieGraph.isSelected()) {
-                    graph = g.Graph(1, "Level Of Positivity", false, pos, neg, net);
-                } else {
-                    graph = g.Graph(1, "Level of Positivity", true, pos, neg, net);
-                }
-
-                ChartPanel chart = new ChartPanel(graph);
-                // graph.setHorizontalAlignment(SwingConstants.CENTER);
-                chart.setPreferredSize(new Dimension(600, 300));
-                JTextPane commentList = new JTextPane();
-                commentList.setContentType("text/html");
-                commentList.setText(outputString);
-                commentList.setEditable(false);
-
-                //Code to display instances of the keyword in bold
-                SimpleAttributeSet sas = new SimpleAttributeSet();
-                StyleConstants.setBold(sas, true);
-
-                Pattern word = Pattern.compile(selectedGroup.getKeyword());
-                Matcher match = word.matcher(outputString.toLowerCase());
-
-                while (match.find()) {
-                    System.out.println(match.group() + ", " + match.start() + ", " + match.end());
-                    commentList.getStyledDocument().setCharacterAttributes(match.start(), match.end() - match.start(), sas, true);
-                }
-
-                JScrollPane scrollPane = new JScrollPane(commentList);
-                scrollPane.setPreferredSize(new Dimension(300, 300));
-                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-                JPanel textPanel = new JPanel(new BorderLayout());
-                textPanel.add(commentListLabel, BorderLayout.NORTH);
-                textPanel.add(scrollPane, BorderLayout.CENTER);
-
-                JPanel topPanel = new JPanel();
-                topPanel.add(textPanel);
-                topPanel.add(rightPlaceHolder);
-
-                JPanel bottomPanel = new JPanel();
-                bottomPanel.add(chart);
-
-                dialogPanel.add(topPanel);
-                dialogPanel.add(bottomPanel);
-
-                JDialog jd = new JDialog(Main_UI.this, "Group Details", true);
-                jd.add(dialogPanel);
-                jd.setLocation(650, 200);
-                jd.pack();
-                jd.show();
-            } else if (isPushed && label.equals("Add to blacklist")) {
-                try {
-                    Analyzer.addToBlacklist(groups.get(Main_UI.this.outputTable.getSelectedRow()).getKeyword());
-                    Analyzer.clearArray();
-                    Main_UI.this.remove(jsp);
-                    analyzeAndDisplay(true);
-                } catch (IOException ioe) {
-                    JOptionPane.showMessageDialog(Main_UI.this, "File not found",
-                            "You done messed up the temp blacklist path", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-            isPushed = false;
-            return new String(label);
-        }
-
-        public boolean stopCellEditing() {
-            isPushed = false;
-            return super.stopCellEditing();
-        }
-
-        protected void fireEditingStopped() {
-            super.fireEditingStopped();
-        }
-    }
-
     public void ClearUI() {
         outputTable.setVisible(false);
         exportToFile.setEnabled(false);
