@@ -76,4 +76,8 @@ public class NormalizedComment {
     public String getTime() {
         return created_time;
     }
+    
+    public String getShares() {
+        return shares;
+    }
 }

@@ -7,6 +7,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -33,8 +34,10 @@ import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import main.SMAnalyzer.CommentGroup;
 import main.SMAnalyzer.CommentInstance;
 import main.SMAnalyzer.CommentListAnalyzer;
@@ -124,49 +127,63 @@ class ButtonEditor extends DefaultCellEditor {
             ArrayList<CommentInstance> comments = new ArrayList();
             CommentGroup selectedGroup = groups.get(this.mainUI.outputTable.getSelectedRow());
             comments = selectedGroup.getComments();
-            String outputString = "";
-            int pos = 0;
+
+            JTextPane commentList = new JTextPane();
+            commentList.setText("");
+            commentList.setEditable(false);
+            StyledDocument doc = commentList.getStyledDocument();
+
+            SimpleAttributeSet sasGreen = new SimpleAttributeSet();
+            sasGreen.addAttribute(StyleConstants.CharacterConstants.Foreground, new Color(0, 128, 0));
+
+            SimpleAttributeSet sasRed = new SimpleAttributeSet();
+            sasRed.addAttribute(StyleConstants.CharacterConstants.Foreground, new Color(178, 34, 34));
+
+            SimpleAttributeSet sasGray = new SimpleAttributeSet();
+            sasGray.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.DARK_GRAY);
+
+            String addString = "";
             int neg = 0;
+            int pos = 0;
             int net = 0;
-            outputString = "<html>";
-            for (int k = 0; k < selectedGroup.getComments().size(); k++) {
-                outputString += "<p>" + comments.get(k).getCommentRaw() + "</p>";
-                outputString += "<p>Written at: " + comments.get(k).getCommentTime() + "</p>";
-                if (comments.get(k).getPositivityLevel() < 0) {
-                    outputString += "<br/><p>This comment is flagged as negative.</p>";
-                    neg++;
-                } else if (comments.get(k).getPositivityLevel() > 0) {
-                    outputString += "<br/><p>This comment is flagged as positive.</p>";
-                    pos++;
-                } else {
-                    outputString += "<br/><p>This comment is flagged as neutral.</p>";
-                    net++;
+            try {
+                for (int k = 0; k < selectedGroup.getComments().size(); k++) {
+                    addString = comments.get(k).getCommentRaw();
+                    addString += "\nWritten at: " + comments.get(k).getCommentTime() + "\n";
+                    if (comments.get(k).getPositivityLevel() < 0) {
+                        doc.insertString(doc.getLength(), addString, sasRed);
+                        doc.insertString(doc.getLength(), "This comment is flagged as negative.\n\n", sasRed);
+                        neg++;
+                    } else if (comments.get(k).getPositivityLevel() > 0) {
+                        doc.insertString(doc.getLength(), addString, sasGreen);
+                        doc.insertString(doc.getLength(), "This comment is flagged as positive.\n\n", sasGreen);
+                        pos++;
+                    } else {
+                        doc.insertString(doc.getLength(), addString, sasGray);
+                        doc.insertString(doc.getLength(), "This comment is flagged as neutral.\n\n", sasGray);
+                        net++;
+                    }
                 }
-                outputString += "<br/>";
+                //Code to display instances of the keyword in bold
+                SimpleAttributeSet sasBold = new SimpleAttributeSet();
+                StyleConstants.setBold(sasBold, true);
+
+                Pattern word = Pattern.compile(selectedGroup.getKeyword());
+                Matcher match = word.matcher(doc.getText(0, doc.getLength()).toLowerCase());
+
+                while (match.find()) {
+                    System.out.println(match.group() + ", " + match.start() + ", " + match.end());
+                    commentList.getStyledDocument().setCharacterAttributes(match.start(), match.end() - match.start(), sasBold, false);
+                }
+            } catch (BadLocationException ble) {
+                System.out.println(ble);
             }
-            outputString += "</html>";
             JFreeChart graph;
             GraphInstance g = new GraphInstance();
             graph = g.Graph(1, "Level Of Positivity", false, pos, neg, net);
             ChartPanel chart = new ChartPanel(graph);
             // graph.setHorizontalAlignment(SwingConstants.CENTER);
             chart.setPreferredSize(new Dimension(600, 300));
-            JTextPane commentList = new JTextPane();
-            commentList.setContentType("text/html");
-            commentList.setText(outputString);
-            commentList.setEditable(false);
-
-            //Code to display instances of the keyword in bold
-            SimpleAttributeSet sas = new SimpleAttributeSet();
-            StyleConstants.setBold(sas, true);
-
-            Pattern word = Pattern.compile(selectedGroup.getKeyword());
-            Matcher match = word.matcher(outputString.toLowerCase());
-
-            while (match.find()) {
-                System.out.println(match.group() + ", " + match.start() + ", " + match.end());
-                commentList.getStyledDocument().setCharacterAttributes(match.start(), match.end() - match.start(), sas, true);
-            }
 
             JScrollPane scrollPane = new JScrollPane(commentList);
             scrollPane.setPreferredSize(new Dimension(300, 300));
@@ -199,10 +216,9 @@ class ButtonEditor extends DefaultCellEditor {
                 posScore += instance.getPositivityLevel();
             }
             summaryString += wordTotal;
-            double negPercentage = round((negCount/commentTotal*100), 2);
-            System.out.println(negCount + "/" + comments.size() + "=" + negPercentage);
-            double posPercentage = round((posCount/commentTotal*100), 2); 
-            double neutralPercentage = round(neutralCount/commentTotal*100, 2);
+            double negPercentage = round((negCount / commentTotal * 100), 2);
+            double posPercentage = round((posCount / commentTotal * 100), 2);
+            double neutralPercentage = round(neutralCount / commentTotal * 100, 2);
             summaryString += "\n\nNegative Percentage: " + negPercentage;
             summaryString += "\nPositive Percentage: " + posPercentage;
             summaryString += "\nNeutral Percentage: " + neutralPercentage;

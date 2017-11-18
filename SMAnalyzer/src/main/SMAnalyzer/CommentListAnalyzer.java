@@ -62,7 +62,8 @@ public class CommentListAnalyzer {
     public void setComments(ArrayList<NormalizedComment> post, boolean isBlacklistEnabled) throws IOException {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
-            CommentInstance currentInstance = new CommentInstance(post.get(x).getMessage(), post.get(x).getTime(), Dictionary.getDictionaryInstance(), PositivityWords);
+            CommentInstance currentInstance = new CommentInstance(post.get(x).getMedia(), post.get(x).getId(), post.get(x).getMessage(), post.get(x).getTime(),
+                    post.get(x).getShares(), Dictionary.getDictionaryInstance(), PositivityWords);
             //Filtering out non english words and instances of Only Names in comments.
             //We should somehow rerun this code when we apply words to the TempDictionary
             //Im not sure how the existing rerun functionality is working with the blacklist. Figured I'd mention this to be sure.
@@ -197,7 +198,7 @@ public class CommentListAnalyzer {
     public ArrayList<CommentInstance> getComments() {
         return AllComments;
     }
-    
+
     public ArrayList<WordInstance> getFilteredWord() {
         return AllUniqueWordsFiltered;
     }

@@ -8,12 +8,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JFileChooser;
 import main.sminterfaces.FBClient;
 import main.sminterfaces.YTClient;
 import main.sminterfaces.TwitterClient;
+import main.sminterfaces.NormalizedComment;
+import org.json.*;
 
 public class Main_UI extends JFrame {
 
@@ -170,9 +174,12 @@ public class Main_UI extends JFrame {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         FileWriter fw = new FileWriter(jfc.getSelectedFile() + ".txt");
+                        fw.write(comments.get(0).getMedia() + "`");
                         for (CommentInstance c : comments) {
-                            fw.write(c.getCommentRaw());
-                            fw.write(System.lineSeparator());
+                            fw.write(c.getID() + "`");
+                            fw.write(c.getCommentRaw() + "`");
+                            fw.write(c.getCommentTime() + "`");
+                            fw.write(c.getShares() + "|");
                         }
                         fw.close();
                     } catch (IOException ex) {
@@ -180,17 +187,56 @@ public class Main_UI extends JFrame {
                     }
                 }
             } else if (e.getSource() == loadFile) {
-                ArrayList<String> comments = new ArrayList();
-                String sCurrentLine;
+                ArrayList<NormalizedComment> comments = new ArrayList();
+                ArrayList<String> idList = new ArrayList();
+                ArrayList<String> textList = new ArrayList();
+                ArrayList<String> timeList = new ArrayList();
+                ArrayList<String> shareList = new ArrayList();
                 int returnVal = jfc.showOpenDialog(Main_UI.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
-                        BufferedReader br = new BufferedReader(new FileReader(jfc.getSelectedFile()));
-                        while ((sCurrentLine = br.readLine()) != null) {
-                            comments.add(sCurrentLine);
+                        String contents = new String(Files.readAllBytes(Paths.get(jfc.getSelectedFile().getPath())));
+                        char currentChar;
+                        String media = "";
+                        String currentId = "";
+                        String currentText = "";
+                        String currentTime = "";
+                        String currentShares = "";
+                        int currentState = 0;
+                        for (int k = 0; k < contents.length(); k++) {
+                            currentChar = contents.charAt(k);
+                            if (currentChar == '`') {
+                                if (currentState == 1) {
+                                    idList.add(currentId);
+                                    currentId = "";
+                                } else if (currentState == 2) {
+                                    textList.add(currentText);
+                                    currentText = "";
+                                } else if (currentState == 3) {
+                                    timeList.add(currentTime);
+                                    currentTime = "";
+                                }
+                                currentState++;
+                            } else if (currentChar == '|') {
+                                shareList.add(currentShares);
+                                currentShares = "";
+                                currentState = 1;
+                            } else {
+                                if (currentState == 0) {
+                                    media += currentChar;
+                                } else if (currentState == 1) {
+                                    currentId += currentChar;
+                                } else if (currentState == 2) {
+                                    currentText += currentChar;
+                                } else if (currentState == 3) {
+                                    currentTime += currentChar;
+                                } else if (currentState == 4) {
+                                    currentShares += currentChar;
+                                }
+                            }
                         }
-                        for (String s : comments) {
-                            System.out.println(s);
+                        for (int j = 0; j < idList.size(); j++) {
+                            //make JSON objects
                         }
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -237,6 +283,7 @@ public class Main_UI extends JFrame {
             }
         }
     }
+
     void analyzeAndDisplay(Boolean isBlacklistEnabled) {
         try {
             if (parse.getSite().equals("facebook")) {
@@ -308,6 +355,7 @@ public class Main_UI extends JFrame {
             JOptionPane.showMessageDialog(null, "Something Broke", "You broke it so bad that I don't even know what broke", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     public void ClearUI() {
         outputTable.setVisible(false);
         exportToFile.setEnabled(false);
@@ -316,6 +364,7 @@ public class Main_UI extends JFrame {
         Main_UI.this.repaint();
         Main_UI.this.pack();
     }
+
     public static void main(String args[]) throws IOException {
         new Main_UI();
     }

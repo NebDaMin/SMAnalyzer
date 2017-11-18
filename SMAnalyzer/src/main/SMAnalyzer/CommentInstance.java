@@ -10,6 +10,9 @@ public class CommentInstance implements Comparable<CommentInstance> {
     //class level vars
     private String CommentRaw = "";                         //Raw comment when first initialized
     private String CommentTime = "";                        //Placeholder for the time value to be sent from the facebook API
+    private String Media = "";                              //Social media source of comment
+    private String Shares = "";                             //Number of shares comment has received
+    private String ID = "";                                 //ID assigned by social media source
     private String CommentNoPunct = "";                     //Comment Version without punctuation
     private ArrayList<WordInstance> UniqueWordList;         //List of unique words    //Count of each words in word list
     private ArrayList<WordInstance> GeneralizedWordList;    //TODO: make a string of all word variances generalized
@@ -20,12 +23,16 @@ public class CommentInstance implements Comparable<CommentInstance> {
     private int PositivityLevel = 0;                        //This is the int that will determine the positivity level
 
     //Constructor for CommentInstance
-    public CommentInstance(String inputString, String time, GenericSpellDictionary dictionary, ArrayList<WordInstance> positivityWordList) throws IOException {
+    public CommentInstance(String media, String id, String inputString, String time,
+            String shares, GenericSpellDictionary dictionary, ArrayList<WordInstance> positivityWordList) throws IOException {
         //Initialize Variables
-        inputString = inputString.replaceAll(System.getProperty("line.separator"), "");
         inputString = inputString.replaceAll("|", "");
+        inputString = inputString.replaceAll("`", "");
         CommentRaw = inputString;
-        CommentTime = time; 
+        CommentTime = time;
+        Media = media;
+        Shares = shares;
+        ID = id;
         CommentCharList = new ArrayList<>();
         UniqueWordList = new ArrayList<>();
 
@@ -76,7 +83,7 @@ public class CommentInstance implements Comparable<CommentInstance> {
 
             if (comment.charAt(z) == ' ') {
                 //search currentWordList to see if currentWord exists 
-                
+
                 int searchResults = currentWordList.indexOf(currentWord.toLowerCase());
                 //if currentWord doesn't exist
                 if (searchResults == -1) {
@@ -105,23 +112,21 @@ public class CommentInstance implements Comparable<CommentInstance> {
         double results = checker.checkSpelling(commentTokenizer);
         double resultThreshold = results / getCommentNoPunctStringArray().length;
 
-        if(getCommentNoPunctStringArray().length == 1 && results < 0)
-        {
+        if (getCommentNoPunctStringArray().length == 1 && results < 0) {
             IsEnglish = true;
+        } else {
+            IsEnglish = resultThreshold < .34;
         }
-        else IsEnglish = resultThreshold < .34;
     }
-    
+
     private void identifyIsName() {
-        if (UniqueWordList.size() == 2)
-        {
+        if (UniqueWordList.size() == 2) {
             IsOnlyName = UniqueWordList.get(0).getHasCapFirstChar() == true && UniqueWordList.get(1).getHasCapFirstChar() == true;
-        }
-        else {
+        } else {
             IsOnlyName = false;
         }
-    }       
-    
+    }
+
     //Matteo take a look at this
     //Basically I use the "getCount" method from the word instance to add to the overall positivity level in a comment.
     //We still need to add logic for modifiers such as "not" and so on.
@@ -135,7 +140,7 @@ public class CommentInstance implements Comparable<CommentInstance> {
             }
         }
     }
-    
+
     @Override
     public int compareTo(CommentInstance other) {
         return this.CommentTime.compareTo(other.CommentTime);
@@ -146,11 +151,10 @@ public class CommentInstance implements Comparable<CommentInstance> {
         return this.CommentRaw;
     }
 
-    
     public String getCommentTime() {
         return this.CommentTime;
     }
-    
+
     public String getCommentNoPunctString() {
         return this.CommentNoPunct;
     }
@@ -162,14 +166,26 @@ public class CommentInstance implements Comparable<CommentInstance> {
     public boolean getIsEnglish() {
         return IsEnglish;
     }
-    
+
     public boolean getIsOnlyName() {
         return IsOnlyName;
     }
-    
+
     public int getPositivityLevel() {
         return PositivityLevel;
-    }    
+    }
+
+    public String getMedia() {
+        return Media;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public String getShares() {
+        return Shares;
+    }
 
     public ArrayList<WordInstance> getUniqueWordList() {
         return UniqueWordList;
