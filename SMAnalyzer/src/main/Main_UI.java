@@ -17,12 +17,16 @@ import main.sminterfaces.FBClient;
 import main.sminterfaces.YTClient;
 import main.sminterfaces.TwitterClient;
 import main.sminterfaces.NormalizedComment;
-import org.json.*;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
 
 public class Main_UI extends JFrame {
 
     //UI vars
     private JPanel mainPanel;
+    private JPanel yugePanel;
+    private JPanel chartPanel;
+    private ChartPanel mainChart;
     private JMenuBar menu;
     private JMenu options, file;
     private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile;
@@ -59,6 +63,7 @@ public class Main_UI extends JFrame {
         outputTable = new JTable();
         jsp = new JScrollPane(outputTable);
         mainPanel = new JPanel();
+        
 
         //menu init
         menu = new JMenuBar();
@@ -128,7 +133,11 @@ public class Main_UI extends JFrame {
         layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
         layoutConstraints.gridy = 1;
         this.add(mainPanel, layoutConstraints);
-
+        
+        chartPanel = new JPanel();
+        layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+        layoutConstraints.gridx = 1;
+        this.add(chartPanel, layoutConstraints);
         urlButton.addActionListener(ah);
         pasteButton.addActionListener(ah);
         analyzeButton.addActionListener(ah);
@@ -273,7 +282,7 @@ public class Main_UI extends JFrame {
                     } else if (parse.getSite().equals("twitter")) {
                         //TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
-
+                    
                     //action handling moved down to method for reuse
                     analyzeAndDisplay(isBlacklistEnabled);
                 }
@@ -311,6 +320,18 @@ public class Main_UI extends JFrame {
                 tableData[row][3] = "Add to blacklist";
                 row++;
             }
+            // add a graph
+            JFreeChart graph;
+            GraphInstance g = new GraphInstance();
+            int[] alignment = Analyzer.totalAlignment();
+            graph = g.Graph("Level Of Positivity", false, alignment[1],alignment[0], alignment[2]);
+            mainChart = new ChartPanel(graph);
+            layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+            layoutConstraints.gridx = 1;
+            layoutConstraints.gridheight = 3;
+            layoutConstraints.weighty = 3.0;
+            chartPanel.add(mainChart);
+            this.add(chartPanel, layoutConstraints);
             //create and populate table
             outputTable = new JTable(tableData, columnNames);
             JButton infoButton = new JButton("More Info");
@@ -325,14 +346,17 @@ public class Main_UI extends JFrame {
             Dimension d = outputTable.getPreferredSize();
             jsp.setPreferredSize(new Dimension(500, 200));
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+            layoutConstraints.gridx = 0;
             layoutConstraints.gridy = 2;
+            layoutConstraints.weighty = 0.0;
             Main_UI.this.add(jsp, layoutConstraints);
             Main_UI.this.pack();
             Main_UI.this.mainPanel.setCursor(null);
             outputTable.setVisible(true);
             Main_UI.this.repaint();
             clearButton.setVisible(true);
-
+            Main_UI.this.setLocationRelativeTo(null);
+            
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             JOptionPane.showMessageDialog(Main_UI.this, "Your array can't count that high",
                     "You pushed it too hard", JOptionPane.INFORMATION_MESSAGE);
@@ -361,6 +385,7 @@ public class Main_UI extends JFrame {
         exportToFile.setEnabled(false);
         loadFile.setEnabled(true);
         Main_UI.this.remove(jsp);
+        Main_UI.this.remove(chartPanel);   
         Main_UI.this.repaint();
         Main_UI.this.pack();
     }

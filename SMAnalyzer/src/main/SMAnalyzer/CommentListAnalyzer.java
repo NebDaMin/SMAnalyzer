@@ -209,4 +209,22 @@ public class CommentListAnalyzer {
         AllUniqueWordsFiltered.clear();
         Groups.clear();
     }
+    public int[] totalAlignment()
+        {
+            int[] alignment= new int[3];
+            for (int k=0; k<AllComments.size(); k++)
+            {
+               if (AllComments.get(k).getPositivityLevel() < 0) {
+                   //negative comments     
+                        alignment[0]++;
+                    } else if (AllComments.get(k).getPositivityLevel() > 0) {
+                        //positive comments
+                        alignment[1]++;
+                    } else {
+                        //neutral comments
+                        alignment[2]++;
+                    }  
+            }
+            return alignment;
+        }
 }

@@ -180,7 +180,7 @@ class ButtonEditor extends DefaultCellEditor {
             }
             JFreeChart graph;
             GraphInstance g = new GraphInstance();
-            graph = g.Graph(1, "Level Of Positivity", false, pos, neg, net);
+            graph = g.Graph("Level Of Positivity", false, pos, neg, net);
             ChartPanel chart = new ChartPanel(graph);
             // graph.setHorizontalAlignment(SwingConstants.CENTER);
             chart.setPreferredSize(new Dimension(600, 300));

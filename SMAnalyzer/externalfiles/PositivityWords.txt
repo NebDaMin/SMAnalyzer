@@ -895,7 +895,7 @@ covering
 coverup
 -1
 crap
--1
+0
 crazy
 -1
 create
@@ -1477,7 +1477,7 @@ faulty
 favorable
 1
 favorite
--1
+1
 favourable
 1
 favourite
@@ -2356,6 +2356,8 @@ locked
 -1
 locking
 0
+lol
+1
 long
 0
 longer
@@ -2757,7 +2759,7 @@ ok
 okay
 0
 old
--1
+0
 on
 0
 once
@@ -3171,7 +3173,7 @@ race
 radio
 0
 raise
-1
+0
 ran
 0
 range
@@ -3818,6 +3820,8 @@ suddenly
 0
 suffer
 -1
+suffering
+-1
 suggest
 0
 suicide
@@ -4148,6 +4152,8 @@ unhappy
 -1
 unhealthy
 -1
+unimpressed
+-1
 unit
 0
 unjust
@@ -4476,6 +4482,8 @@ ya
 0
 yard
 0
+yay
+1
 yeah
 1
 year
