@@ -24,7 +24,6 @@ public class Main_UI extends JFrame {
 
     //UI vars
     private JPanel mainPanel;
-    private JPanel yugePanel;
     private JPanel chartPanel;
     private ChartPanel mainChart;
     private JMenuBar menu;
@@ -135,9 +134,7 @@ public class Main_UI extends JFrame {
         this.add(mainPanel, layoutConstraints);
         
         chartPanel = new JPanel();
-        layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
-        layoutConstraints.gridx = 1;
-        this.add(chartPanel, layoutConstraints);
+
         urlButton.addActionListener(ah);
         pasteButton.addActionListener(ah);
         analyzeButton.addActionListener(ah);
@@ -328,8 +325,8 @@ public class Main_UI extends JFrame {
             mainChart = new ChartPanel(graph);
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 1;
+            layoutConstraints.gridy = 0;
             layoutConstraints.gridheight = 3;
-            layoutConstraints.weighty = 3.0;
             chartPanel.add(mainChart);
             this.add(chartPanel, layoutConstraints);
             //create and populate table
@@ -348,7 +345,7 @@ public class Main_UI extends JFrame {
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 0;
             layoutConstraints.gridy = 2;
-            layoutConstraints.weighty = 0.0;
+            layoutConstraints.gridheight = 1;
             Main_UI.this.add(jsp, layoutConstraints);
             Main_UI.this.pack();
             Main_UI.this.mainPanel.setCursor(null);
@@ -385,6 +382,7 @@ public class Main_UI extends JFrame {
         exportToFile.setEnabled(false);
         loadFile.setEnabled(true);
         Main_UI.this.remove(jsp);
+        chartPanel.removeAll();
         Main_UI.this.remove(chartPanel);   
         Main_UI.this.repaint();
         Main_UI.this.pack();

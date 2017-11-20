@@ -954,6 +954,8 @@ cut
 -1
 cute
 1
+cutest
+1
 cuts
 -1
 cutting
@@ -4213,7 +4215,7 @@ ur
 us
 0
 use
-1
+0
 useless
 -1
 using
