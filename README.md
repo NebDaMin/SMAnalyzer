@@ -1,5 +1,5 @@
 # SMAnalyzer
-SMAnalyzer was designed and built by Ben Ciummo, Kailee Calhoun, Amber Owens, Matteo Pezzino, Salvador Lopez Jr, and Lisa Wherly.
+SMAnalyzer was designed and built by Ben Ciummo, Kailee Calhoun, Amber Owings, Matteo Pezzino, Salvador Lopez Jr, and Lisa Wehrly.
 This project will serve as their Senior Capstone project for the Washburn University CIS Program. 
 
 SMAnalyzer (Social Media Analyzer) is an application that leverages APIs from various social media platforms, to provide detailed statistical and trend analyasis to the user.
