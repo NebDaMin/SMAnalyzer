@@ -45,7 +45,6 @@ public class YTClient {
                     NormalizedComment normComment = new NormalizedComment();
                     normComment.setFromYoutube(comment);
                     PostArrayList.add(normComment);
-                    System.out.println("Parent Comment: " + comment.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("textOriginal") + "\r\n");
                     if (comment.has("replies")) {
                         try {
                             ArrayList<JSONObject> replies = ytClient.convertJsonReplyToList(comment.getJSONObject("replies"));

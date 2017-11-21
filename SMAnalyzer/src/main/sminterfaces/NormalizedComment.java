@@ -19,7 +19,7 @@ public class NormalizedComment {
             if (fb.has("shares")) {
                 this.shares = fb.getJSONObject("shares").getString("count");
             } else {
-                this.shares = "0";
+                this.shares = null;
             }
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
@@ -39,7 +39,7 @@ public class NormalizedComment {
                     this.created_time = yt.getJSONObject("snippet").getString("publishedAt");
                 }
             }
-            
+            this.shares = null;
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
