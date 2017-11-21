@@ -15,8 +15,9 @@ import java.util.HashMap;
 import javax.swing.JFileChooser;
 import main.sminterfaces.FBClient;
 import main.sminterfaces.YTClient;
-import main.sminterfaces.TwitterClient;
 import main.sminterfaces.NormalizedComment;
+import main.sminterfaces.RedditClient;
+import main.sminterfaces.TwitterClient;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
@@ -40,6 +41,7 @@ public class Main_UI extends JFrame {
     //restFB vars
     private FBClient FBClient;
     private YTClient YTClient;
+    private RedditClient RedditClient;
     private TwitterClient TwitterClient;
     private Parse parse;
 
@@ -97,7 +99,9 @@ public class Main_UI extends JFrame {
 
         FBClient = new FBClient();
         YTClient = new YTClient();
-        //TwitterClient = new TwitterClient();
+        RedditClient = new RedditClient();
+        TwitterClient = new TwitterClient();
+        
         Analyzer = new CommentListAnalyzer();
 
         outputTable.setVisible(false);
@@ -252,8 +256,10 @@ public class Main_UI extends JFrame {
                 Analyzer.clearArray();
                 FBClient.clearArray();
                 YTClient.clearArray();
+                RedditClient.clearArray();
+                TwitterClient.clearArray();
                 ClearUI();
-                //TwitterClient.clearArray();
+                
                 String urlString = urlText.getText();
                 Main_UI.this.mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -276,8 +282,10 @@ public class Main_UI extends JFrame {
                         }
                     } else if (parse.getSite().equals("youtube")) {
                         YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"));
-                    } else if (parse.getSite().equals("twitter")) {
-                        //TwitterClient.fetchComments(stringMap.get("Post Id"));
+                    } else if (parse.getSite().equals("reddit")) {
+                        RedditClient.fetchComments(stringMap.get("Post Id"));
+                    }else if (parse.getSite().equals("twitter")) {
+                        TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
                     
                     //action handling moved down to method for reuse
@@ -300,6 +308,10 @@ public class Main_UI extends JFrame {
                 if (!YTClient.getPostArray().isEmpty()) {
                     Analyzer.setComments(YTClient.getPostArray(), isBlacklistEnabled);
                 }
+            } else if (parse.getSite().equals("reddit")) {
+                if (!RedditClient.getPostArray().isEmpty()) {
+                    Analyzer.setComments(RedditClient.getPostArray(), isBlacklistEnabled);
+                }
             } else {
                 JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
                         "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
@@ -321,7 +333,7 @@ public class Main_UI extends JFrame {
             JFreeChart graph;
             GraphInstance g = new GraphInstance();
             int[] alignment = Analyzer.totalAlignment();
-            graph = g.Graph("Level Of Positivity", false, alignment[1],alignment[0], alignment[2]);
+            graph = g.Graph("Total Level Of Positivity", false, alignment[1],alignment[0], alignment[2]);
             mainChart = new ChartPanel(graph);
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 1;
@@ -329,6 +341,7 @@ public class Main_UI extends JFrame {
             layoutConstraints.gridheight = 3;
             chartPanel.add(mainChart);
             this.add(chartPanel, layoutConstraints);
+            
             //create and populate table
             outputTable = new JTable(tableData, columnNames);
             JButton infoButton = new JButton("More Info");
