@@ -20,6 +20,7 @@ import main.sminterfaces.RedditClient;
 import main.sminterfaces.TwitterClient;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import com.jtattoo.plaf.hifi.*;
 
 public class Main_UI extends JFrame {
 
@@ -339,7 +340,7 @@ public class Main_UI extends JFrame {
             mainChart = new ChartPanel(graph);
             
             postPanel = new JPanel();
-            JLabel postText = new JLabel();
+            JTextArea postText = new JTextArea();
             String text = "No title";
             if (parse.getSite().equals("facebook")) {
                 text = FBClient.getPostArray().get(0).getMessage();
@@ -350,17 +351,21 @@ public class Main_UI extends JFrame {
             }
             postText.setText(text);
             postPanel.add(postText);
-            layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
-            layoutConstraints.gridx = 1;
-            layoutConstraints.gridy = 0;
-            this.add(postPanel, layoutConstraints);
+            postText.setWrapStyleWord(true);
+            postText.setEditable(false);
             
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 1;
-            layoutConstraints.gridy = 1;
-            layoutConstraints.gridheight = 2;
-            chartPanel.add(mainChart);
+            layoutConstraints.gridy = 0;
+            layoutConstraints.gridheight = 4;
             this.add(chartPanel, layoutConstraints);
+            
+            layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+            layoutConstraints.gridx = 0;
+            layoutConstraints.gridy = 2;
+            layoutConstraints.gridheight = 1;
+            chartPanel.add(mainChart);
+            this.add(postPanel, layoutConstraints);
             
             //create and populate table
             outputTable = new JTable(tableData, columnNames);
@@ -377,7 +382,7 @@ public class Main_UI extends JFrame {
             jsp.setPreferredSize(new Dimension(500, 200));
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 0;
-            layoutConstraints.gridy = 2;
+            layoutConstraints.gridy = 3;
             layoutConstraints.gridheight = 1;
             Main_UI.this.add(jsp, layoutConstraints);
             Main_UI.this.pack();
@@ -406,6 +411,16 @@ public class Main_UI extends JFrame {
     }
 
     public static void main(String args[]) throws IOException {
-        new Main_UI();
+       
+        try
+        {
+        LookAndFeel hiFiFeel;
+        UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+        }
+        catch(Exception e)
+        {
+            
+        }
+         new Main_UI();
     }
 }
