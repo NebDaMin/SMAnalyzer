@@ -26,6 +26,7 @@ public class Main_UI extends JFrame {
     //UI vars
     private JPanel mainPanel;
     private JPanel chartPanel;
+    private JPanel postPanel;
     private ChartPanel mainChart;
     private JMenuBar menu;
     private JMenu options, file;
@@ -138,6 +139,7 @@ public class Main_UI extends JFrame {
         this.add(mainPanel, layoutConstraints);
         
         chartPanel = new JPanel();
+        postPanel = new JPanel();
 
         urlButton.addActionListener(ah);
         pasteButton.addActionListener(ah);
@@ -335,10 +337,17 @@ public class Main_UI extends JFrame {
             int[] alignment = Analyzer.totalAlignment();
             graph = g.Graph("Total Level Of Positivity", false, alignment[1],alignment[0], alignment[2]);
             mainChart = new ChartPanel(graph);
+            
+            postPanel = new JPanel();
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 1;
             layoutConstraints.gridy = 0;
-            layoutConstraints.gridheight = 3;
+            this.add(postPanel, layoutConstraints);
+            
+            layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+            layoutConstraints.gridx = 1;
+            layoutConstraints.gridy = 1;
+            layoutConstraints.gridheight = 2;
             chartPanel.add(mainChart);
             this.add(chartPanel, layoutConstraints);
             
@@ -395,6 +404,7 @@ public class Main_UI extends JFrame {
         exportToFile.setEnabled(false);
         loadFile.setEnabled(true);
         Main_UI.this.remove(jsp);
+        Main_UI.this.remove(postPanel);
         chartPanel.removeAll();
         Main_UI.this.remove(chartPanel);   
         Main_UI.this.repaint();
