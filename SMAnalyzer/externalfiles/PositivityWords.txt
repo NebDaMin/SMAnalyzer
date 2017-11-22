@@ -679,7 +679,7 @@ bean
 beast
 0
 beat
--1
+0
 beating
 -1
 beautiful
@@ -2905,7 +2905,7 @@ filthy
 final
 0
 finally
-0
+1
 financial
 0
 find
@@ -3017,9 +3017,9 @@ foreign
 forever
 0
 forget
--1
+0
 forgot
--1
+0
 form
 0
 former
@@ -3406,6 +3406,8 @@ happen
 0
 happened
 0
+happening
+1
 happiness
 1
 happiest
@@ -5059,7 +5061,7 @@ ok
 okay
 0
 old
--1
+0
 older
 -1
 omg
@@ -5269,6 +5271,10 @@ pay
 payments
 0
 peace
+1
+peacemaker
+1
+peacemakers
 1
 peculiar
 0
@@ -7809,7 +7815,7 @@ wack
 wade
 0
 wait
-0
+1
 waiting
 0
 wake
