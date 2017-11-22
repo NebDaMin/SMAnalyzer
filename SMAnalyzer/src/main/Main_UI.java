@@ -20,7 +20,6 @@ import main.sminterfaces.RedditClient;
 import main.sminterfaces.TwitterClient;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import com.jtattoo.plaf.hifi.*;
 
 public class Main_UI extends JFrame {
 
@@ -152,7 +151,7 @@ public class Main_UI extends JFrame {
 
         this.pack();
         this.setLocation(700, 300);
-        this.setResizable(true);
+        this.setResizable(false);
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("SMAnalyzer");
@@ -414,8 +413,7 @@ public class Main_UI extends JFrame {
        
         try
         {
-        LookAndFeel hiFiFeel;
-        UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+           UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
         }
         catch(Exception e)
         {

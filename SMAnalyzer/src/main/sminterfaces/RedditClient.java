@@ -23,7 +23,8 @@ public class RedditClient {
     }
 
     public void fetchComments(String id) {
-        RedditRequest request = new RedditRequest("/comments.json?article=" + id);
+        RedditRequest request = new RedditRequest("/comments.json?");
+        request.addQueryParameter("article", id);
         ArrayList<JSONObject> list = parse(RedditClient.get(Token, request));
         for(JSONObject obj : list){
             NormalizedComment normComment = new NormalizedComment();

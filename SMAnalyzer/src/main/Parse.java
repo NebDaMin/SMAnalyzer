@@ -1,17 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package main;
 
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Amber
- */
 public class Parse {
         private String site;
         public HashMap<String, String> parseUrl(String s) {
@@ -105,7 +96,6 @@ public class Parse {
         return map;
     }
 
-    //This probably doesn't quite work yet but oh well
     HashMap<String, String> parseRedditUrl(String s) {
         HashMap<String, String> map = new HashMap<String, String>();
 
@@ -116,7 +106,7 @@ public class Parse {
             String sub = s.substring(last + redLength, s.length());
             String[] array = sub.split("/");
 
-            if (array.length == 3) {
+            if (array.length == 5) {
                 map.put("Subreddit", array[1]);
                 map.put("Post Id", array[3]);
             } else {

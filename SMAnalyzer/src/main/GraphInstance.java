@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package main;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
-import static org.jfree.chart.ChartColor.DARK_GREEN;
-import static org.jfree.chart.ChartColor.DARK_RED;
+import static org.jfree.chart.ChartColor.LIGHT_GREEN;
+import static org.jfree.chart.ChartColor.LIGHT_RED;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.labels.PieSectionLabelGenerator;
@@ -24,10 +19,6 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;
 
-/**
- *
- * @author Amber
- */
 public class GraphInstance {
 
     public JFreeChart Graph(String chartTitle, boolean threeD, int pos, int neg, int net) {
@@ -79,9 +70,9 @@ public class GraphInstance {
             JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
             PiePlot plot = (PiePlot) chart.getPlot();
             //You can put different colors or comment these out to have the original colors
-            plot.setSectionPaint("Positive", DARK_GREEN);
-            plot.setSectionPaint("Neutral", Color.BLACK);
-            plot.setSectionPaint("Negative", DARK_RED);
+            plot.setSectionPaint("Positive", LIGHT_GREEN);
+            plot.setSectionPaint("Neutral", Color.WHITE);
+            plot.setSectionPaint("Negative", LIGHT_RED);
             plot.setExplodePercent("Positive", 0.10);
             plot.setExplodePercent("Neutral", 0.10);
             plot.setExplodePercent("Negative", 0.10);
