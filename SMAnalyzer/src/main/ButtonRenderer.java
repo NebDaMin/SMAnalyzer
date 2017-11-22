@@ -141,6 +141,9 @@ class ButtonEditor extends DefaultCellEditor {
 
             SimpleAttributeSet sasGray = new SimpleAttributeSet();
             sasGray.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.DARK_GRAY);
+            
+            SimpleAttributeSet sasBlack = new SimpleAttributeSet();
+            sasBlack.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLACK);
 
             String addString = "";
             int neg = 0;
@@ -152,15 +155,15 @@ class ButtonEditor extends DefaultCellEditor {
                     addString += "\nWritten at: " + comments.get(k).getCommentTime() + "\n";
                     if (comments.get(k).getPositivityLevel() < 0) {
                         doc.insertString(doc.getLength(), addString, sasRed);
-                        doc.insertString(doc.getLength(), "This comment is flagged as negative.\n\n", sasRed);
+                        doc.insertString(doc.getLength(), "***This comment is flagged as negative.***\n\n", sasBlack);
                         neg++;
                     } else if (comments.get(k).getPositivityLevel() > 0) {
                         doc.insertString(doc.getLength(), addString, sasGreen);
-                        doc.insertString(doc.getLength(), "This comment is flagged as positive.\n\n", sasGreen);
+                        doc.insertString(doc.getLength(), "***This comment is flagged as positive.***\n\n", sasBlack);
                         pos++;
                     } else {
                         doc.insertString(doc.getLength(), addString, sasGray);
-                        doc.insertString(doc.getLength(), "This comment is flagged as neutral.\n\n", sasGray);
+                        doc.insertString(doc.getLength(), "***This comment is flagged as neutral.***\n\n", sasBlack);
                         net++;
                     }
                 }
@@ -222,9 +225,10 @@ class ButtonEditor extends DefaultCellEditor {
             summaryString += "\n\nNegative Percentage: " + negPercentage;
             summaryString += "\nPositive Percentage: " + posPercentage;
             summaryString += "\nNeutral Percentage: " + neutralPercentage;
-            summaryString += "\n\nPosScore: " + posScore;
+            summaryString += "\n\nPositvity Score: " + posScore;
 
             JTextPane summary = new JTextPane();
+            summary.setEditable(false);
             summary.setPreferredSize(new Dimension(300, 300));
             summary.setText(summaryString);
             summaryPanel.add(summary);

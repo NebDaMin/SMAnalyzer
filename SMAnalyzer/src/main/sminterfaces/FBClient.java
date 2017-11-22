@@ -55,15 +55,6 @@ public class FBClient {
             NormalizedComment normComment = new NormalizedComment();
             normComment.setFromFacebook(post);
             PostArrayList.add(normComment);
-            System.out.println("Post id: " + post.getString("id"));
-            System.out.println("Message: " + post.getString("message"));
-            System.out.println("Created on: " + post.getString("created_time"));
-            try {
-                System.out.println("Shares: " + post.getJSONObject("shares").get("count"));
-            } catch (JSONException ex) {
-            }
-            System.out.println();
-
             getComments(post.getString("id"), children);
             System.out.println("PostArrayList size: " + PostArrayList.size());
         }
@@ -89,6 +80,9 @@ public class FBClient {
                     for (int i = 0; i < comments.getCount(); i++) {
                         JSONObject comment = comments.getData().getJSONObject(i);
                         NormalizedComment normComment = new NormalizedComment();
+                        if(!comment.has("message")){
+                            comment.put("message", "[No Text]");
+                        }
                         normComment.setFromFacebook(comment);
                         PostArrayList.add(normComment);
                         String time = comment.getString("created_time").replace("T", " ").replace("+0000", "");

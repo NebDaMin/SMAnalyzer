@@ -100,7 +100,7 @@ public class Main_UI extends JFrame {
         FBClient = new FBClient();
         YTClient = new YTClient();
         RedditClient = new RedditClient();
-        TwitterClient = new TwitterClient();
+        //TwitterClient = new TwitterClient();
         
         Analyzer = new CommentListAnalyzer();
 
@@ -257,7 +257,7 @@ public class Main_UI extends JFrame {
                 FBClient.clearArray();
                 YTClient.clearArray();
                 RedditClient.clearArray();
-                TwitterClient.clearArray();
+                //TwitterClient.clearArray();
                 ClearUI();
                 
                 String urlString = urlText.getText();
@@ -285,7 +285,7 @@ public class Main_UI extends JFrame {
                     } else if (parse.getSite().equals("reddit")) {
                         RedditClient.fetchComments(stringMap.get("Post Id"));
                     }else if (parse.getSite().equals("twitter")) {
-                        TwitterClient.fetchComments(stringMap.get("Post Id"));
+                        //TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
                     
                     //action handling moved down to method for reuse
