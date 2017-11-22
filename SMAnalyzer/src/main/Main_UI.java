@@ -387,26 +387,9 @@ public class Main_UI extends JFrame {
             clearButton.setVisible(true);
             Main_UI.this.setLocationRelativeTo(null);
             
-        } catch (ArrayIndexOutOfBoundsException aioobe) {
-            JOptionPane.showMessageDialog(Main_UI.this, "Your array can't count that high",
-                    "You pushed it too hard", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println(aioobe);
-        } catch (IndexOutOfBoundsException ioobe) {
-            //this one I've seen but shouldn't ever happen if the code is working
-            JOptionPane.showMessageDialog(Main_UI.this, "Somewhere in the universe, an index is out of bounds",
-                    "Wow you broke it great job", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println(ioobe);
-        } catch (IOException ioe) {
-            //this thing has to be thrown for the analyzer code
-            JOptionPane.showMessageDialog(Main_UI.this, "You tried to access a file and it didn't work",
-                    "Your files suck", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println(ioe);
-        } catch (NullPointerException npe) {
-            //the facebook stuff usually gives this error if bad happens
-            System.out.println(npe);
-        } catch (Exception ex) {
+        }catch (Exception ex) {
             System.out.println(ex);
-            JOptionPane.showMessageDialog(null, "Something Broke", "You broke it so bad that I don't even know what broke", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ex, "Something Broke", JOptionPane.ERROR_MESSAGE);
         }
     }
 
