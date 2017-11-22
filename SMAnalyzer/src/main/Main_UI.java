@@ -339,6 +339,17 @@ public class Main_UI extends JFrame {
             mainChart = new ChartPanel(graph);
             
             postPanel = new JPanel();
+            JLabel postText = new JLabel();
+            String text = "No title";
+            if (parse.getSite().equals("facebook")) {
+                text = FBClient.getPostArray().get(0).getMessage();
+            } else if (parse.getSite().equals("youtube")) {
+                text = YTClient.getPostArray().get(0).getMessage();
+            } else if (parse.getSite().equals("reddit")) {
+                text = RedditClient.getPostArray().get(0).getMessage();
+            }
+            postText.setText(text);
+            postPanel.add(postText);
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 1;
             layoutConstraints.gridy = 0;
