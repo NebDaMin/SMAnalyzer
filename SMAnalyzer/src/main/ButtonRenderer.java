@@ -124,16 +124,16 @@ class ButtonEditor extends DefaultCellEditor {
             StyledDocument doc = commentList.getStyledDocument();
 
             SimpleAttributeSet sasGreen = new SimpleAttributeSet();
-            sasGreen.addAttribute(StyleConstants.CharacterConstants.Foreground, new Color(0, 128, 0));
+            sasGreen.addAttribute(StyleConstants.CharacterConstants.Foreground, new Color(51, 224, 50));
 
             SimpleAttributeSet sasRed = new SimpleAttributeSet();
-            sasRed.addAttribute(StyleConstants.CharacterConstants.Foreground, new Color(178, 34, 34));
-
-            SimpleAttributeSet sasGray = new SimpleAttributeSet();
-            sasGray.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.DARK_GRAY);
-            
+            sasRed.addAttribute(StyleConstants.CharacterConstants.Foreground, new Color(254, 99, 61));
+			
             SimpleAttributeSet sasBlack = new SimpleAttributeSet();
             sasBlack.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLACK);
+
+            SimpleAttributeSet sasWhite = new SimpleAttributeSet();
+            sasBlack.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.WHITE);
 
             String addString = "";
             int neg = 0;
@@ -152,7 +152,7 @@ class ButtonEditor extends DefaultCellEditor {
                         doc.insertString(doc.getLength(), "***This comment is flagged as positive.***\n\n", sasBlack);
                         pos++;
                     } else {
-                        doc.insertString(doc.getLength(), addString, sasGray);
+                        doc.insertString(doc.getLength(), addString, sasWhite);
                         doc.insertString(doc.getLength(), "***This comment is flagged as neutral.***\n\n", sasBlack);
                         net++;
                     }
@@ -239,14 +239,7 @@ class ButtonEditor extends DefaultCellEditor {
             jd.pack();
             jd.show();
         } else if (isPushed && label.equals("Add to blacklist")) {
-            try {
-                Analyzer.addToBlacklist(groups.get(mainUI.outputTable.getSelectedRow()).getKeyword());
-            } catch (IOException ex) {
-                Logger.getLogger(ButtonEditor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            Analyzer.clearArray();
-            mainUI.remove(jsp);
-            mainUI.analyzeAndDisplay(true);
+                mainUI.addToBlacklist(groups.get(mainUI.outputTable.getSelectedRow()).getKeyword());
         }
         isPushed = false;
         return new String(label);
@@ -256,7 +249,6 @@ class ButtonEditor extends DefaultCellEditor {
         if (places < 0) {
             throw new IllegalArgumentException();
         }
-
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();

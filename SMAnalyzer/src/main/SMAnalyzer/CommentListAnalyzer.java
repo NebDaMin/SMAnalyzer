@@ -14,6 +14,7 @@ public class CommentListAnalyzer {
     private final String POSITIVITYWORDSPATH = "externalfiles/PositivityWords.txt";
     private final String DICTIONARYPATH = "externalfiles/BigAssDictionaryFromPrinceton.txt";
     private final String BLACKLISTPATH = "externalfiles/BlackList.txt";
+	private String OriginalPost;
     private ArrayList<CommentInstance> AllComments;
     private ArrayList<CommentInstance> NonEnglishComments;
     private final DictionaryInstance Dictionary;
@@ -29,6 +30,7 @@ public class CommentListAnalyzer {
 
     public CommentListAnalyzer() throws IOException {
         //Initialize Class Variables
+		OriginalPost = "";
         Dictionary = new DictionaryInstance(DICTIONARYPATH, "English");
         AllComments = new ArrayList();
         NonEnglishComments = new ArrayList();
@@ -56,7 +58,7 @@ public class CommentListAnalyzer {
         }
     }
 
-    public void setComments(ArrayList<NormalizedComment> post, boolean isBlacklistEnabled) throws IOException {
+    public void setComments(ArrayList<NormalizedComment> post) throws IOException {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
             CommentInstance currentInstance = new CommentInstance(post.get(x).getMedia(), post.get(x).getId(), post.get(x).getMessage(), post.get(x).getTime(),
@@ -72,7 +74,9 @@ public class CommentListAnalyzer {
                 NonEnglishComments.add(currentInstance);
             }
         }
+	}
 
+	public void analyze(Boolean isBlacklistEnabled) {
         //Loading the unique words from all CommentInstances into a single ArrayList that can be sorted
         ArrayList<WordInstance> allUniqueWords;
         allUniqueWords = AllComments.get(0).getUniqueWordList();
@@ -124,6 +128,7 @@ public class CommentListAnalyzer {
     }
 
     public ArrayList<CommentGroup> groupComments() {
+		ArrayList<CommentGroup> groups = new ArrayList();
         int targetIndex = 0;
         String keyword = "";
         //set targetIndex equal to last element in list
@@ -136,20 +141,20 @@ public class CommentListAnalyzer {
         if (AllUniqueWordsFiltered.size() > NUMBER_OF_GROUPS) {
             for (int k = 0; k < NUMBER_OF_GROUPS; k++) {
                 keyword = AllUniqueWordsFiltered.get(targetIndex).getWord();
-                Groups.add(new CommentGroup(keyword));
+                groups.add(new CommentGroup(keyword));
                 targetIndex--;
             }
         } else {
             for (int k = 0; k < AllUniqueWordsFiltered.size(); k++) {
                 keyword = AllUniqueWordsFiltered.get(targetIndex).getWord();
-                Groups.add(new CommentGroup(keyword));
+                groups.add(new CommentGroup(keyword));
                 targetIndex--;
             }
         }
         //iterate through AllComments and add any that contain a grouped keyword
         //to that group. Might be more efficient method
         ArrayList<WordInstance> wordList;
-        for (CommentGroup g : Groups) {
+        for (CommentGroup g : groups) {
             keyword = g.getKeyword();
             for (int k = 1; k < AllComments.size(); k++) {
                 wordList = AllComments.get(k).getUniqueWordList();
@@ -161,12 +166,13 @@ public class CommentListAnalyzer {
             }
         }
 
-        for (int k = 0; k < Groups.size(); k++) {
-            if (Groups.get(k).getComments().size() < 1) {
-                Groups.remove(k);
+        for (int k = 0; k < groups.size(); k++) {
+            if (groups.get(k).getComments().size() < 1) {
+                groups.remove(k);
                 k--;
             }
         }
+		Groups = groups;
         Collections.sort(Groups);
         for (CommentGroup g : Groups) {
             Collections.sort(g.getComments());
@@ -200,17 +206,23 @@ public class CommentListAnalyzer {
         return AllUniqueWordsFiltered;
     }
 
+    public String getOriginalPost() {
+        return OriginalPost;
+    }
+    
+    public void setOriginalPost(String post) {
+        OriginalPost = post;
+    }
+
     public void clearArray() {
         AllComments.clear();
         AllUniqueWords.clear();
         AllUniqueWordsFiltered.clear();
         Groups.clear();
     }
-    public int[] totalAlignment()
-        {
+    public int[] totalAlignment() {
             int[] alignment= new int[3];
-            for (int k=0; k<AllComments.size(); k++)
-            {
+            for (int k=0; k<AllComments.size(); k++) {
                if (AllComments.get(k).getPositivityLevel() < 0) {
                    //negative comments     
                         alignment[0]++;

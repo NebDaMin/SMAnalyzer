@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import main.sminterfaces.FBClient;
 import main.sminterfaces.YTClient;
@@ -65,7 +67,6 @@ public class Main_UI extends JFrame {
         outputTable = new JTable();
         jsp = new JScrollPane(outputTable);
         mainPanel = new JPanel();
-        
 
         //menu init
         menu = new JMenuBar();
@@ -172,7 +173,7 @@ public class Main_UI extends JFrame {
                 }
                 urlText.setText(s);
             } else if (e.getSource() == clearButton) {
-                ClearUI();
+                clearUI();
                 urlText.setText("");
             } else if (e.getSource() == dictionaryAdd) {
                 JFrame inputFrame = new JFrame("Add to dictionary");
@@ -187,6 +188,7 @@ public class Main_UI extends JFrame {
                     try {
                         FileWriter fw = new FileWriter(jfc.getSelectedFile() + ".txt");
                         fw.write(comments.get(0).getMedia() + "`");
+						fw.write(Analyzer.getOriginalPost() + "`");
                         for (CommentInstance c : comments) {
                             fw.write(c.getID() + "`");
                             fw.write(c.getCommentRaw() + "`");
@@ -199,68 +201,22 @@ public class Main_UI extends JFrame {
                     }
                 }
             } else if (e.getSource() == loadFile) {
-                ArrayList<NormalizedComment> comments = new ArrayList();
-                ArrayList<String> idList = new ArrayList();
-                ArrayList<String> textList = new ArrayList();
-                ArrayList<String> timeList = new ArrayList();
-                ArrayList<String> shareList = new ArrayList();
-                int returnVal = jfc.showOpenDialog(Main_UI.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        String contents = new String(Files.readAllBytes(Paths.get(jfc.getSelectedFile().getPath())));
-                        char currentChar;
-                        String media = "";
-                        String currentId = "";
-                        String currentText = "";
-                        String currentTime = "";
-                        String currentShares = "";
-                        int currentState = 0;
-                        for (int k = 0; k < contents.length(); k++) {
-                            currentChar = contents.charAt(k);
-                            if (currentChar == '`') {
-                                if (currentState == 1) {
-                                    idList.add(currentId);
-                                    currentId = "";
-                                } else if (currentState == 2) {
-                                    textList.add(currentText);
-                                    currentText = "";
-                                } else if (currentState == 3) {
-                                    timeList.add(currentTime);
-                                    currentTime = "";
-                                }
-                                currentState++;
-                            } else if (currentChar == '|') {
-                                shareList.add(currentShares);
-                                currentShares = "";
-                                currentState = 1;
-                            } else {
-                                if (currentState == 0) {
-                                    media += currentChar;
-                                } else if (currentState == 1) {
-                                    currentId += currentChar;
-                                } else if (currentState == 2) {
-                                    currentText += currentChar;
-                                } else if (currentState == 3) {
-                                    currentTime += currentChar;
-                                } else if (currentState == 4) {
-                                    currentShares += currentChar;
-                                }
-                            }
-                        }
-                        for (int j = 0; j < idList.size(); j++) {
-                            //make JSON objects
-                        }
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                ArrayList<NormalizedComment> comments = parseFile();
+                Boolean isBlacklistEnabled = !blacklistIgnoreBox.isSelected();
+                try {
+                    Analyzer.setComments(comments);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
+                Analyzer.analyze(isBlacklistEnabled);
+                displayData();
             } else if (e.getSource() == analyzeButton) {
                 Analyzer.clearArray();
                 FBClient.clearArray();
                 YTClient.clearArray();
                 RedditClient.clearArray();
                 //TwitterClient.clearArray();
-                ClearUI();
+                clearUI();
                 
                 String urlString = urlText.getText();
                 Main_UI.this.mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -289,9 +245,32 @@ public class Main_UI extends JFrame {
                     }else if (parse.getSite().equals("twitter")) {
                         //TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
-                    
-                    //action handling moved down to method for reuse
-                    analyzeAndDisplay(isBlacklistEnabled);
+                    try {
+                        if (parse.getSite().equals("facebook")) {
+                            if (!FBClient.getPostArray().isEmpty()) {
+                                Analyzer.setComments(FBClient.getPostArray());
+                                Analyzer.setOriginalPost(FBClient.getPostArray().get(0).getMessage());
+                            }
+                        } else if (parse.getSite().equals("youtube")) {
+                            if (!YTClient.getPostArray().isEmpty()) {
+                                Analyzer.setComments(YTClient.getPostArray());
+                                Analyzer.setOriginalPost(YTClient.getPostArray().get(0).getMessage());
+                            }
+                        } else if (parse.getSite().equals("reddit")) {
+                            if (!RedditClient.getPostArray().isEmpty()) {
+                                Analyzer.setComments(RedditClient.getPostArray());
+                                Analyzer.setOriginalPost(RedditClient.getPostArray().get(0).getMessage());
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
+                                    "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                        JOptionPane.showMessageDialog(null, ex, "Something Broke", JOptionPane.ERROR_MESSAGE);
+                    }
+                    Analyzer.analyze(isBlacklistEnabled);
+                    displayData();
                 }
             } else {
                 JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
@@ -300,24 +279,8 @@ public class Main_UI extends JFrame {
         }
     }
 
-    void analyzeAndDisplay(Boolean isBlacklistEnabled) {
+    void displayData() {
         try {
-            if (parse.getSite().equals("facebook")) {
-                if (!FBClient.getPostArray().isEmpty()) {
-                    Analyzer.setComments(FBClient.getPostArray(), isBlacklistEnabled);
-                }
-            } else if (parse.getSite().equals("youtube")) {
-                if (!YTClient.getPostArray().isEmpty()) {
-                    Analyzer.setComments(YTClient.getPostArray(), isBlacklistEnabled);
-                }
-            } else if (parse.getSite().equals("reddit")) {
-                if (!RedditClient.getPostArray().isEmpty()) {
-                    Analyzer.setComments(RedditClient.getPostArray(), isBlacklistEnabled);
-                }
-            } else {
-                JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
-                        "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
-            }
             //get group output data
             ArrayList<CommentGroup> groups = Analyzer.groupComments();
             //format into arrays for JTable constructor
@@ -340,15 +303,9 @@ public class Main_UI extends JFrame {
             
             postPanel = new JPanel();
             JTextArea postText = new JTextArea();
-            String text = "No title";
-            if (parse.getSite().equals("facebook")) {
-                text = FBClient.getPostArray().get(0).getMessage();
-            } else if (parse.getSite().equals("youtube")) {
-                text = YTClient.getPostArray().get(0).getMessage();
-            } else if (parse.getSite().equals("reddit")) {
-                text = RedditClient.getPostArray().get(0).getMessage();
-            }
-            postText.setText(text);
+            //String text = "No title";
+            postText.setText(Analyzer.getOriginalPost());
+
             postPanel.add(postText);
             postText.setWrapStyleWord(true);
             postText.setEditable(false);
@@ -370,26 +327,34 @@ public class Main_UI extends JFrame {
             outputTable = new JTable(tableData, columnNames);
             JButton infoButton = new JButton("More Info");
             JButton blacklistButton = new JButton("Add to Blacklist");
-            outputTable.getColumn("").setCellRenderer(new ButtonRenderer());
-            outputTable.getColumn("").setCellEditor(
+            outputTable.getColumn(
+                    "").setCellRenderer(new ButtonRenderer());
+            outputTable.getColumn(
+                    "").setCellEditor(
                     new ButtonEditor(new JCheckBox(), groups, infoButton, this, Analyzer, jsp));
-            outputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
-            outputTable.getColumn(" ").setCellEditor(
+            outputTable.getColumn(
+                    " ").setCellRenderer(new ButtonRenderer());
+            outputTable.getColumn(
+                    " ").setCellEditor(
                     new ButtonEditor(new JCheckBox(), groups, blacklistButton, this, Analyzer, jsp));
             jsp = new JScrollPane(outputTable);
-            Dimension d = outputTable.getPreferredSize();
-            jsp.setPreferredSize(new Dimension(500, 200));
+			jsp.setPreferredSize(
+                    new Dimension(500, 200));
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 0;
             layoutConstraints.gridy = 3;
             layoutConstraints.gridheight = 1;
             Main_UI.this.add(jsp, layoutConstraints);
             Main_UI.this.pack();
-            Main_UI.this.mainPanel.setCursor(null);
-            outputTable.setVisible(true);
+            Main_UI.this.mainPanel.setCursor(
+                    null);
+            outputTable.setVisible(
+                    true);
             Main_UI.this.repaint();
-            clearButton.setVisible(true);
-            Main_UI.this.setLocationRelativeTo(null);
+            clearButton.setVisible(
+                    true);
+            Main_UI.this.setLocationRelativeTo(
+                    null);
             
         }catch (Exception ex) {
             System.out.println(ex);
@@ -397,7 +362,20 @@ public class Main_UI extends JFrame {
         }
     }
 
-    public void ClearUI() {
+    public void addToBlacklist(String wordToAdd) {
+        try {
+            Analyzer.addToBlacklist(wordToAdd);
+
+        } catch (IOException ex) {
+            Logger.getLogger(ButtonEditor.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        Analyzer.analyze(true);
+        clearUI();
+        displayData();
+    }
+
+    public void clearUI() {
         outputTable.setVisible(false);
         exportToFile.setEnabled(false);
         loadFile.setEnabled(true);
@@ -409,16 +387,81 @@ public class Main_UI extends JFrame {
         Main_UI.this.pack();
     }
 
+    private ArrayList<NormalizedComment> parseFile() {
+        ArrayList<NormalizedComment> comments = new ArrayList();
+        ArrayList<String> idList = new ArrayList();
+        ArrayList<String> textList = new ArrayList();
+        ArrayList<String> timeList = new ArrayList();
+        ArrayList<String> shareList = new ArrayList();
+        int returnVal = jfc.showOpenDialog(Main_UI.this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                String contents = new String(Files.readAllBytes(Paths.get(jfc.getSelectedFile().getPath())));
+                char currentChar;
+                String media = "";
+                String originalPost = "";
+                String currentId = "";
+                String currentText = "";
+                String currentTime = "";
+                String currentShares = "";
+                int currentState = 0;
+                for (int k = 0; k < contents.length(); k++) {
+                    currentChar = contents.charAt(k);
+                    if (currentChar == '`') {
+                        if (currentState == 2) {
+                            idList.add(currentId);
+                            currentId = "";
+                        } else if (currentState == 3) {
+                            textList.add(currentText);
+                            currentText = "";
+                        } else if (currentState == 4) {
+                            timeList.add(currentTime);
+                            currentTime = "";
+                        }
+                        currentState++;
+                    } else if (currentChar == '|') {
+                        shareList.add(currentShares);
+                        currentShares = "";
+                        currentState = 2;
+                    } else {
+                        if (currentState == 0) {
+                            media += currentChar;
+                        } else if (currentState == 1) {
+                            originalPost += currentChar;
+                        } else if (currentState == 2) {
+                            currentId += currentChar;
+                        } else if (currentState == 3) {
+                            currentText += currentChar;
+                        } else if (currentState == 4) {
+                            currentTime += currentChar;
+                        } else if (currentState == 5) {
+                            currentShares += currentChar;
+                        }
+                    }
+                }
+
+                for (int k = 0; k < idList.size(); k++) {
+                    NormalizedComment normCom = new NormalizedComment();
+                    normCom.setMedia(media);
+                    normCom.setId(idList.get(k));
+                    normCom.setMessage(textList.get(k));
+                    normCom.setTime(timeList.get(k));
+                    normCom.setShares(shareList.get(k));
+                    comments.add(normCom);
+                }
+                Analyzer.setOriginalPost(originalPost);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return comments;
+    }
+	
     public static void main(String args[]) throws IOException {
        
-        try
-        {
+        try {
            UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
-        }
-        catch(Exception e)
-        {
-            
-        }
+	} catch(Exception e) { }
          new Main_UI();
     }
 }

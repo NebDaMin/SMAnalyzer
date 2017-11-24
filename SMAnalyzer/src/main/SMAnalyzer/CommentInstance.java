@@ -126,10 +126,7 @@ public class CommentInstance implements Comparable<CommentInstance> {
             IsOnlyName = false;
         }
     }
-
-    //Matteo take a look at this
-    //Basically I use the "getCount" method from the word instance to add to the overall positivity level in a comment.
-    //We still need to add logic for modifiers such as "not" and so on.
+	
     private void identifyPositivityLevel(ArrayList<WordInstance> positivityWordList) {
         PositivityLevel = 0;
         for (int x = 0; x < UniqueWordList.size(); x++) {

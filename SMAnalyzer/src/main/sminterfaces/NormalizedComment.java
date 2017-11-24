@@ -40,6 +40,7 @@ public class NormalizedComment {
                 }
             }
             this.shares = null;
+			
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
@@ -79,5 +80,25 @@ public class NormalizedComment {
     
     public String getShares() {
         return shares;
+    }
+	
+    public void setMedia(String media) {
+        this.media = media;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setTime(String time) {
+        this.created_time = time;
+    }
+
+    public void setShares(String shares) {
+        this.shares = shares;
     }
 }
