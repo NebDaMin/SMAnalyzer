@@ -1,8 +1,11 @@
 package main.sminterfaces;
 
+import java.io.IOException;
 import smsdk.reddit.*;
 import smsdk.*;
 import java.util.ArrayList;
+import org.apache.http.HttpEntity;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,8 +26,7 @@ public class RedditClient {
     }
 
     public void fetchComments(String id) {
-        RedditRequest request = new RedditRequest("/comments.json?");
-        request.addQueryParameter("article", id);
+        RedditRequest request = new RedditRequest("/comments/"+id+".json");
         ArrayList<JSONObject> list = parse(RedditClient.get(Token, request));
         for(JSONObject obj : list){
             NormalizedComment normComment = new NormalizedComment();
@@ -34,8 +36,8 @@ public class RedditClient {
 
     
     public ArrayList<JSONObject> parse(String jsonText){
-        JSONObject json = Utility.parseJson(jsonText);
-        return RedditClient.convertJsonDataToList(json);
+        JSONArray json = Utility.parseJsonArray(jsonText);
+        return null;
     }
     
     public void clearArray() {

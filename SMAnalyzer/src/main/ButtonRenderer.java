@@ -7,12 +7,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.DefaultCellEditor;
@@ -20,12 +17,10 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
@@ -65,16 +60,14 @@ class ButtonEditor extends DefaultCellEditor {
     private String label;
     private boolean isPushed;
     private ArrayList<CommentGroup> groups;
-    public Main_UI mainUI;
+    public MainUI mainUI;
     public CommentListAnalyzer Analyzer;
-    public JScrollPane jsp;
 
     public ButtonEditor(JCheckBox checkBox, ArrayList<CommentGroup> groups, JButton aButton,
-            Main_UI mainUI, CommentListAnalyzer Analyzer, JScrollPane jsp) {
+            MainUI mainUI, CommentListAnalyzer Analyzer) {
         super(checkBox);
         this.mainUI = mainUI;
         this.Analyzer = Analyzer;
-        this.jsp = jsp;
         this.groups = groups;
         button = aButton;
         button.setOpaque(true);
@@ -171,12 +164,11 @@ class ButtonEditor extends DefaultCellEditor {
             } catch (BadLocationException ble) {
                 System.out.println(ble);
             }
-            JFreeChart graph;
-            GraphInstance g = new GraphInstance();
-            graph = g.Graph("Level Of Positivity", false, pos, neg, net);
-            ChartPanel chart = new ChartPanel(graph);
-            // graph.setHorizontalAlignment(SwingConstants.CENTER);
-            chart.setPreferredSize(new Dimension(600, 300));
+            JFreeChart chart;
+            ChartInstance chartInstance = new ChartInstance();
+            chart = chartInstance.Chart("Level Of Positivity", pos, neg, net);
+            ChartPanel chartPanel = new ChartPanel(chart);
+            chartPanel.setPreferredSize(new Dimension(600, 300));
 
             JScrollPane scrollPane = new JScrollPane(commentList);
             scrollPane.setPreferredSize(new Dimension(300, 300));
@@ -228,7 +220,7 @@ class ButtonEditor extends DefaultCellEditor {
             topPanel.add(summaryPanel);
 
             JPanel bottomPanel = new JPanel();
-            bottomPanel.add(chart);
+            bottomPanel.add(chartPanel);
 
             dialogPanel.add(topPanel);
             dialogPanel.add(bottomPanel);

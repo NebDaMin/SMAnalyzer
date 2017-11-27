@@ -2,9 +2,7 @@ package main.sminterfaces;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import javax.swing.JOptionPane;
-import static main.sminterfaces.FBClient.fbClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

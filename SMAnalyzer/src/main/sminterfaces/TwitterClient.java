@@ -2,7 +2,6 @@ package main.sminterfaces;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import smsdk.twitter.TwitterAPI;
 

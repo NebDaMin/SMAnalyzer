@@ -23,20 +23,21 @@ import main.sminterfaces.TwitterClient;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
-public class Main_UI extends JFrame {
+public class MainUI extends JFrame {
 
     //UI vars
     private JPanel mainPanel;
     private JPanel chartPanel;
-    private JPanel postPanel;
+    private JTextArea postText;
     private ChartPanel mainChart;
     private JMenuBar menu;
     private JMenu options, file;
     private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile;
     private JMenuItem loadFile, dictionaryAdd, exportToFile;
-    JTable outputTable;
+    public JTable outputTable;
     private JButton urlButton, pasteButton, analyzeButton, clearButton;
     private JScrollPane jsp;
+    private JScrollPane scroll;
     private JFileChooser jfc;
     private GridBagConstraints layoutConstraints;
     public final int BAR_CHART = 0;
@@ -54,7 +55,7 @@ public class Main_UI extends JFrame {
     private JLabel urlLabel;
     private JTextField urlText;
 
-    public Main_UI() throws IOException {
+    public MainUI() throws IOException {
         //init
         ActionHandler ah = new ActionHandler();
         jfc = new JFileChooser("savedfiles");
@@ -102,7 +103,7 @@ public class Main_UI extends JFrame {
         FBClient = new FBClient();
         YTClient = new YTClient();
         RedditClient = new RedditClient();
-        //TwitterClient = new TwitterClient();
+//        TwitterClient = new TwitterClient();
         
         Analyzer = new CommentListAnalyzer();
 
@@ -140,7 +141,8 @@ public class Main_UI extends JFrame {
         this.add(mainPanel, layoutConstraints);
         
         chartPanel = new JPanel();
-        postPanel = new JPanel();
+        postText = new JTextArea();
+        scroll = new JScrollPane(postText);
 
         urlButton.addActionListener(ah);
         pasteButton.addActionListener(ah);
@@ -183,7 +185,7 @@ public class Main_UI extends JFrame {
                 }
             } else if (e.getSource() == exportToFile) {
                 ArrayList<CommentInstance> comments = Analyzer.getComments();
-                int returnVal = jfc.showSaveDialog(Main_UI.this);
+                int returnVal = jfc.showSaveDialog(MainUI.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         FileWriter fw = new FileWriter(jfc.getSelectedFile() + ".txt");
@@ -215,11 +217,11 @@ public class Main_UI extends JFrame {
                 FBClient.clearArray();
                 YTClient.clearArray();
                 RedditClient.clearArray();
-                //TwitterClient.clearArray();
+  //              TwitterClient.clearArray();
                 clearUI();
                 
                 String urlString = urlText.getText();
-                Main_UI.this.mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                MainUI.this.mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
                 if (urlString.equals(null) || urlString.equals("")) {
                     JOptionPane.showMessageDialog(null, "There's nothing to analyze.\nPlease paste a url.", "Did you really hit analyze without puttng anything in?", JOptionPane.ERROR_MESSAGE);
@@ -243,7 +245,7 @@ public class Main_UI extends JFrame {
                     } else if (parse.getSite().equals("reddit")) {
                         RedditClient.fetchComments(stringMap.get("Post Id"));
                     }else if (parse.getSite().equals("twitter")) {
-                        //TwitterClient.fetchComments(stringMap.get("Post Id"));
+//                        TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
                     try {
                         if (parse.getSite().equals("facebook")) {
@@ -262,7 +264,7 @@ public class Main_UI extends JFrame {
                                 Analyzer.setOriginalPost(RedditClient.getPostArray().get(0).getMessage());
                             }
                         } else {
-                            JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
+                            JOptionPane.showMessageDialog(MainUI.this, "Uh....",
                                     "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } catch (Exception ex) {
@@ -273,7 +275,7 @@ public class Main_UI extends JFrame {
                     displayData();
                 }
             } else {
-                JOptionPane.showMessageDialog(Main_UI.this, "Uh....",
+                JOptionPane.showMessageDialog(MainUI.this, "Uh....",
                         "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
             }
         }
@@ -294,22 +296,19 @@ public class Main_UI extends JFrame {
                 tableData[row][3] = "Add to blacklist";
                 row++;
             }
-            // add a graph
-            JFreeChart graph;
-            GraphInstance g = new GraphInstance();
+            // add a chart
+            JFreeChart chart;
+            ChartInstance chartInstance = new ChartInstance();
             int[] alignment = Analyzer.totalAlignment();
-            graph = g.Graph("Total Level Of Positivity", false, alignment[1],alignment[0], alignment[2]);
-            mainChart = new ChartPanel(graph);
-            
-            postPanel = new JPanel();
-            JTextArea postText = new JTextArea();
-            //String text = "No title";
+            chart = chartInstance.Chart("Total Level Of Positivity", alignment[1],alignment[0], alignment[2]);
+            mainChart = new ChartPanel(chart);
             postText.setText(Analyzer.getOriginalPost());
 
-            postPanel.add(postText);
+            //postPanel.add(new JScrollPane(postText));
+            postText.setLineWrap(true);
             postText.setWrapStyleWord(true);
             postText.setEditable(false);
-            
+            scroll.setPreferredSize(new Dimension(500, 100));
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 1;
             layoutConstraints.gridy = 0;
@@ -321,40 +320,30 @@ public class Main_UI extends JFrame {
             layoutConstraints.gridy = 2;
             layoutConstraints.gridheight = 1;
             chartPanel.add(mainChart);
-            this.add(postPanel, layoutConstraints);
+            this.add(scroll, layoutConstraints);
             
             //create and populate table
             outputTable = new JTable(tableData, columnNames);
             JButton infoButton = new JButton("More Info");
             JButton blacklistButton = new JButton("Add to Blacklist");
-            outputTable.getColumn(
-                    "").setCellRenderer(new ButtonRenderer());
-            outputTable.getColumn(
-                    "").setCellEditor(
-                    new ButtonEditor(new JCheckBox(), groups, infoButton, this, Analyzer, jsp));
-            outputTable.getColumn(
-                    " ").setCellRenderer(new ButtonRenderer());
-            outputTable.getColumn(
-                    " ").setCellEditor(
-                    new ButtonEditor(new JCheckBox(), groups, blacklistButton, this, Analyzer, jsp));
+            outputTable.getColumn("").setCellRenderer(new ButtonRenderer());
+            outputTable.getColumn("").setCellEditor(
+                    new ButtonEditor(new JCheckBox(), groups, infoButton, this, Analyzer));
+            outputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
+            outputTable.getColumn(" ").setCellEditor(
+                    new ButtonEditor(new JCheckBox(), groups, blacklistButton, this, Analyzer));
             jsp = new JScrollPane(outputTable);
-			jsp.setPreferredSize(
-                    new Dimension(500, 200));
+	    jsp.setPreferredSize(new Dimension(500, 200));
             layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             layoutConstraints.gridx = 0;
             layoutConstraints.gridy = 3;
             layoutConstraints.gridheight = 1;
-            Main_UI.this.add(jsp, layoutConstraints);
-            Main_UI.this.pack();
-            Main_UI.this.mainPanel.setCursor(
-                    null);
-            outputTable.setVisible(
-                    true);
-            Main_UI.this.repaint();
-            clearButton.setVisible(
-                    true);
-            Main_UI.this.setLocationRelativeTo(
-                    null);
+            MainUI.this.add(jsp, layoutConstraints);
+            MainUI.this.pack();
+            MainUI.this.mainPanel.setCursor(null);
+            outputTable.setVisible(true);
+            MainUI.this.repaint();
+            MainUI.this.setLocationRelativeTo(null);
             
         }catch (Exception ex) {
             System.out.println(ex);
@@ -379,12 +368,13 @@ public class Main_UI extends JFrame {
         outputTable.setVisible(false);
         exportToFile.setEnabled(false);
         loadFile.setEnabled(true);
-        Main_UI.this.remove(jsp);
-        Main_UI.this.remove(postPanel);
+        MainUI.this.remove(jsp);
+        MainUI.this.remove(scroll);
+        postText.setText("");
         chartPanel.removeAll();
-        Main_UI.this.remove(chartPanel);   
-        Main_UI.this.repaint();
-        Main_UI.this.pack();
+        MainUI.this.remove(chartPanel);   
+        MainUI.this.repaint();
+        MainUI.this.pack();
     }
 
     private ArrayList<NormalizedComment> parseFile() {
@@ -393,7 +383,7 @@ public class Main_UI extends JFrame {
         ArrayList<String> textList = new ArrayList();
         ArrayList<String> timeList = new ArrayList();
         ArrayList<String> shareList = new ArrayList();
-        int returnVal = jfc.showOpenDialog(Main_UI.this);
+        int returnVal = jfc.showOpenDialog(MainUI.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
                 String contents = new String(Files.readAllBytes(Paths.get(jfc.getSelectedFile().getPath())));
@@ -462,6 +452,6 @@ public class Main_UI extends JFrame {
         try {
            UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
 	} catch(Exception e) { }
-         new Main_UI();
+         new MainUI();
     }
 }
