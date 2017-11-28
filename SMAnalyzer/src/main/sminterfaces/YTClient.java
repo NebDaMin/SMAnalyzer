@@ -19,7 +19,7 @@ public class YTClient {
         PostArrayList = new ArrayList();
     }
 
-    public void fetchComments(String type, String id) {
+    public void fetchComments(String type, String id, boolean children) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         if (type.equals("user")) {
             params.put("forUsername", id);
@@ -43,20 +43,22 @@ public class YTClient {
                     NormalizedComment normComment = new NormalizedComment();
                     normComment.setFromYoutube(comment);
                     PostArrayList.add(normComment);
-                    if (comment.has("replies")) {
-                        try {
-                            ArrayList<JSONObject> replies = ytClient.convertJsonReplyToList(comment.getJSONObject("replies"));
-                            for (JSONObject reply : replies) {
-                                NormalizedComment normReply = new NormalizedComment();
-                                normReply.setFromYoutube(reply);
-                                PostArrayList.add(normReply);
-                            }
+                    if (children == true) {
+                        if (comment.has("replies")) {
+                            try {
+                                ArrayList<JSONObject> replies = ytClient.convertJsonReplyToList(comment.getJSONObject("replies"));
+                                for (JSONObject reply : replies) {
+                                    NormalizedComment normReply = new NormalizedComment();
+                                    normReply.setFromYoutube(reply);
+                                    PostArrayList.add(normReply);
+                                }
 
-                            System.out.println();
-                        } catch (JSONException jex) {
-                            System.out.println(jex);
-                        } catch (Exception ex) {
-                            System.out.println(ex);
+                                System.out.println();
+                            } catch (JSONException jex) {
+                                System.out.println(jex);
+                            } catch (Exception ex) {
+                                System.out.println(ex);
+                            }
                         }
                     }
                 }

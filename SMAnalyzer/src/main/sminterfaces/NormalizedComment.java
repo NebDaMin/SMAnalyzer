@@ -33,10 +33,10 @@ public class NormalizedComment {
             if (yt.has("snippet")) {
                 if (yt.getJSONObject("snippet").has("topLevelComment")) {
                     this.message = yt.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("textOriginal");
-                    this.created_time = yt.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("publishedAt");
+                    this.created_time = yt.getJSONObject("snippet").getJSONObject("topLevelComment").getJSONObject("snippet").getString("publishedAt").replace(".000Z", "").replace("T", " ");
                 } else if (yt.getJSONObject("snippet").has("textOriginal")) {
                     this.message = yt.getJSONObject("snippet").getString("textOriginal");
-                    this.created_time = yt.getJSONObject("snippet").getString("publishedAt");
+                    this.created_time = yt.getJSONObject("snippet").getString("publishedAt").replace(".000Z", "").replace("T", " ");
                 }
             }
             this.shares = null;

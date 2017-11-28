@@ -236,12 +236,12 @@ public class MainUI extends JFrame {
 
                     if (parse.getSite().equals("facebook")) {
                         if (stringMap.size() == 1) {
-                            FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child, file);
+                            FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child);
                         } else if (stringMap.size() == 3) {
-                            FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child, file);
+                            FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child);
                         }
                     } else if (parse.getSite().equals("youtube")) {
-                        YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"));
+                        YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"), child);
                     } else if (parse.getSite().equals("reddit")) {
                         RedditClient.fetchComments(stringMap.get("Post Id"));
                     }else if (parse.getSite().equals("twitter")) {

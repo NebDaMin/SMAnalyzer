@@ -17,7 +17,7 @@ public class FBClient {
         PostArrayList = new ArrayList();
     }
 
-    public void fetchRandomPagePost(String pageName, Boolean children, Boolean file) {
+    public void fetchRandomPagePost(String pageName, Boolean children) {
         if (fbClient.getAccessToken() == null) {
             System.out.println("Access token is null");
         } else {
@@ -40,7 +40,7 @@ public class FBClient {
         System.out.println("PostArrayList size: " + PostArrayList.size());
     }
 
-    public void fetchSpecificPagePost(String pageName, String postId, Boolean children, Boolean file) {
+    public void fetchSpecificPagePost(String pageName, String postId, Boolean children) {
         if (fbClient.getAccessToken() == null) {
             System.out.println("Access token is null");
         } else {
