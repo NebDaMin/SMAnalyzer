@@ -56,22 +56,22 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
 
 class ButtonEditor extends DefaultCellEditor {
 
-    protected JButton button;
-    private String label;
-    private boolean isPushed;
-    private ArrayList<CommentGroup> groups;
-    public MainUI mainUI;
+    protected JButton Button;
+    private String Label;
+    private boolean IsPushed;
+    private ArrayList<CommentGroup> Groups;
+    public MainUI MainUI;
     public CommentListAnalyzer Analyzer;
 
     public ButtonEditor(JCheckBox checkBox, ArrayList<CommentGroup> groups, JButton aButton,
             MainUI mainUI, CommentListAnalyzer Analyzer) {
         super(checkBox);
-        this.mainUI = mainUI;
+        this.MainUI = mainUI;
         this.Analyzer = Analyzer;
-        this.groups = groups;
-        button = aButton;
-        button.setOpaque(true);
-        button.addActionListener(new ActionListener() {
+        this.Groups = groups;
+        Button = aButton;
+        Button.setOpaque(true);
+        Button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 fireEditingStopped();
             }
@@ -82,23 +82,23 @@ class ButtonEditor extends DefaultCellEditor {
             boolean isSelected, int row, int column) {
 
         if (isSelected) {
-            button.setForeground(table.getSelectionForeground());
-            button.setBackground(table.getSelectionBackground());
+            Button.setForeground(table.getSelectionForeground());
+            Button.setBackground(table.getSelectionBackground());
         } else {
-            button.setForeground(table.getForeground());
-            button.setBackground(table.getBackground());
+            Button.setForeground(table.getForeground());
+            Button.setBackground(table.getBackground());
         }
-        label = (value == null) ? "" : value.toString();
-        button.setText(label);
-        isPushed = true;
-        return button;
+        Label = (value == null) ? "" : value.toString();
+        Button.setText(Label);
+        IsPushed = true;
+        return Button;
     }
 
     @Override
     public Object getCellEditorValue() {
-        if (isPushed && label.equals("More Info")) {
+        if (IsPushed && Label.equals("More Info")) {
 
-            // action handling for more info button
+            // action handling for more info Button
             JPanel dialogPanel = new JPanel();
             dialogPanel.setLayout(new GridLayout(2, 1));
 
@@ -108,7 +108,7 @@ class ButtonEditor extends DefaultCellEditor {
             summaryPanel.setPreferredSize(new Dimension(300, 300));
 
             ArrayList<CommentInstance> comments = new ArrayList();
-            CommentGroup selectedGroup = groups.get(this.mainUI.outputTable.getSelectedRow());
+            CommentGroup selectedGroup = Groups.get(this.MainUI.OutputTable.getSelectedRow());
             comments = selectedGroup.getComments();
 
             JTextPane commentList = new JTextPane();
@@ -225,16 +225,16 @@ class ButtonEditor extends DefaultCellEditor {
             dialogPanel.add(topPanel);
             dialogPanel.add(bottomPanel);
 
-            JDialog jd = new JDialog(mainUI, "Group Details", true);
+            JDialog jd = new JDialog(MainUI, "Group Details", true);
             jd.add(dialogPanel);
             jd.setLocation(650, 200);
             jd.pack();
             jd.show();
-        } else if (isPushed && label.equals("Add to blacklist")) {
-                mainUI.addToBlacklist(groups.get(mainUI.outputTable.getSelectedRow()).getKeyword());
+        } else if (IsPushed && Label.equals("Add to blacklist")) {
+                MainUI.addToBlacklist(Groups.get(MainUI.OutputTable.getSelectedRow()).getKeyword());
         }
-        isPushed = false;
-        return new String(label);
+        IsPushed = false;
+        return new String(Label);
     }
 
     public static double round(double value, int places) {
@@ -247,7 +247,7 @@ class ButtonEditor extends DefaultCellEditor {
     }
 
     public boolean stopCellEditing() {
-        isPushed = false;
+        IsPushed = false;
         return super.stopCellEditing();
     }
 

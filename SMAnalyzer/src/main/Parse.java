@@ -4,7 +4,7 @@ import java.util.HashMap;
 import javax.swing.JOptionPane;
 
 public class Parse {
-    private String site;
+    private String Site;
     
     public HashMap<String, String> parseUrl(String s) 
     {
@@ -150,11 +150,11 @@ public class Parse {
     
     public void setSite(String site) 
     {
-       this.site = site;
+       this.Site = site;
     }
      
     public String getSite()
     {
-        return site;
+        return Site;
     }
 }
