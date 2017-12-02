@@ -11,11 +11,11 @@ import smsdk.*;
 public class YTClient {
 
     private static final String API_KEY = "AIzaSyBsAXJxBUV4VvMFSe8GxXnmxgkwiTU7Yhs";
-    static YtAPI ytClient;
+    static YtAPI YtClient;
     private ArrayList<NormalizedComment> PostArrayList;
 
     public YTClient() {
-        ytClient = new YtAPI(API_KEY);
+        YtClient = new YtAPI(API_KEY);
         PostArrayList = new ArrayList();
     }
 
@@ -24,7 +24,7 @@ public class YTClient {
         if (type.equals("user")) {
             params.put("forUsername", id);
             params.put("part", "id");
-            JSONObject channel = ytClient.getObject("channels", params);
+            JSONObject channel = YtClient.getObject("channels", params);
             JSONArray items = channel.getJSONArray("items");
             id = items.getJSONObject(0).getString("id");
             type = "channel";
@@ -33,9 +33,9 @@ public class YTClient {
         params.put(type + "Id", id);
         params.put("textFormat", "plainText");
         params.put("part", "snippet,replies");
-        JSONObject comments = ytClient.getObject("commentThreads", params);
+        JSONObject comments = YtClient.getObject("commentThreads", params);
         if (comments.length() != 0) {
-            ArrayList<JSONObject> commentsList = ytClient.convertJsonItemsToList(comments);
+            ArrayList<JSONObject> commentsList = YtClient.convertJsonItemsToList(comments);
             boolean searched = false;
             while (comments.has("nextPageToken") || searched == false) {
                 searched = true;
@@ -46,7 +46,7 @@ public class YTClient {
                     if (children == true) {
                         if (comment.has("replies")) {
                             try {
-                                ArrayList<JSONObject> replies = ytClient.convertJsonReplyToList(comment.getJSONObject("replies"));
+                                ArrayList<JSONObject> replies = YtClient.convertJsonReplyToList(comment.getJSONObject("replies"));
                                 for (JSONObject reply : replies) {
                                     NormalizedComment normReply = new NormalizedComment();
                                     normReply.setFromYoutube(reply);
@@ -64,8 +64,8 @@ public class YTClient {
                 }
                 if (comments.has("nextPageToken")) {
                     params.put("pageToken", comments.getString("nextPageToken"));
-                    comments = ytClient.getObject("commentThreads", params);
-                    commentsList = ytClient.convertJsonItemsToList(comments);
+                    comments = YtClient.getObject("commentThreads", params);
+                    commentsList = YtClient.convertJsonItemsToList(comments);
                     searched = false;
                 }
             }
