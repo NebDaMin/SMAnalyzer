@@ -43,7 +43,7 @@ public class NormalizedComment {
                 }
             }
             this.Shares = null;
-            this.Upvotes = null;			
+            this.Upvotes = null;
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
@@ -60,13 +60,11 @@ public class NormalizedComment {
     public void setFromReddit(JSONObject rdt) {
         this.Media = "reddit";
         this.Id = rdt.getString("id");
-        if(rdt.has("body")){
+        if (rdt.has("body")) {
             this.Message = rdt.getString("body");
-        }
-        else if(rdt.has("title")) {
+        } else if (rdt.has("title")) {
             this.Message = rdt.getString("title");
-        }
-        else {
+        } else {
             this.Message = "[No Text]";
         }
         Double timeDouble = rdt.getDouble("created");
@@ -95,15 +93,15 @@ public class NormalizedComment {
     public String getTime() {
         return CreatedTime;
     }
-    
+
     public String getShares() {
         return Shares;
     }
-    
+
     public String getUpvotes() {
         return Upvotes;
     }
-	
+
     public void setMedia(String media) {
         this.Media = media;
     }
@@ -123,7 +121,7 @@ public class NormalizedComment {
     public void setShares(String shares) {
         this.Shares = shares;
     }
-    
+
     public void setUpvotes(String upvotes) {
         this.Upvotes = upvotes;
     }

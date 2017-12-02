@@ -37,8 +37,8 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
 
     public ButtonRenderer() {
         setOpaque(true);
-
     }
+//matteo whaddup
 
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
@@ -53,7 +53,7 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
         return this;
     }
 }
-
+//this populates the table
 class ButtonEditor extends DefaultCellEditor {
 
     protected JButton Button;
@@ -77,7 +77,7 @@ class ButtonEditor extends DefaultCellEditor {
             }
         });
     }
-
+    
     public Component getTableCellEditorComponent(JTable table, Object value,
             boolean isSelected, int row, int column) {
 
@@ -121,7 +121,7 @@ class ButtonEditor extends DefaultCellEditor {
 
             SimpleAttributeSet sasRed = new SimpleAttributeSet();
             sasRed.addAttribute(StyleConstants.CharacterConstants.Foreground, new Color(254, 99, 61));
-			
+
             SimpleAttributeSet sasBlack = new SimpleAttributeSet();
             sasBlack.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLACK);
 
@@ -231,7 +231,7 @@ class ButtonEditor extends DefaultCellEditor {
             jd.pack();
             jd.show();
         } else if (IsPushed && Label.equals("Add to blacklist")) {
-                MainUI.addToBlacklist(Groups.get(MainUI.OutputTable.getSelectedRow()).getKeyword());
+            MainUI.addToBlacklist(Groups.get(MainUI.OutputTable.getSelectedRow()).getKeyword());
         }
         IsPushed = false;
         return new String(Label);

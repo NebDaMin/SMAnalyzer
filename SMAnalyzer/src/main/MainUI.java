@@ -32,6 +32,8 @@ public class MainUI extends JFrame {
     private ChartPanel MainChart;
     private JMenuBar Menu;
     private JMenu Options, File;
+    private JLabel UrlLabel;
+    private JTextField UrlText;
     private JCheckBoxMenuItem ChildCommentBox, BlacklistIgnoreBox, SaveFile;
     private JMenuItem LoadFile, DictionaryAdd, ExportToFile;
     public JTable OutputTable;
@@ -42,21 +44,15 @@ public class MainUI extends JFrame {
     private GridBagConstraints LayoutConstraints;
     public final int BAR_CHART = 0;
     public final int PIE_CHART = 1;
-    //restFB vars
+    //SM vars
     private FBClient FBClient;
     private YTClient YTClient;
     private RedditClient RedditClient;
-    private TwitterClient TwitterClient;
     private Parse Parse;
-
-    //HumanDataAnalysisProject
     private CommentListAnalyzer Analyzer;
 
-    private JLabel UrlLabel;
-    private JTextField UrlText;
-
     public MainUI() throws IOException {
-        //init
+        // UI init
         ActionHandler ah = new ActionHandler();
         FileChooser = new JFileChooser("savedfiles");
         UrlLabel = new JLabel("Url: ");
@@ -72,6 +68,7 @@ public class MainUI extends JFrame {
         //menu init
         Menu = new JMenuBar();
 
+        //file menu item init
         File = new JMenu("File");
         File.setMnemonic('F');
         LoadFile = new JMenuItem("Load File...");
@@ -84,6 +81,7 @@ public class MainUI extends JFrame {
         File.add(SaveFile);
         Menu.add(File);
 
+        //options menu item init
         Options = new JMenu("Options");
         Options.setMnemonic('O');
         ChildCommentBox = new JCheckBoxMenuItem("Child Comments");
@@ -94,23 +92,25 @@ public class MainUI extends JFrame {
         Options.add(DictionaryAdd);
         Menu.add(Options);
 
+        //main layout for the UI
         this.setLayout(new GridBagLayout());
         LayoutConstraints = new GridBagConstraints();
         LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
         LayoutConstraints.gridy = 0;
         this.add(Menu, LayoutConstraints);
 
+        //SMClient init
         FBClient = new FBClient();
         YTClient = new YTClient();
         RedditClient = new RedditClient();
-//        TwitterClient = new TwitterClient();
-        
+
         Analyzer = new CommentListAnalyzer();
 
         OutputTable.setVisible(false);
         ClearButton.setVisible(true);
         OutputTable.setPreferredScrollableViewportSize(new Dimension(400, 150));
 
+        //main panel init and layout 
         GroupLayout layout = new GroupLayout(MainPanel);
         MainPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -139,11 +139,13 @@ public class MainUI extends JFrame {
         LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
         LayoutConstraints.gridy = 1;
         this.add(MainPanel, LayoutConstraints);
-        
+
+        //chart and original post init
         ChartPanel = new JPanel();
         PostText = new JTextArea();
         Scroll = new JScrollPane(PostText);
 
+        //action listener stuff
         UrlButton.addActionListener(ah);
         PasteButton.addActionListener(ah);
         AnalyzeButton.addActionListener(ah);
@@ -163,6 +165,7 @@ public class MainUI extends JFrame {
     private class ActionHandler implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
+            //pastes the clipboard to the url text area
             if (e.getSource() == PasteButton) {
                 Clipboard clipboard = getToolkit().getSystemClipboard();
 
@@ -174,15 +177,21 @@ public class MainUI extends JFrame {
                     s = ex.toString();
                 }
                 UrlText.setText(s);
+
+                //this calls clearUI
             } else if (e.getSource() == ClearButton) {
                 clearUI();
                 UrlText.setText("");
+
+                //adds a word to the main dictionary
             } else if (e.getSource() == DictionaryAdd) {
                 JFrame inputFrame = new JFrame("Add to dictionary");
                 String wordToAdd = JOptionPane.showInputDialog(inputFrame, "Please type the word to be added below");
                 if (wordToAdd != null) {
                     Analyzer.addToDictionary(wordToAdd);
                 }
+
+                //this exports data into a file
             } else if (e.getSource() == ExportToFile) {
                 ArrayList<CommentInstance> comments = Analyzer.getComments();
                 int returnVal = FileChooser.showSaveDialog(MainUI.this);
@@ -190,7 +199,7 @@ public class MainUI extends JFrame {
                     try {
                         FileWriter fw = new FileWriter(FileChooser.getSelectedFile() + ".txt");
                         fw.write(comments.get(0).getMedia() + "`");
-						fw.write(Analyzer.getOriginalPost() + "`");
+                        fw.write(Analyzer.getOriginalPost() + "`");
                         for (CommentInstance c : comments) {
                             fw.write(c.getID() + "`");
                             fw.write(c.getCommentRaw() + "`");
@@ -202,6 +211,7 @@ public class MainUI extends JFrame {
                         ex.printStackTrace();
                     }
                 }
+                //this loads a file to be SMAnalyzed matteo?
             } else if (e.getSource() == LoadFile) {
                 ArrayList<NormalizedComment> comments = parseFile();
                 Boolean isBlacklistEnabled = !BlacklistIgnoreBox.isSelected();
@@ -213,13 +223,13 @@ public class MainUI extends JFrame {
                 Analyzer.analyze(isBlacklistEnabled);
                 displayData();
             } else if (e.getSource() == AnalyzeButton) {
+                //makes sure everything is clear before SMAnalysis
                 Analyzer.clearArray();
                 FBClient.clearArray();
                 YTClient.clearArray();
                 RedditClient.clearArray();
-  //              TwitterClient.clearArray();
                 clearUI();
-                
+
                 String urlString = UrlText.getText();
                 MainUI.this.MainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -234,6 +244,7 @@ public class MainUI extends JFrame {
                     LoadFile.setEnabled(false);
                     Boolean file = SaveFile.isSelected();
 
+                    // begins the parsing process
                     if (Parse.getSite().equals("facebook")) {
                         if (stringMap.size() == 1) {
                             FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child);
@@ -244,8 +255,6 @@ public class MainUI extends JFrame {
                         YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"), child);
                     } else if (Parse.getSite().equals("reddit")) {
                         RedditClient.fetchComments(stringMap.get("Post Id"));
-                    }else if (Parse.getSite().equals("twitter")) {
-//                        TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
                     try {
                         if (Parse.getSite().equals("facebook")) {
@@ -271,6 +280,7 @@ public class MainUI extends JFrame {
                         System.out.println(ex);
                         JOptionPane.showMessageDialog(null, ex, "Something Broke", JOptionPane.ERROR_MESSAGE);
                     }
+                    //actually SMAnalyzing now
                     Analyzer.analyze(isBlacklistEnabled);
                     displayData();
                 }
@@ -296,15 +306,15 @@ public class MainUI extends JFrame {
                 tableData[row][3] = "Add to blacklist";
                 row++;
             }
-            // add a chart
+            // add the main chart
             JFreeChart chart;
             ChartInstance chartInstance = new ChartInstance();
             int[] alignment = Analyzer.totalAlignment();
-            chart = chartInstance.Chart("Total Level Of Positivity", alignment[1],alignment[0], alignment[2]);
+            chart = chartInstance.Chart("Total Level Of Positivity", alignment[1], alignment[0], alignment[2]);
             MainChart = new ChartPanel(chart);
             PostText.setText(Analyzer.getOriginalPost());
 
-            //postPanel.add(new JScrollPane(postText));
+            //original post
             PostText.setLineWrap(true);
             PostText.setWrapStyleWord(true);
             PostText.setEditable(false);
@@ -314,14 +324,14 @@ public class MainUI extends JFrame {
             LayoutConstraints.gridy = 0;
             LayoutConstraints.gridheight = 4;
             this.add(ChartPanel, LayoutConstraints);
-            
+
             LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             LayoutConstraints.gridx = 0;
             LayoutConstraints.gridy = 2;
             LayoutConstraints.gridheight = 1;
             ChartPanel.add(MainChart);
             this.add(Scroll, LayoutConstraints);
-            
+
             //create and populate table
             OutputTable = new JTable(tableData, columnNames);
             JButton infoButton = new JButton("More Info");
@@ -333,7 +343,7 @@ public class MainUI extends JFrame {
             OutputTable.getColumn(" ").setCellEditor(
                     new ButtonEditor(new JCheckBox(), groups, blacklistButton, this, Analyzer));
             ScrollPane = new JScrollPane(OutputTable);
-	    ScrollPane.setPreferredSize(new Dimension(500, 200));
+            ScrollPane.setPreferredSize(new Dimension(500, 200));
             LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
             LayoutConstraints.gridx = 0;
             LayoutConstraints.gridy = 3;
@@ -344,13 +354,14 @@ public class MainUI extends JFrame {
             OutputTable.setVisible(true);
             MainUI.this.repaint();
             MainUI.this.setLocationRelativeTo(null);
-            
-        }catch (Exception ex) {
+
+        } catch (Exception ex) {
             System.out.println(ex);
             JOptionPane.showMessageDialog(null, ex, "Something Broke", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    // add a word to a temporary blacklist
     public void addToBlacklist(String wordToAdd) {
         try {
             Analyzer.addToBlacklist(wordToAdd);
@@ -364,6 +375,7 @@ public class MainUI extends JFrame {
         displayData();
     }
 
+    //resets the UI to original position
     public void clearUI() {
         OutputTable.setVisible(false);
         ExportToFile.setEnabled(false);
@@ -372,11 +384,12 @@ public class MainUI extends JFrame {
         MainUI.this.remove(Scroll);
         PostText.setText("");
         ChartPanel.removeAll();
-        MainUI.this.remove(ChartPanel);   
+        MainUI.this.remove(ChartPanel);
         MainUI.this.repaint();
         MainUI.this.pack();
     }
 
+    //matteo
     private ArrayList<NormalizedComment> parseFile() {
         ArrayList<NormalizedComment> comments = new ArrayList();
         ArrayList<String> idList = new ArrayList();
@@ -413,20 +426,18 @@ public class MainUI extends JFrame {
                         shareList.add(currentShares);
                         currentShares = "";
                         currentState = 2;
-                    } else {
-                        if (currentState == 0) {
-                            media += currentChar;
-                        } else if (currentState == 1) {
-                            originalPost += currentChar;
-                        } else if (currentState == 2) {
-                            currentId += currentChar;
-                        } else if (currentState == 3) {
-                            currentText += currentChar;
-                        } else if (currentState == 4) {
-                            currentTime += currentChar;
-                        } else if (currentState == 5) {
-                            currentShares += currentChar;
-                        }
+                    } else if (currentState == 0) {
+                        media += currentChar;
+                    } else if (currentState == 1) {
+                        originalPost += currentChar;
+                    } else if (currentState == 2) {
+                        currentId += currentChar;
+                    } else if (currentState == 3) {
+                        currentText += currentChar;
+                    } else if (currentState == 4) {
+                        currentTime += currentChar;
+                    } else if (currentState == 5) {
+                        currentShares += currentChar;
                     }
                 }
 
@@ -446,12 +457,13 @@ public class MainUI extends JFrame {
         }
         return comments;
     }
-	
+
     public static void main(String args[]) throws IOException {
-       
+
         try {
-           UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
-	} catch(Exception e) { }
-         new MainUI();
+            UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+        } catch (Exception e) {
+        }
+        new MainUI();
     }
 }
