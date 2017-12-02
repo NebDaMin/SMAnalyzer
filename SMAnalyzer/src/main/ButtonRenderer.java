@@ -37,8 +37,8 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
 
     public ButtonRenderer() {
         setOpaque(true);
-
     }
+//matteo whaddup
 
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
@@ -53,7 +53,7 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
         return this;
     }
 }
-
+//this populates the table
 class ButtonEditor extends DefaultCellEditor {
 
     protected JButton Button;
@@ -77,7 +77,7 @@ class ButtonEditor extends DefaultCellEditor {
             }
         });
     }
-
+    
     public Component getTableCellEditorComponent(JTable table, Object value,
             boolean isSelected, int row, int column) {
 
@@ -121,7 +121,7 @@ class ButtonEditor extends DefaultCellEditor {
 
             SimpleAttributeSet sasRed = new SimpleAttributeSet();
             sasRed.addAttribute(StyleConstants.CharacterConstants.Foreground, new Color(254, 99, 61));
-			
+
             SimpleAttributeSet sasBlack = new SimpleAttributeSet();
             sasBlack.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLACK);
 
@@ -186,7 +186,7 @@ class ButtonEditor extends DefaultCellEditor {
             double neutralCount = 0;
             double posCount = 0;
             double commentTotal = comments.size();
-            int posScore = 0;
+            double posScore = 0;
             int wordTotal = 0;
             ArrayList<CommentInstance> instances = selectedGroup.getComments();
             for (CommentInstance instance : instances) {
@@ -204,6 +204,7 @@ class ButtonEditor extends DefaultCellEditor {
             double negPercentage = round((negCount / commentTotal * 100), 2);
             double posPercentage = round((posCount / commentTotal * 100), 2);
             double neutralPercentage = round(neutralCount / commentTotal * 100, 2);
+            posScore= round(posScore/selectedGroup.getComments().size(),2);
             summaryString += "\n\nNegative Percentage: " + negPercentage;
             summaryString += "\nPositive Percentage: " + posPercentage;
             summaryString += "\nNeutral Percentage: " + neutralPercentage;
@@ -231,7 +232,7 @@ class ButtonEditor extends DefaultCellEditor {
             jd.pack();
             jd.show();
         } else if (IsPushed && Label.equals("Add to blacklist")) {
-                MainUI.addToBlacklist(Groups.get(MainUI.OutputTable.getSelectedRow()).getKeyword());
+            MainUI.addToBlacklist(Groups.get(MainUI.OutputTable.getSelectedRow()).getKeyword());
         }
         IsPushed = false;
         return new String(Label);

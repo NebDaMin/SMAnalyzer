@@ -69,34 +69,16 @@ public class FBClient {
         FBCommentList comments = new FBCommentList(id, FbClient, null);
         if (comments.getData() == null) {
             return 1;
-        } else {
-            if (comments.getHasNext()) {
-                boolean searched = false;
-                while (comments.getHasNext() || searched == false) {
-                    searched = true;
-                    for (int i = 0; i < comments.getCount(); i++) {
-                        JSONObject comment = comments.getData().getJSONObject(i);
-                        NormalizedComment normComment = new NormalizedComment();
-                        if(!comment.has("message")){
-                            comment.put("message", "[No Text]");
-                        }
-                        normComment.setFromFacebook(comment);
-                        PostArrayList.add(normComment);
-                        String time = comment.getString("created_time").replace("T", " ").replace("+0000", "");
-                        System.out.println("Comment: " + comment.getString("message") + "\nCreated on: " + time);
-                        if (children == true) {
-                            addCommentsToArrayList(comment.getString("id"), children);
-                        }
-                    }
-                    if (comments.getHasNext()) {
-                        comments = new FBCommentList(id, FbClient, comments.getAfter());
-                        searched = false;
-                    }
-                }
-            } else {
+        } else if (comments.getHasNext()) {
+            boolean searched = false;
+            while (comments.getHasNext() || searched == false) {
+                searched = true;
                 for (int i = 0; i < comments.getCount(); i++) {
                     JSONObject comment = comments.getData().getJSONObject(i);
                     NormalizedComment normComment = new NormalizedComment();
+                    if (!comment.has("message")) {
+                        comment.put("message", "[No Text]");
+                    }
                     normComment.setFromFacebook(comment);
                     PostArrayList.add(normComment);
                     String time = comment.getString("created_time").replace("T", " ").replace("+0000", "");
@@ -104,6 +86,22 @@ public class FBClient {
                     if (children == true) {
                         addCommentsToArrayList(comment.getString("id"), children);
                     }
+                }
+                if (comments.getHasNext()) {
+                    comments = new FBCommentList(id, FbClient, comments.getAfter());
+                    searched = false;
+                }
+            }
+        } else {
+            for (int i = 0; i < comments.getCount(); i++) {
+                JSONObject comment = comments.getData().getJSONObject(i);
+                NormalizedComment normComment = new NormalizedComment();
+                normComment.setFromFacebook(comment);
+                PostArrayList.add(normComment);
+                String time = comment.getString("created_time").replace("T", " ").replace("+0000", "");
+                System.out.println("Comment: " + comment.getString("message") + "\nCreated on: " + time);
+                if (children == true) {
+                    addCommentsToArrayList(comment.getString("id"), children);
                 }
             }
         }

@@ -9,12 +9,10 @@ import main.sminterfaces.NormalizedComment;
 
 public class CommentListAnalyzer {
 
-    //Declare Class Variables
-    //for now I have decided to go the same import route for our positivity word list as all our other external files.
     private final String POSITIVITYWORDSPATH = "externalfiles/PositivityWords.txt";
     private final String DICTIONARYPATH = "externalfiles/BigAssDictionaryFromPrinceton.txt";
     private final String BLACKLISTPATH = "externalfiles/BlackList.txt";
-	private String OriginalPost;
+    private String OriginalPost;
     private ArrayList<CommentInstance> AllComments;
     private ArrayList<CommentInstance> NonEnglishComments;
     private final DictionaryInstance Dictionary;
@@ -22,15 +20,15 @@ public class CommentListAnalyzer {
     private ArrayList<WordInstance> AllUniqueWordsFiltered;
     private ArrayList<WordInstance> BlackList;
     private ArrayList<WordInstance> TempBlacklist;
-    //This number will be encoded into the text file from which we read all words we want to define as positive or negative.
     private ArrayList<WordInstance> PositivityWords;
     private ArrayList<CommentGroup> Groups;
     private final int NUMBER_OF_GROUPS = 10;
     private Boolean HasBeenAnalyzed;
 
+    //this class deals with all comment analysis that has to do with all comments being analyzed collectively
+    //from a single post.
     public CommentListAnalyzer() throws IOException {
-        //Initialize Class Variables
-		OriginalPost = "";
+        OriginalPost = "";
         Dictionary = new DictionaryInstance(DICTIONARYPATH, "English");
         AllComments = new ArrayList();
         NonEnglishComments = new ArrayList();
@@ -42,7 +40,7 @@ public class CommentListAnalyzer {
         Groups = new ArrayList();
         HasBeenAnalyzed = false;
 
-        //Import words into BlackList
+        //Loads all words from the blacklist into an arraylist
         BufferedReader br;
         br = new BufferedReader(new FileReader(BLACKLISTPATH));
         String sCurrentLine;
@@ -50,10 +48,9 @@ public class CommentListAnalyzer {
             BlackList.add(new WordInstance(sCurrentLine));
         }
 
-        //Import words and values into PositivityWords
+        //Import all words and their positivity values into an arraylist
         br = new BufferedReader(new FileReader(POSITIVITYWORDSPATH));
         while ((sCurrentLine = br.readLine()) != null) {
-            //This might be a cheap solution for now, basically we just need to add a 1 or -1 the line after each word in this file
             PositivityWords.add(new WordInstance(sCurrentLine, Integer.parseInt(br.readLine().trim())));
         }
     }
@@ -64,19 +61,17 @@ public class CommentListAnalyzer {
             CommentInstance currentInstance = new CommentInstance(post.get(x).getMedia(), post.get(x).getId(), post.get(x).getMessage(), post.get(x).getTime(),
                     post.get(x).getShares(), Dictionary.getDictionaryInstance(), PositivityWords);
             //Filtering out non english words and instances of Only Names in comments.
-            //We should somehow rerun this code when we apply words to the TempDictionary
-            //Im not sure how the existing rerun functionality is working with the blacklist. Figured I'd mention this to be sure.
             if (currentInstance.getIsEnglish() == true && currentInstance.getIsOnlyName() == false) {
                 AllComments.add(currentInstance);
             } else {
-                //We can use this to catch non english comments in case we want to investigate them at some point
-                //Maybe we can give the user the option to view these "non english" comments to identify potential words to add to the TempDictionary
+                //Collecting non English comments so they are not lost to the void.
                 NonEnglishComments.add(currentInstance);
             }
         }
-	}
+    }
 
-	public void analyze(Boolean isBlacklistEnabled) {
+    //Initializes analysis.
+    public void analyze(Boolean isBlacklistEnabled) {
         //Loading the unique words from all CommentInstances into a single ArrayList that can be sorted
         ArrayList<WordInstance> allUniqueWords;
         allUniqueWords = AllComments.get(0).getUniqueWordList();
@@ -100,14 +95,14 @@ public class CommentListAnalyzer {
         AllUniqueWords = allUniqueWords;
         Collections.sort(AllUniqueWords);
 
-        //Call Method to filter out the crap if ignore blacklist is not selected
         AllUniqueWordsFiltered = isBlacklistEnabled
-                ? filterMeaninglessWords(AllUniqueWords) : AllUniqueWords;
+                ? filterBlacklist(AllUniqueWords) : AllUniqueWords;
         System.out.println(AllUniqueWordsFiltered);
         HasBeenAnalyzed = true;
     }
 
-    public ArrayList<WordInstance> filterMeaninglessWords(ArrayList<WordInstance> input) {
+    //Filter words out based on blacklist
+    public ArrayList<WordInstance> filterBlacklist(ArrayList<WordInstance> input) {
         for (int x = 0; x < input.size(); x++) {
             for (int y = 0; y < BlackList.size(); y++) {
                 if (BlackList.get(y).getWord().equals(input.get(x).getWord())) {
@@ -116,6 +111,7 @@ public class CommentListAnalyzer {
                     break;
                 }
             }
+            //Filter based on temporary black list
             for (int z = 0; z < TempBlacklist.size(); z++) {
                 if (TempBlacklist.get(z).getWord().equals(input.get(x).getWord())) {
                     input.remove(x);
@@ -127,17 +123,13 @@ public class CommentListAnalyzer {
         return input;
     }
 
+    //Groups the comments together based on keyword
     public ArrayList<CommentGroup> groupComments() {
-		ArrayList<CommentGroup> groups = new ArrayList();
+        ArrayList<CommentGroup> groups = new ArrayList();
         int targetIndex = 0;
         String keyword = "";
-        //set targetIndex equal to last element in list
         targetIndex = AllUniqueWordsFiltered.size() - 1;
-        //create a group for the last x elements in list, where x is
-        //NUMBER_OF_GROUPS
-        //Issue: since AllUniqueWordsFiltered is only ever going to be one value why is there an if here?
-        //I think the intended functionality would be to group everything in its entirety,
-        //but only output as many groups as determined by the final NUMBER_OF_GROUPS
+
         if (AllUniqueWordsFiltered.size() > NUMBER_OF_GROUPS) {
             for (int k = 0; k < NUMBER_OF_GROUPS; k++) {
                 keyword = AllUniqueWordsFiltered.get(targetIndex).getWord();
@@ -151,8 +143,7 @@ public class CommentListAnalyzer {
                 targetIndex--;
             }
         }
-        //iterate through AllComments and add any that contain a grouped keyword
-        //to that group. Might be more efficient method
+        //Iterate through AllComments and add any that contain a grouped keyword.
         ArrayList<WordInstance> wordList;
         for (CommentGroup g : groups) {
             keyword = g.getKeyword();
@@ -172,17 +163,11 @@ public class CommentListAnalyzer {
                 k--;
             }
         }
-		Groups = groups;
+        Groups = groups;
         Collections.sort(Groups);
         for (CommentGroup g : Groups) {
             Collections.sort(g.getComments());
         }
-        //output groups to console
-        /*System.out.print("Total Groups: " + Groups.size()
-                + "\n----------------------------------\n");
-        for (CommentGroup g : Groups) {
-            System.out.print(g);
-        }*/
         return Groups;
     }
 
@@ -191,7 +176,7 @@ public class CommentListAnalyzer {
     }
 
     public void addToDictionary(String wordToAdd) {
-        Dictionary.addTempWordToDict(wordToAdd);
+        Dictionary.addCustomWordToDict(wordToAdd);
     }
 
     public boolean getHasBeenAnalyzed() {
@@ -209,7 +194,7 @@ public class CommentListAnalyzer {
     public String getOriginalPost() {
         return OriginalPost;
     }
-    
+
     public void setOriginalPost(String post) {
         OriginalPost = post;
     }
@@ -220,20 +205,22 @@ public class CommentListAnalyzer {
         AllUniqueWordsFiltered.clear();
         Groups.clear();
     }
+
+    //logic for finding the total positivity score for a group of comments.
     public int[] totalAlignment() {
-            int[] alignment= new int[3];
-            for (int k=0; k<AllComments.size(); k++) {
-               if (AllComments.get(k).getPositivityLevel() < 0) {
-                   //negative comments     
-                        alignment[0]++;
-                    } else if (AllComments.get(k).getPositivityLevel() > 0) {
-                        //positive comments
-                        alignment[1]++;
-                    } else {
-                        //neutral comments
-                        alignment[2]++;
-                    }  
+        int[] alignment = new int[3];
+        for (int k = 0; k < AllComments.size(); k++) {
+            if (AllComments.get(k).getPositivityLevel() < 0) {
+                //negative comments     
+                alignment[0]++;
+            } else if (AllComments.get(k).getPositivityLevel() > 0) {
+                //positive comments
+                alignment[1]++;
+            } else {
+                //neutral comments
+                alignment[2]++;
             }
-            return alignment;
         }
+        return alignment;
+    }
 }

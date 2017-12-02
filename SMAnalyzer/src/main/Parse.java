@@ -3,11 +3,13 @@ package main;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 
+//this takes a url and parses it into a useable format
 public class Parse {
+
     private String Site;
-    
-    public HashMap<String, String> parseUrl(String s) 
-    {
+
+    //this decides what site the url is from
+    public HashMap<String, String> parseUrl(String s) {
         if (s.contains("facebook.com")) {
             setSite("facebook");
             return parseFacebookUrl(s);
@@ -27,8 +29,8 @@ public class Parse {
         }
     }
 
-    HashMap<String, String> parseFacebookUrl(String s) 
-    {
+    //this is for facebook
+    HashMap<String, String> parseFacebookUrl(String s) {
         int last = s.lastIndexOf("facebook.com/");
         int fbLength = "facebook.com/".length();
 
@@ -54,8 +56,8 @@ public class Parse {
         return map;
     }
 
-    HashMap<String, String> parseYoutubeUrl(String s) 
-    {
+    //this is for youtube
+    HashMap<String, String> parseYoutubeUrl(String s) {
         HashMap<String, String> map = new HashMap<String, String>();
         if (s.contains("youtube.com/")) {
             int last = s.lastIndexOf("youtube.com/");
@@ -85,27 +87,6 @@ public class Parse {
                 map.put("Id", array[0]);
             }
         } else {
-                JOptionPane.showMessageDialog(null, "Url not recognized",
-                        "Uh...", JOptionPane.INFORMATION_MESSAGE);
-                return null;
-        }
-        return map;
-    }
-
-    HashMap<String, String> parseTwitterUrl(String s) 
-    {
-        int last = s.lastIndexOf("twitter.com/");
-        int twtLength = "twitter.com/".length();
-
-        String sub = s.substring(last + twtLength, s.length());
-        String[] array = sub.split("/");
-        HashMap<String, String> map = new HashMap<String, String>();
-
-        if (array.length == 3) {
-            map.put("Username", array[0]);
-            map.put("Status", array[1]);
-            map.put("Post Id", array[2]);
-        } else {
             JOptionPane.showMessageDialog(null, "Url not recognized",
                     "Uh...", JOptionPane.INFORMATION_MESSAGE);
             return null;
@@ -113,8 +94,8 @@ public class Parse {
         return map;
     }
 
-    HashMap<String, String> parseRedditUrl(String s) 
-    {
+    // this is for reddit
+    HashMap<String, String> parseRedditUrl(String s) {
         HashMap<String, String> map = new HashMap<String, String>();
 
         if (s.contains("reddit.com")) {
@@ -141,20 +122,39 @@ public class Parse {
 
             map.put("Post Id", array[0]);
         } else {
-                JOptionPane.showMessageDialog(null, "Url not recognized",
-                        "Uh...", JOptionPane.INFORMATION_MESSAGE);
-                return null;
+            JOptionPane.showMessageDialog(null, "Url not recognized",
+                    "Uh...", JOptionPane.INFORMATION_MESSAGE);
+            return null;
         }
         return map;
     }
-    
-    public void setSite(String site) 
-    {
-       this.Site = site;
+
+    //this is for twitter but it never got implemented fully
+    HashMap<String, String> parseTwitterUrl(String s) {
+        int last = s.lastIndexOf("twitter.com/");
+        int twtLength = "twitter.com/".length();
+
+        String sub = s.substring(last + twtLength, s.length());
+        String[] array = sub.split("/");
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        if (array.length == 3) {
+            map.put("Username", array[0]);
+            map.put("Status", array[1]);
+            map.put("Post Id", array[2]);
+        } else {
+            JOptionPane.showMessageDialog(null, "Url not recognized",
+                    "Uh...", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        return map;
     }
-     
-    public String getSite()
-    {
+
+    public void setSite(String site) {
+        this.Site = site;
+    }
+
+    public String getSite() {
         return Site;
     }
 }
