@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.Date;
-import java.util.List;
+import java.lang.Thread;
 
 public class RedditClient {
 
@@ -29,6 +29,7 @@ public class RedditClient {
         ArrayList<JSONObject> list = parseJSONArrayFromString(RedditClient.get(Token, request));
         addOriginalPostToArrayList(list.get(0));
         addCommentsToArrayList(list.get(1), true, id);
+        System.out.println("PostArrayList size: " + PostArrayList.size());
     }
 
     public ArrayList<JSONObject> parseJSONArrayFromString(String jsonText) {
@@ -59,8 +60,10 @@ public class RedditClient {
         } else {
             boolean searched = false;
             JSONObject data = obj.getJSONObject("data");
-            if(data.has("depth")){
-                if(data.getInt("depth") == 10){ return 1; }
+            if (data.has("depth")) {
+                if (data.getInt("depth") == 10) {
+                    return 1;
+                }
             }
             JSONArray comments;
             if (data.has("children")) {
@@ -70,57 +73,31 @@ public class RedditClient {
             } else {
                 return 1;
             }
-            if (comments.length() == 0) {
+            if (obj.getString("kind").equals("more")) {
                 RedditRequest commentRequest = new RedditRequest("/comments/" + id + ".json");
                 commentRequest.addQueryParameter("comment", data.getString("id"));
                 ArrayList<JSONObject> moreChildrenComments = parseJSONArrayFromString(RedditClient.get(Token, commentRequest));
-                for (JSONObject childObj : moreChildrenComments) {
-                    System.out.println(childObj);
-                }
+                addCommentsToArrayList(moreChildrenComments.get(1), true, id);
             } else {
-                for (int i = 0; i < comments.length() - 1 || searched == false; i++) {
+                for (int i = 0; (i < comments.length() - 1 || searched == false) && comments.length() != 0; i++) {
                     searched = true;
                     JSONObject comment = comments.getJSONObject(i);
-                    if(comment.getJSONObject("data").has("replies") && !comment.getJSONObject("data").get("replies").equals("")){
-                        if(comment.getJSONObject("data").getJSONObject("replies").getString("kind").equals("more")){
-                            System.out.println("MORE COMMENTS");
-                            RedditRequest moreChildrenRequest = new RedditRequest("/api/morechildren");
-                            moreChildrenRequest.addBodyParameter("api_type", "json");
-                            moreChildrenRequest.addBodyParameter("link_id", "t3_" + id);
-                            List<Object> children = comment.getJSONObject("data").getJSONArray("children").toList();
-                            String childrenIds = "";
-                            for (int j = 0; j < children.size(); j++) {
-                                System.out.println(children.get(j).toString());
-                                childrenIds = childrenIds + children.get(j).toString();
-                                if (j < children.size() - 1) {
-                                    childrenIds = childrenIds + ",";
-                                }
-                            }
-                            moreChildrenRequest.addBodyParameter("children", childrenIds);
-                            moreChildrenRequest.addBodyParameter("limit_children", "false");
-                            JSONObject result = parseJSONObject(RedditClient.post(Token, moreChildrenRequest));
-                            for (int k = 0; k < children.size(); k++) {
-                            }
+                    if (!comment.getString("kind").equals("more")) {
+                        NormalizedComment normComment = new NormalizedComment();
+                        normComment.setFromReddit(comment.getJSONObject("data"));
+                        PostArrayList.add(normComment);
+                        
+                        Double timeDouble = comment.getJSONObject("data").getDouble("created");
+                        Date time = new Date(timeDouble.longValue() * 1000);
+                        String text;
+                        if (comment.getJSONObject("data").has("body")) {
+                            text = comment.getJSONObject("data").getString("body");
+                        } else {
+                            text = "[No Text]";
                         }
+                        System.out.println("Comment: " + text + "\nCreated on: " + time);
+
                     }
-                    NormalizedComment normComment = new NormalizedComment();
-                    normComment.setFromReddit(comment.getJSONObject("data"));
-                    PostArrayList.add(normComment);
-                    
-                    if (!comment.getJSONObject("data").has("created")) {
-                        System.out.println("STOP");
-                        break;
-                    }
-                    
-                    Double timeDouble = comment.getJSONObject("data").getDouble("created");
-                    Date time = new Date(timeDouble.longValue() * 1000);
-                    String text;
-                    if (comment.getJSONObject("data").has("body")) {
-                        text = comment.getJSONObject("data").getString("body");
-                    } else {
-                        text = "[No Text]";
-                    }
-                    System.out.println("Comment: " + text + "\nCreated on: " + time);
                     if (includeChildren == true) {
                         addCommentsToArrayList(comment, includeChildren, id);
                     }
