@@ -186,7 +186,7 @@ class ButtonEditor extends DefaultCellEditor {
             double neutralCount = 0;
             double posCount = 0;
             double commentTotal = comments.size();
-            int posScore = 0;
+            double posScore = 0;
             int wordTotal = 0;
             ArrayList<CommentInstance> instances = selectedGroup.getComments();
             for (CommentInstance instance : instances) {
@@ -204,6 +204,7 @@ class ButtonEditor extends DefaultCellEditor {
             double negPercentage = round((negCount / commentTotal * 100), 2);
             double posPercentage = round((posCount / commentTotal * 100), 2);
             double neutralPercentage = round(neutralCount / commentTotal * 100, 2);
+            posScore= round(posScore/selectedGroup.getComments().size(),2);
             summaryString += "\n\nNegative Percentage: " + negPercentage;
             summaryString += "\nPositive Percentage: " + posPercentage;
             summaryString += "\nNeutral Percentage: " + neutralPercentage;

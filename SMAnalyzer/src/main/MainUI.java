@@ -229,7 +229,8 @@ public class MainUI extends JFrame {
                 YTClient.clearArray();
                 RedditClient.clearArray();
                 clearUI();
-
+                AnalyzeButton.setEnabled(false);
+                
                 String urlString = UrlText.getText();
                 MainUI.this.MainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -384,6 +385,7 @@ public class MainUI extends JFrame {
         MainUI.this.remove(Scroll);
         PostText.setText("");
         ChartPanel.removeAll();
+        AnalyzeButton.setEnabled(true);
         MainUI.this.remove(ChartPanel);
         MainUI.this.repaint();
         MainUI.this.pack();
