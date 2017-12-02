@@ -26,20 +26,20 @@ import org.jfree.chart.JFreeChart;
 public class MainUI extends JFrame {
 
     //UI vars
-    private JPanel mainPanel;
-    private JPanel chartPanel;
-    private JTextArea postText;
-    private ChartPanel mainChart;
-    private JMenuBar menu;
-    private JMenu options, file;
-    private JCheckBoxMenuItem childCommentBox, blacklistIgnoreBox, saveFile;
-    private JMenuItem loadFile, dictionaryAdd, exportToFile;
-    public JTable outputTable;
-    private JButton urlButton, pasteButton, analyzeButton, clearButton;
-    private JScrollPane jsp;
-    private JScrollPane scroll;
-    private JFileChooser jfc;
-    private GridBagConstraints layoutConstraints;
+    private JPanel MainPanel;
+    private JPanel ChartPanel;
+    private JTextArea PostText;
+    private ChartPanel MainChart;
+    private JMenuBar Menu;
+    private JMenu Options, File;
+    private JCheckBoxMenuItem ChildCommentBox, BlacklistIgnoreBox, SaveFile;
+    private JMenuItem LoadFile, DictionaryAdd, ExportToFile;
+    public JTable OutputTable;
+    private JButton UrlButton, PasteButton, AnalyzeButton, ClearButton;
+    private JScrollPane ScrollPane;
+    private JScrollPane Scroll;
+    private JFileChooser FileChooser;
+    private GridBagConstraints LayoutConstraints;
     public final int BAR_CHART = 0;
     public final int PIE_CHART = 1;
     //restFB vars
@@ -47,58 +47,58 @@ public class MainUI extends JFrame {
     private YTClient YTClient;
     private RedditClient RedditClient;
     private TwitterClient TwitterClient;
-    private Parse parse;
+    private Parse Parse;
 
     //HumanDataAnalysisProject
     private CommentListAnalyzer Analyzer;
 
-    private JLabel urlLabel;
-    private JTextField urlText;
+    private JLabel UrlLabel;
+    private JTextField UrlText;
 
     public MainUI() throws IOException {
         //init
         ActionHandler ah = new ActionHandler();
-        jfc = new JFileChooser("savedfiles");
-        urlLabel = new JLabel("Url: ");
-        urlText = new JTextField(20);
-        pasteButton = new JButton("Paste");
-        analyzeButton = new JButton("Analyze");
-        clearButton = new JButton("Clear");
-        urlButton = new JButton("Url");
-        outputTable = new JTable();
-        jsp = new JScrollPane(outputTable);
-        mainPanel = new JPanel();
+        FileChooser = new JFileChooser("savedfiles");
+        UrlLabel = new JLabel("Url: ");
+        UrlText = new JTextField(20);
+        PasteButton = new JButton("Paste");
+        AnalyzeButton = new JButton("Analyze");
+        ClearButton = new JButton("Clear");
+        UrlButton = new JButton("Url");
+        OutputTable = new JTable();
+        ScrollPane = new JScrollPane(OutputTable);
+        MainPanel = new JPanel();
 
         //menu init
-        menu = new JMenuBar();
+        Menu = new JMenuBar();
 
-        file = new JMenu("File");
-        file.setMnemonic('F');
-        loadFile = new JMenuItem("Load File...");
-        loadFile.setMnemonic('L');
-        file.add(loadFile);
-        exportToFile = new JMenuItem("Export to file");
-        exportToFile.setEnabled(false);
-        file.add(exportToFile);
-        saveFile = new JCheckBoxMenuItem("Save to File");
-        file.add(saveFile);
-        menu.add(file);
+        File = new JMenu("File");
+        File.setMnemonic('F');
+        LoadFile = new JMenuItem("Load File...");
+        LoadFile.setMnemonic('L');
+        File.add(LoadFile);
+        ExportToFile = new JMenuItem("Export to file");
+        ExportToFile.setEnabled(false);
+        File.add(ExportToFile);
+        SaveFile = new JCheckBoxMenuItem("Save to File");
+        File.add(SaveFile);
+        Menu.add(File);
 
-        options = new JMenu("Options");
-        options.setMnemonic('O');
-        childCommentBox = new JCheckBoxMenuItem("Child Comments");
-        blacklistIgnoreBox = new JCheckBoxMenuItem("Ignore BlackList");
-        dictionaryAdd = new JMenuItem("Add to dictionary");
-        options.add(childCommentBox);
-        options.add(blacklistIgnoreBox);
-        options.add(dictionaryAdd);
-        menu.add(options);
+        Options = new JMenu("Options");
+        Options.setMnemonic('O');
+        ChildCommentBox = new JCheckBoxMenuItem("Child Comments");
+        BlacklistIgnoreBox = new JCheckBoxMenuItem("Ignore BlackList");
+        DictionaryAdd = new JMenuItem("Add to dictionary");
+        Options.add(ChildCommentBox);
+        Options.add(BlacklistIgnoreBox);
+        Options.add(DictionaryAdd);
+        Menu.add(Options);
 
         this.setLayout(new GridBagLayout());
-        layoutConstraints = new GridBagConstraints();
-        layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
-        layoutConstraints.gridy = 0;
-        this.add(menu, layoutConstraints);
+        LayoutConstraints = new GridBagConstraints();
+        LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+        LayoutConstraints.gridy = 0;
+        this.add(Menu, LayoutConstraints);
 
         FBClient = new FBClient();
         YTClient = new YTClient();
@@ -107,50 +107,50 @@ public class MainUI extends JFrame {
         
         Analyzer = new CommentListAnalyzer();
 
-        outputTable.setVisible(false);
-        clearButton.setVisible(true);
-        outputTable.setPreferredScrollableViewportSize(new Dimension(400, 150));
+        OutputTable.setVisible(false);
+        ClearButton.setVisible(true);
+        OutputTable.setPreferredScrollableViewportSize(new Dimension(400, 150));
 
-        GroupLayout layout = new GroupLayout(mainPanel);
-        mainPanel.setLayout(layout);
+        GroupLayout layout = new GroupLayout(MainPanel);
+        MainPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
         GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addComponent(urlLabel)
+                .addComponent(UrlLabel)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(urlText))
+                        .addComponent(UrlText))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(pasteButton)
-                        .addComponent(analyzeButton)
-                        .addComponent(clearButton))
+                        .addComponent(PasteButton)
+                        .addComponent(AnalyzeButton)
+                        .addComponent(ClearButton))
         );
-        layout.linkSize(SwingConstants.HORIZONTAL, pasteButton, analyzeButton, clearButton);
+        layout.linkSize(SwingConstants.HORIZONTAL, PasteButton, AnalyzeButton, ClearButton);
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(urlLabel)
-                        .addComponent(urlText)
-                        .addComponent(pasteButton))
+                        .addComponent(UrlLabel)
+                        .addComponent(UrlText)
+                        .addComponent(PasteButton))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(analyzeButton))
-                .addComponent(clearButton)
+                        .addComponent(AnalyzeButton))
+                .addComponent(ClearButton)
         );
-        layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
-        layoutConstraints.gridy = 1;
-        this.add(mainPanel, layoutConstraints);
+        LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+        LayoutConstraints.gridy = 1;
+        this.add(MainPanel, LayoutConstraints);
         
-        chartPanel = new JPanel();
-        postText = new JTextArea();
-        scroll = new JScrollPane(postText);
+        ChartPanel = new JPanel();
+        PostText = new JTextArea();
+        Scroll = new JScrollPane(PostText);
 
-        urlButton.addActionListener(ah);
-        pasteButton.addActionListener(ah);
-        analyzeButton.addActionListener(ah);
-        clearButton.addActionListener(ah);
-        loadFile.addActionListener(ah);
-        dictionaryAdd.addActionListener(ah);
-        exportToFile.addActionListener(ah);
+        UrlButton.addActionListener(ah);
+        PasteButton.addActionListener(ah);
+        AnalyzeButton.addActionListener(ah);
+        ClearButton.addActionListener(ah);
+        LoadFile.addActionListener(ah);
+        DictionaryAdd.addActionListener(ah);
+        ExportToFile.addActionListener(ah);
 
         this.pack();
         this.setLocation(700, 300);
@@ -163,7 +163,7 @@ public class MainUI extends JFrame {
     private class ActionHandler implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == pasteButton) {
+            if (e.getSource() == PasteButton) {
                 Clipboard clipboard = getToolkit().getSystemClipboard();
 
                 Transferable clipData = clipboard.getContents(this);
@@ -173,22 +173,22 @@ public class MainUI extends JFrame {
                 } catch (Exception ex) {
                     s = ex.toString();
                 }
-                urlText.setText(s);
-            } else if (e.getSource() == clearButton) {
+                UrlText.setText(s);
+            } else if (e.getSource() == ClearButton) {
                 clearUI();
-                urlText.setText("");
-            } else if (e.getSource() == dictionaryAdd) {
+                UrlText.setText("");
+            } else if (e.getSource() == DictionaryAdd) {
                 JFrame inputFrame = new JFrame("Add to dictionary");
                 String wordToAdd = JOptionPane.showInputDialog(inputFrame, "Please type the word to be added below");
                 if (wordToAdd != null) {
                     Analyzer.addToDictionary(wordToAdd);
                 }
-            } else if (e.getSource() == exportToFile) {
+            } else if (e.getSource() == ExportToFile) {
                 ArrayList<CommentInstance> comments = Analyzer.getComments();
-                int returnVal = jfc.showSaveDialog(MainUI.this);
+                int returnVal = FileChooser.showSaveDialog(MainUI.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
-                        FileWriter fw = new FileWriter(jfc.getSelectedFile() + ".txt");
+                        FileWriter fw = new FileWriter(FileChooser.getSelectedFile() + ".txt");
                         fw.write(comments.get(0).getMedia() + "`");
 						fw.write(Analyzer.getOriginalPost() + "`");
                         for (CommentInstance c : comments) {
@@ -202,9 +202,9 @@ public class MainUI extends JFrame {
                         ex.printStackTrace();
                     }
                 }
-            } else if (e.getSource() == loadFile) {
+            } else if (e.getSource() == LoadFile) {
                 ArrayList<NormalizedComment> comments = parseFile();
-                Boolean isBlacklistEnabled = !blacklistIgnoreBox.isSelected();
+                Boolean isBlacklistEnabled = !BlacklistIgnoreBox.isSelected();
                 try {
                     Analyzer.setComments(comments);
                 } catch (IOException ioe) {
@@ -212,7 +212,7 @@ public class MainUI extends JFrame {
                 }
                 Analyzer.analyze(isBlacklistEnabled);
                 displayData();
-            } else if (e.getSource() == analyzeButton) {
+            } else if (e.getSource() == AnalyzeButton) {
                 Analyzer.clearArray();
                 FBClient.clearArray();
                 YTClient.clearArray();
@@ -220,45 +220,45 @@ public class MainUI extends JFrame {
   //              TwitterClient.clearArray();
                 clearUI();
                 
-                String urlString = urlText.getText();
-                MainUI.this.mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                String urlString = UrlText.getText();
+                MainUI.this.MainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
                 if (urlString.equals(null) || urlString.equals("")) {
                     JOptionPane.showMessageDialog(null, "There's nothing to analyze.\nPlease paste a url.", "Did you really hit analyze without puttng anything in?", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    parse = new Parse();
-                    HashMap<String, String> stringMap = parse.parseUrl(urlString);
-                    Boolean child = childCommentBox.isSelected();
-                    Boolean isBlacklistEnabled = !blacklistIgnoreBox.isSelected();
-                    exportToFile.setEnabled(true);
-                    loadFile.setEnabled(false);
-                    Boolean file = saveFile.isSelected();
+                    Parse = new Parse();
+                    HashMap<String, String> stringMap = Parse.parseUrl(urlString);
+                    Boolean child = ChildCommentBox.isSelected();
+                    Boolean isBlacklistEnabled = !BlacklistIgnoreBox.isSelected();
+                    ExportToFile.setEnabled(true);
+                    LoadFile.setEnabled(false);
+                    Boolean file = SaveFile.isSelected();
 
-                    if (parse.getSite().equals("facebook")) {
+                    if (Parse.getSite().equals("facebook")) {
                         if (stringMap.size() == 1) {
                             FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child);
                         } else if (stringMap.size() == 3) {
                             FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child);
                         }
-                    } else if (parse.getSite().equals("youtube")) {
+                    } else if (Parse.getSite().equals("youtube")) {
                         YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"), child);
-                    } else if (parse.getSite().equals("reddit")) {
+                    } else if (Parse.getSite().equals("reddit")) {
                         RedditClient.fetchComments(stringMap.get("Post Id"));
-                    }else if (parse.getSite().equals("twitter")) {
+                    }else if (Parse.getSite().equals("twitter")) {
 //                        TwitterClient.fetchComments(stringMap.get("Post Id"));
                     }
                     try {
-                        if (parse.getSite().equals("facebook")) {
+                        if (Parse.getSite().equals("facebook")) {
                             if (!FBClient.getPostArray().isEmpty()) {
                                 Analyzer.setComments(FBClient.getPostArray());
                                 Analyzer.setOriginalPost(FBClient.getPostArray().get(0).getMessage());
                             }
-                        } else if (parse.getSite().equals("youtube")) {
+                        } else if (Parse.getSite().equals("youtube")) {
                             if (!YTClient.getPostArray().isEmpty()) {
                                 Analyzer.setComments(YTClient.getPostArray());
                                 Analyzer.setOriginalPost(YTClient.getPostArray().get(0).getMessage());
                             }
-                        } else if (parse.getSite().equals("reddit")) {
+                        } else if (Parse.getSite().equals("reddit")) {
                             if (!RedditClient.getPostArray().isEmpty()) {
                                 Analyzer.setComments(RedditClient.getPostArray());
                                 Analyzer.setOriginalPost(RedditClient.getPostArray().get(0).getMessage());
@@ -301,47 +301,47 @@ public class MainUI extends JFrame {
             ChartInstance chartInstance = new ChartInstance();
             int[] alignment = Analyzer.totalAlignment();
             chart = chartInstance.Chart("Total Level Of Positivity", alignment[1],alignment[0], alignment[2]);
-            mainChart = new ChartPanel(chart);
-            postText.setText(Analyzer.getOriginalPost());
+            MainChart = new ChartPanel(chart);
+            PostText.setText(Analyzer.getOriginalPost());
 
             //postPanel.add(new JScrollPane(postText));
-            postText.setLineWrap(true);
-            postText.setWrapStyleWord(true);
-            postText.setEditable(false);
-            scroll.setPreferredSize(new Dimension(500, 100));
-            layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
-            layoutConstraints.gridx = 1;
-            layoutConstraints.gridy = 0;
-            layoutConstraints.gridheight = 4;
-            this.add(chartPanel, layoutConstraints);
+            PostText.setLineWrap(true);
+            PostText.setWrapStyleWord(true);
+            PostText.setEditable(false);
+            Scroll.setPreferredSize(new Dimension(500, 100));
+            LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+            LayoutConstraints.gridx = 1;
+            LayoutConstraints.gridy = 0;
+            LayoutConstraints.gridheight = 4;
+            this.add(ChartPanel, LayoutConstraints);
             
-            layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
-            layoutConstraints.gridx = 0;
-            layoutConstraints.gridy = 2;
-            layoutConstraints.gridheight = 1;
-            chartPanel.add(mainChart);
-            this.add(scroll, layoutConstraints);
+            LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+            LayoutConstraints.gridx = 0;
+            LayoutConstraints.gridy = 2;
+            LayoutConstraints.gridheight = 1;
+            ChartPanel.add(MainChart);
+            this.add(Scroll, LayoutConstraints);
             
             //create and populate table
-            outputTable = new JTable(tableData, columnNames);
+            OutputTable = new JTable(tableData, columnNames);
             JButton infoButton = new JButton("More Info");
             JButton blacklistButton = new JButton("Add to Blacklist");
-            outputTable.getColumn("").setCellRenderer(new ButtonRenderer());
-            outputTable.getColumn("").setCellEditor(
+            OutputTable.getColumn("").setCellRenderer(new ButtonRenderer());
+            OutputTable.getColumn("").setCellEditor(
                     new ButtonEditor(new JCheckBox(), groups, infoButton, this, Analyzer));
-            outputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
-            outputTable.getColumn(" ").setCellEditor(
+            OutputTable.getColumn(" ").setCellRenderer(new ButtonRenderer());
+            OutputTable.getColumn(" ").setCellEditor(
                     new ButtonEditor(new JCheckBox(), groups, blacklistButton, this, Analyzer));
-            jsp = new JScrollPane(outputTable);
-	    jsp.setPreferredSize(new Dimension(500, 200));
-            layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
-            layoutConstraints.gridx = 0;
-            layoutConstraints.gridy = 3;
-            layoutConstraints.gridheight = 1;
-            MainUI.this.add(jsp, layoutConstraints);
+            ScrollPane = new JScrollPane(OutputTable);
+	    ScrollPane.setPreferredSize(new Dimension(500, 200));
+            LayoutConstraints.fill = GridBagConstraints.HORIZONTAL;
+            LayoutConstraints.gridx = 0;
+            LayoutConstraints.gridy = 3;
+            LayoutConstraints.gridheight = 1;
+            MainUI.this.add(ScrollPane, LayoutConstraints);
             MainUI.this.pack();
-            MainUI.this.mainPanel.setCursor(null);
-            outputTable.setVisible(true);
+            MainUI.this.MainPanel.setCursor(null);
+            OutputTable.setVisible(true);
             MainUI.this.repaint();
             MainUI.this.setLocationRelativeTo(null);
             
@@ -365,14 +365,14 @@ public class MainUI extends JFrame {
     }
 
     public void clearUI() {
-        outputTable.setVisible(false);
-        exportToFile.setEnabled(false);
-        loadFile.setEnabled(true);
-        MainUI.this.remove(jsp);
-        MainUI.this.remove(scroll);
-        postText.setText("");
-        chartPanel.removeAll();
-        MainUI.this.remove(chartPanel);   
+        OutputTable.setVisible(false);
+        ExportToFile.setEnabled(false);
+        LoadFile.setEnabled(true);
+        MainUI.this.remove(ScrollPane);
+        MainUI.this.remove(Scroll);
+        PostText.setText("");
+        ChartPanel.removeAll();
+        MainUI.this.remove(ChartPanel);   
         MainUI.this.repaint();
         MainUI.this.pack();
     }
@@ -383,10 +383,10 @@ public class MainUI extends JFrame {
         ArrayList<String> textList = new ArrayList();
         ArrayList<String> timeList = new ArrayList();
         ArrayList<String> shareList = new ArrayList();
-        int returnVal = jfc.showOpenDialog(MainUI.this);
+        int returnVal = FileChooser.showOpenDialog(MainUI.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
-                String contents = new String(Files.readAllBytes(Paths.get(jfc.getSelectedFile().getPath())));
+                String contents = new String(Files.readAllBytes(Paths.get(FileChooser.getSelectedFile().getPath())));
                 char currentChar;
                 String media = "";
                 String originalPost = "";

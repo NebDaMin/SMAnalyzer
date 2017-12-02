@@ -26,7 +26,7 @@ public class CommentListAnalyzer {
     private ArrayList<WordInstance> PositivityWords;
     private ArrayList<CommentGroup> Groups;
     private final int NUMBER_OF_GROUPS = 10;
-    private Boolean hasBeenAnalyzed;
+    private Boolean HasBeenAnalyzed;
 
     public CommentListAnalyzer() throws IOException {
         //Initialize Class Variables
@@ -40,7 +40,7 @@ public class CommentListAnalyzer {
         TempBlacklist = new ArrayList();
         PositivityWords = new ArrayList();
         Groups = new ArrayList();
-        hasBeenAnalyzed = false;
+        HasBeenAnalyzed = false;
 
         //Import words into BlackList
         BufferedReader br;
@@ -104,7 +104,7 @@ public class CommentListAnalyzer {
         AllUniqueWordsFiltered = isBlacklistEnabled
                 ? filterMeaninglessWords(AllUniqueWords) : AllUniqueWords;
         System.out.println(AllUniqueWordsFiltered);
-        hasBeenAnalyzed = true;
+        HasBeenAnalyzed = true;
     }
 
     public ArrayList<WordInstance> filterMeaninglessWords(ArrayList<WordInstance> input) {
@@ -195,7 +195,7 @@ public class CommentListAnalyzer {
     }
 
     public boolean getHasBeenAnalyzed() {
-        return hasBeenAnalyzed;
+        return HasBeenAnalyzed;
     }
 
     public ArrayList<CommentInstance> getComments() {
