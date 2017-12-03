@@ -30,6 +30,14 @@ public class YTClient {
             type = "channel";
             params.clear();
         }
+        params.put("id", id);
+        params.put("part", "snippet");
+        JSONObject info = YtClient.getObject(type+"s", params);
+        NormalizedComment norm = new NormalizedComment();
+        norm.setFromYoutube(info.getJSONArray("items").getJSONObject(0));
+        PostArrayList.add(norm);
+        params.clear();
+        
         params.put(type + "Id", id);
         params.put("textFormat", "plainText");
         params.put("part", "snippet,replies");

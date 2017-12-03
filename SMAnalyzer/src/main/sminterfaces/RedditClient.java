@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.Date;
-import java.lang.Thread;
 
 public class RedditClient {
 
@@ -24,11 +23,11 @@ public class RedditClient {
         PostArrayList = new ArrayList();
     }
 
-    public void fetchComments(String id) {
+    public void fetchComments(String id, boolean includeChildren) {
         RedditRequest request = new RedditRequest("/comments/" + id + ".json");
         ArrayList<JSONObject> list = parseJSONArrayFromString(RedditClient.get(Token, request));
         addOriginalPostToArrayList(list.get(0));
-        addCommentsToArrayList(list.get(1), true, id);
+        addCommentsToArrayList(list.get(1), includeChildren, id);
         System.out.println("PostArrayList size: " + PostArrayList.size());
     }
 

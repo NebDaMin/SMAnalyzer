@@ -243,7 +243,6 @@ public class MainUI extends JFrame {
                     Boolean isBlacklistEnabled = !BlacklistIgnoreBox.isSelected();
                     ExportToFile.setEnabled(true);
                     LoadFile.setEnabled(false);
-                    Boolean file = SaveFile.isSelected();
 
                     // begins the parsing process
                     if (Parse.getSite().equals("facebook")) {
@@ -255,7 +254,7 @@ public class MainUI extends JFrame {
                     } else if (Parse.getSite().equals("youtube")) {
                         YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"), child);
                     } else if (Parse.getSite().equals("reddit")) {
-                        RedditClient.fetchComments(stringMap.get("Post Id"));
+                        RedditClient.fetchComments(stringMap.get("Post Id"), child);
                     }
                     try {
                         if (Parse.getSite().equals("facebook")) {

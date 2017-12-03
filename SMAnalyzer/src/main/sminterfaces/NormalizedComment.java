@@ -41,6 +41,10 @@ public class NormalizedComment {
                     this.Message = yt.getJSONObject("snippet").getString("textOriginal");
                     this.CreatedTime = yt.getJSONObject("snippet").getString("publishedAt").replace(".000Z", "").replace("T", " ");
                 }
+                if (yt.getJSONObject("snippet").has("title")) {
+                    this.Message = yt.getJSONObject("snippet").getString("title");
+                    this.CreatedTime = yt.getJSONObject("snippet").getString("publishedAt").replace(".000Z", "").replace("T", " ");
+                }
             }
             this.Shares = null;
             this.Upvotes = null;
