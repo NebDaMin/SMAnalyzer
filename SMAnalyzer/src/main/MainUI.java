@@ -213,7 +213,6 @@ public class MainUI extends JFrame {
 //                        ex.printStackTrace();
 //                    }
                 }
-                //this loads a file to be SMAnalyzed matteo?
             } else if (e.getSource() == LoadFile) {
                 AnalyzeButton.setEnabled(false);
                 ArrayList<NormalizedComment> comments = parseFileToJSON();

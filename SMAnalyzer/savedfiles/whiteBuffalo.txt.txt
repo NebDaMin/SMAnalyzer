@@ -1,0 +1,422 @@
+{"comments": [
+    {
+        "id": "nngbZJ_ais4",
+        "time": "2017-10-12 17:05:35",
+        "media": "youtube",
+        "message": "The White Buffalo, \"If I Lost My Eyes,\" // GemsOnVHS™"
+    },
+    {
+        "id": "z22uf3aqdtz5zpvvpacdp431zhyojb4van5qcapaboxw03c010c",
+        "time": "2017-12-03 02:05:38",
+        "media": "youtube",
+        "message": "Better than 99% a the mainstream, beautiful man"
+    },
+    {
+        "id": "z22httzxwlznfrdzy04t1aokgmzgel5pquzqjh5ilviwbk0h00410",
+        "time": "2017-12-03 00:17:59",
+        "media": "youtube",
+        "message": "This is right up my street, only discovered him via a number tv shows, but it has caught my attention and after spending a number of hours listing to him, his Albums have become No.1 on the xmas list great stuff, keep it up"
+    },
+    {
+        "id": "z23nurkhuv3ri5qio04t1aokgz3rjyea2qsa35s3uoexbk0h00410",
+        "time": "2017-12-01 19:35:42",
+        "media": "youtube",
+        "message": "Yup"
+    },
+    {
+        "id": "z23jsbzjavq2hlxws04t1aokg00znox1yzuf35i3p4ecbk0h00410",
+        "time": "2017-11-29 18:00:01",
+        "media": "youtube",
+        "message": "Damn, this made me cry. She just went away, no reasons given. And I just found this. Profoundly devastating. Nevertheless, Jake \"White Buffalo\" is an awesome artist allaround"
+    },
+    {
+        "id": "z23qzlu4hufyhfhhf04t1aokgg24wx0xoliktqkkdkyyrk0h00410",
+        "time": "2017-11-29 00:14:20",
+        "media": "youtube",
+        "message": "Reminds me of Cat Stevens"
+    },
+    {
+        "id": "z225illaownrvre3dacdp43bjdjscebbo200yqzyirdw03c010c",
+        "time": "2017-11-23 00:26:23",
+        "media": "youtube",
+        "message": "It's a sad song, because the writer and listener already know the answer. In my experience with women these days, men are expendable. It didn't used to be that way though. My grandmothers would've died for my grandfathers."
+    },
+    {
+        "id": "z22ac1s43riuxvm5r04t1aokgsjtem150ufzuylzexedbk0h00410",
+        "time": "2017-11-18 19:28:25",
+        "media": "youtube",
+        "message": "I discovered you few months ago and I love your work and songs - I would tell you in French from Québec, CA - '' Une voix avec une  âme riche en émotions.''   Bravo ! Keep going please !"
+    },
+    {
+        "id": "z225ghtpdtewc3x24acdp43buwd5zvvcnfu2bgyhmo5w03c010c",
+        "time": "2017-11-17 14:37:47",
+        "media": "youtube",
+        "message": "Literally on loop all day."
+    },
+    {
+        "id": "z22vy514wmmpfhfqo04t1aokgc02hk0wb5nsraoeia22rk0h00410",
+        "time": "2017-11-15 13:00:58",
+        "media": "youtube",
+        "message": "For those who want the chords \n\nIntro G G6 C x2\n\nG\nIf I lost my eyes\n                       G6                   C\nWould you stay with me \nG \nWould you take me by the hand \n                G6                     C\nTell me what you see \nG                                             G6                      C\nFill my head with colors for my dreams \n               G\nOh! If I lost my eyes \n       F\nIf I lost my eyes \n\nG\nIf I lost my hands \n                  G6       C \nCouldn\u2019t feel a thing \nG\nIf my touch was gone forever \nG6                     C\nOut of reach \nG                                                              G6               C\nCouldn\u2019t hold you like a woman needs to be \n               G\nOh! If I lost my hands \n       F\nIf I lost my hands \nC                          G            F\nWould you stay ----- ay\nC                         G             F\nWould you stay ----- ay\n                  Am\nOr you'd stray \n                  G\nJust run away \n                                                                         C\nOr would you give me something to believe in                     \n                                                   F\nWould you show me the way \n         G                    F    /Sudden stop\nYou believe so I believe \n\nG\nIf I lost my mind \n                        G6            C\nWould you stay with me\n G                                             G6          C \nRemind me of the man I used to be \nG                                                                  G6                  C \nwould you Fill my head with hope times infinity \n\n                 G               \nOh ! If I lost my mind \n       F\nIf I lost my hands \n              G                         F\nOh, if I lost my eyes \n\nC                           G           F\nWould you stay -----ay\nC                           G           F\nWould you stay -----ay\nAm\nWould you stay"
+    },
+    {
+        "id": "z23gxx3oxsrrynfix04t1aokgfi3vucltexj1cedu4f4rk0h00410",
+        "time": "2017-11-12 20:20:59",
+        "media": "youtube",
+        "message": "Não é só uma música e sim uma prova de amor !!"
+    },
+    {
+        "id": "z22mdbx5voyxdjha104t1aokgxbtzaes0yptcazi44p0rk0h00410",
+        "time": "2017-11-11 03:14:08",
+        "media": "youtube",
+        "message": "Really tugs at my strings. Powerful song."
+    },
+    {
+        "id": "z225x52acmyef1ezf04t1aokge5rxq5cybcjxxcwdinsrk0h00410",
+        "time": "2017-11-10 01:43:02",
+        "media": "youtube",
+        "message": "His voice is fucking amazing."
+    },
+    {
+        "id": "z22tuhyaowujytq04acdp43ahzqv15nqvpgjeojaltlw03c010c",
+        "time": "2017-11-09 21:33:40",
+        "media": "youtube",
+        "message": "Tears of beauty.  Appreciation.  Love . Oneness.   Eye feel you 💖"
+    },
+    {
+        "id": "z22ag3valxfjfzakaacdp43aapmorvvouy1opuhnvulw03c010c",
+        "time": "2017-11-08 19:02:22",
+        "media": "youtube",
+        "message": "Hey guys! Can anyone break down hit fingering pattern. I\u2019m a beginner and can\u2019t get it right but I would love to learn to play this!!"
+    },
+    {
+        "id": "z23gxj3jvmvdfnhzi04t1aokglwrz54xuvbooevlnciybk0h00410",
+        "time": "2017-11-08 01:05:34",
+        "media": "youtube",
+        "message": "Literally gave me the chills.  💗💗"
+    },
+    {
+        "id": "z234wzmokvmat3slracdp431vbgxj3sqkidxgbsssrpw03c010c",
+        "time": "2017-11-06 20:19:03",
+        "media": "youtube",
+        "message": "Love you so much!!!"
+    },
+    {
+        "id": "z23ofdbp3mv0u3ikjacdp434qwimhrmyumm1ifddd5tw03c010c",
+        "time": "2017-11-06 18:12:00",
+        "media": "youtube",
+        "message": "This voice is sulbime it is a great artist"
+    },
+    {
+        "id": "z23dynnoskirgps4p04t1aokgbyveplzv01lvcqzgqcsbk0h00410",
+        "time": "2017-11-05 20:44:53",
+        "media": "youtube",
+        "message": "This is great!"
+    },
+    {
+        "id": "z23tvd3hckndsxqtfacdp43bivgsla2gik0euohfge5w03c010c",
+        "time": "2017-11-05 19:15:50",
+        "media": "youtube",
+        "message": "God damn this man is great. Beautiful straight up American Folk music. Can't help but feel emotional listening to it."
+    },
+    {
+        "id": "z23ngdcodr25ilqlfacdp43byeolyxhlytt0oppabfhw03c010c",
+        "time": "2017-11-04 10:40:06",
+        "media": "youtube",
+        "message": "You're the best, im Brazilian and I love your work!!!!!"
+    },
+    {
+        "id": "z23whb3iuyziexqmcacdp4311mr11milyoriantwoa1w03c010c",
+        "time": "2017-11-03 17:51:53",
+        "media": "youtube",
+        "message": "Absoloute legend of a man to hear hes a gd guy in person also makes his music tht much sweeter lol not a tune from him do i not like absoloute legend"
+    },
+    {
+        "id": "z232dz2agnyjsplhh04t1aokg2iq0yl1lcnkwhri1y1sbk0h00410",
+        "time": "2017-11-03 00:30:56",
+        "media": "youtube",
+        "message": "Amazing... reminds me a lot of a old tune my parents played by cat Stevens moon shadow \u201cAnd if I ever lose my eyes, if my colours all run dry,\nYes if I ever lose my eyes, Oh if I won't have to cry no more.\u201d"
+    },
+    {
+        "id": "z23txdj5fsfsjxgmzacdp43ahawamoyyyu4ph0xf34xw03c010c",
+        "time": "2017-11-02 20:48:31",
+        "media": "youtube",
+        "message": "It's like Eddie Vedder and Adele had a beautiful, beautiful baby"
+    },
+    {
+        "id": "z22sdfphqpejwlsbg04t1aokgt2kwy4boe0cttaqq4x0bk0h00410",
+        "time": "2017-11-02 20:40:00",
+        "media": "youtube",
+        "message": "T.W.BUFFALO ⚘\nWE DIG YU @ \nbIbsparrows🐣))\nciffee☕shop\nComanche Tex\n          U S A"
+    },
+    {
+        "id": "z23ltdzj2xnxsitlm2hd0t21wearuawqtekqp4pu0j00u00c2",
+        "time": "2017-11-02 20:26:41",
+        "media": "youtube",
+        "message": "Amanzing I love you Man I love your song !"
+    },
+    {
+        "id": "z222utgwexvfwhdbn04t1aokg3zzqrfyqd04axh04xfwrk0h00410",
+        "time": "2017-11-02 19:17:32",
+        "media": "youtube",
+        "message": "Gandalf has a nice voice"
+    },
+    {
+        "id": "z23hxhfponbgfzsql04t1aokgusuhiit2o4xd4hnacuxbk0h00410",
+        "time": "2017-11-02 17:12:08",
+        "media": "youtube",
+        "message": "Excellent song instant subscribe!"
+    },
+    {
+        "id": "z23isnhb3s3hjzsu2acdp43afankyovd3yplwkvsxzlw03c010c",
+        "time": "2017-11-02 17:11:03",
+        "media": "youtube",
+        "message": "I'm a grown fuckin man but his music can bring a tear to my eyes"
+    },
+    {
+        "id": "z22qxry5junpufas5acdp435s51hc3cq2ue5e3locz5w03c010c",
+        "time": "2017-11-02 16:36:51",
+        "media": "youtube",
+        "message": "A pure talent full of soul!"
+    },
+    {
+        "id": "z22stnlj5re2irvo304t1aokg0adrdmmun53atocbihgbk0h00410",
+        "time": "2017-11-02 16:27:33",
+        "media": "youtube",
+        "message": "Great Voice. He sounds like Eddie Vedder."
+    },
+    {
+        "id": "z22gwhn4mxrjddieracdp430glwmdms2vjs3lbeqru5w03c010c",
+        "time": "2017-11-02 16:04:42",
+        "media": "youtube",
+        "message": "One of the most beautiful songs of all time."
+    },
+    {
+        "id": "z23kx1wbryeaijpgc04t1aokgnma51fwn5j33ttmxuagrk0h00410",
+        "time": "2017-11-02 14:36:05",
+        "media": "youtube",
+        "message": "If i lost my ass, would you stay with me?"
+    },
+    {
+        "id": "z23oc1ubwyqnz5v2tacdp432img13lzi2fxjwzg3gbdw03c010c",
+        "time": "2017-11-02 08:21:09",
+        "media": "youtube",
+        "message": "Its like an angel with a guitar!!!"
+    },
+    {
+        "id": "z22wgl2afx3qhntfbacdp43bmauqivzh2jcop2uhocpw03c010c",
+        "time": "2017-11-02 08:01:57",
+        "media": "youtube",
+        "message": "So great.  A true singer/songwriter from the heart."
+    },
+    {
+        "id": "z23xzfnwxlzwtz35y04t1aokgjlgr5it0kideopztbtwrk0h00410",
+        "time": "2017-11-01 22:26:17",
+        "media": "youtube",
+        "message": "can't not hear \"Little wings\" by Mark Gormley"
+    },
+    {
+        "id": "z22nc33xsyfnsjxry04t1aokgsn3bhwcbxcdfwkvv5jhbk0h00410",
+        "time": "2017-11-01 05:33:22",
+        "media": "youtube",
+        "message": "I love everything he does. Especially love \"Black And Blue\" - but this one...wow. It touches a place in my soul that I didn't think anyone or anything could. I'm alone; I have been all my life. And I'm disabled now and worry that even if I found 'the one' they wouldn't stay because of my disabilities. So yeah, this song means a lot to me. Thank you for that."
+    },
+    {
+        "id": "z22if3t54mrfh3ytkacdp43bg54qxiw35mbc0f5ddrdw03c010c",
+        "time": "2017-10-31 13:11:47",
+        "media": "youtube",
+        "message": "If I lost my eyes\nWould you stay with me\nWould you take me by the hand\nTell me what you see\n\nFill my head with colors for my dreams\nIf I lost my eyes\nIf I lost my eyes\n\nIf I lost my hands\nCouldn\u2019t feel a thing\nIf my touch was gone forever\nOut of reach\nCouldn\u2019t hold you like a woman needs to be\nIf I lost my hands\nIf I lost my hands\n\nWould you stay\nWould you stay\nOr would you stray\nJust run away\nOr would you give me something to believe in\nWould you show me the way\nYou believe so I believe\n\nIf I lost my mind\nWould you stay with me\nRemind me of the man I used to be\nFill my head with hope times infinity\nIf I lost my mind\nIf I lost my hands\nOh, if I lost my eyes\n\nWould you stay\nWould you stay\nWould you stay"
+    },
+    {
+        "id": "z23ojnf4zpncyt0bw04t1aokg5pnn10lv5l5nhyxtg0hbk0h00410",
+        "time": "2017-10-30 17:56:19",
+        "media": "youtube",
+        "message": "Awwwe this hits home ...my dad went blind when I was 6. My parents where so in love and little by little he lost toes, foot/feet and then his leg due to diabetes over a course of 15 years....their love dwindle to nothing. He was angry and took it out on her to the point of no return. They divorced and both remarried he died a broken man full of regrets not even 5 years later. \nSorry just had to let that out...amazing song as always."
+    },
+    {
+        "id": "z23bvlewprjtynylhacdp430fbsyaskdyuj5ji2a4pxw03c010c",
+        "time": "2017-10-30 16:45:02",
+        "media": "youtube",
+        "message": "Beautiful song"
+    },
+    {
+        "id": "z23tsfky5rjcg3k0wacdp43a3bpcyfzka5yzfpfptqpw03c010c",
+        "time": "2017-10-30 11:44:05",
+        "media": "youtube",
+        "message": "Your voice💕💕💕💕💕 Come to Greece!"
+    },
+    {
+        "id": "z23yij042nubtfhr404t1aokgqgeotwbxtji1strvrorbk0h00410",
+        "time": "2017-10-28 23:42:50",
+        "media": "youtube",
+        "message": "This song is a good portrayal of how cucks think. Dear white men, please find your balls again before it's too late and stop turning to women to provide you with meaning.\nThank you, that is all."
+    },
+    {
+        "id": "z22asvui3z2bdjuzh04t1aokgliptur4avm3t4kunm0jbk0h00410",
+        "time": "2017-10-24 13:45:26",
+        "media": "youtube",
+        "message": "Man you have a awesome voice ! Makes me feek happy"
+    },
+    {
+        "id": "z221yxsolqbojvjyq04t1aokg5wlbeo1m4p1l4st0inlbk0h00410",
+        "time": "2017-10-24 12:16:37",
+        "media": "youtube",
+        "message": "This guy has an amazing voice"
+    },
+    {
+        "id": "z23nxzdpjwyrubrloacdp433tiexmueyn4gvuncgnghw03c010c",
+        "time": "2017-10-23 05:12:44",
+        "media": "youtube",
+        "message": "This channel is great"
+    },
+    {
+        "id": "z23nihyx1r2iszjx304t1aokgeiufj3btgksd2xytruzrk0h00410",
+        "time": "2017-10-23 03:16:12",
+        "media": "youtube",
+        "message": "Holy fuck!!! This man rips my heart out!! Can not wait to see him in Seattle in 3 months....ahhhhhhhh I can not wait!"
+    },
+    {
+        "id": "z235t1gaior5sxzjz04t1aokg5puqte1tjfpquqp1cnvbk0h00410",
+        "time": "2017-10-20 23:04:32",
+        "media": "youtube",
+        "message": "strangling dislexic  cats live on youtube  is fukkin illegal dude . . . . ."
+    },
+    {
+        "id": "z23zebtabnn0fxho304t1aokgnjrz2uilu0ckhbaapmork0h00410",
+        "time": "2017-10-20 18:08:16",
+        "media": "youtube",
+        "message": "Keep up the good work and go for it ... take a ride for me buddy cuz I can\u2019t ...."
+    },
+    {
+        "id": "z22hcplgvyuiijrfdacdp431u2i1fbcq3cia5vpjzi5w03c010c",
+        "time": "2017-10-18 01:58:46",
+        "media": "youtube",
+        "message": "I love you The White Buffalo!!! Come to México!!!"
+    },
+    {
+        "id": "z23xgrcottzlytnhb04t1aokgxfmplatixf1nwfrdovtrk0h00410",
+        "time": "2017-10-16 11:08:16",
+        "media": "youtube",
+        "message": "This is beautiful"
+    },
+    {
+        "id": "z22yelt4pqz2s32vhacdp43a1w3un2qvgco23ylzqa1w03c010c",
+        "time": "2017-10-15 17:24:26",
+        "media": "youtube",
+        "message": "❤️"
+    },
+    {
+        "id": "z22cdlf51t3jj3ghy04t1aokgsnqclitvals24z1mipxrk0h00410",
+        "time": "2017-10-14 18:06:07",
+        "media": "youtube",
+        "message": "NICE"
+    },
+    {
+        "id": "z22atz5rbljciddjd04t1aokgp01qgiy0g14hkwaypawbk0h00410",
+        "time": "2017-10-14 10:38:55",
+        "media": "youtube",
+        "message": "This new album.. meh.. not really my type but there are 2 songs that i fell in love with. This is one of them! <3"
+    },
+    {
+        "id": "z23lfzmx5puhchnvfacdp43aoecsntp5sgbiijn3lbtw03c010c",
+        "time": "2017-10-14 00:05:15",
+        "media": "youtube",
+        "message": "I don't own a lighter so I held up my cat - that was nice."
+    },
+    {
+        "id": "z22qvbqzvrvxejqdbacdp434vyuv2mr5yl0tafeaelpw03c010c",
+        "time": "2017-10-13 20:01:36",
+        "media": "youtube",
+        "message": "Probably one of my favorites off his new album. (What am I saying? They're all my favorites!) Love Love Love his music! So talented! A truly amazing artist! 🎤🎶🎸😘Can't wait to see him in December!! :)"
+    },
+    {
+        "id": "z23wxdsyllyfjbameacdp434gophy3bdrqji4amwcahw03c010c",
+        "time": "2017-10-13 04:19:57",
+        "media": "youtube",
+        "message": "I love this guy ! He plays and sings from the soul ! Truly appreciated and underappreciated ! A true  artist !"
+    },
+    {
+        "id": "z23ltl3obyfghbs0macdp431ryghmiiv4s1oqz53f1hw03c010c",
+        "time": "2017-10-13 01:51:32",
+        "media": "youtube",
+        "message": "It seemed like you were doing the Townes Van Zandt style of interview from the camera man's perspective"
+    },
+    {
+        "id": "z222spyrhnfvdtpkzacdp4353dj2nxiddsqonjenselw03c010c",
+        "time": "2017-10-12 23:28:00",
+        "media": "youtube",
+        "message": "Sounds like Cat Stevens"
+    },
+    {
+        "id": "z22htpm5hqzpy3uwj04t1aokgtc1s43fm1iskfyuq205bk0h00410",
+        "time": "2017-10-12 22:05:47",
+        "media": "youtube",
+        "message": "Beautiful!"
+    },
+    {
+        "id": "z23mdjzi4nvuhb1z104t1aokgxntilyyxvd1kjxjbicqbk0h00410",
+        "time": "2017-10-12 21:55:03",
+        "media": "youtube",
+        "message": "His song shows how vulnerable yet passionate his heart is. 💕💕💕💕"
+    },
+    {
+        "id": "z223wz44frfjf1fop04t1aokgg3c2xgee12tdb1anquvrk0h00410",
+        "time": "2017-10-12 20:36:00",
+        "media": "youtube",
+        "message": "So beautiful !!"
+    },
+    {
+        "id": "z23fwx4houfowzco204t1aokgb05dv5egcqxr41cxbtlbk0h00410",
+        "time": "2017-10-12 19:39:51",
+        "media": "youtube",
+        "message": "Just so everyone knows, we got a new instagram - @gemsonvhs or my personal, @anthonysimpkins"
+    },
+    {
+        "id": "z222uhozqznhuh1csacdp432ggywgsuxcsksbfoz4t5w03c010c",
+        "time": "2017-10-12 19:34:49",
+        "media": "youtube",
+        "message": "This dude was on sons of Anarchy!"
+    },
+    {
+        "id": "z22rdfpjiousypyza04t1aokggu0aktxwovzebcyxrhwbk0h00410",
+        "time": "2017-10-12 18:33:42",
+        "media": "youtube",
+        "message": "He sounds just like Eddie Vedder"
+    },
+    {
+        "id": "z23ygjvo3xaguvceyacdp430c2gu20bbq3wxzw2jmb1w03c010c",
+        "time": "2017-10-12 17:52:47",
+        "media": "youtube",
+        "message": "This reminds me, shouldn't Benjamin Tod's album supposed to be coming out this month?"
+    },
+    {
+        "id": "z23ygjvo3xaguvceyacdp4353uq1nmbldip50wy11z1w03c010c",
+        "time": "2017-10-12 17:50:45",
+        "media": "youtube",
+        "message": "S M O O T H"
+    },
+    {
+        "id": "z23hznlgeliccrmiu04t1aokg012p0wgollf2jjzkmcrbk0h00410",
+        "time": "2017-10-12 17:45:24",
+        "media": "youtube",
+        "message": "This is fucking awesome."
+    },
+    {
+        "id": "z22vxxmjfqbmdzwfsacdp430z4dfw0qylqi1grgjqk5w03c010c",
+        "time": "2017-10-12 17:23:15",
+        "media": "youtube",
+        "message": "I love him."
+    },
+    {
+        "id": "z22bdjspuymldh12iacdp434wfyhcoasdawi11vdt21w03c010c",
+        "time": "2017-10-12 17:11:11",
+        "media": "youtube",
+        "message": "Holy shit! Dude! The White Buffalo on Gems? I couldn't be happier!"
+    },
+    {
+        "id": "z23zi1cbdpfhxtwnjacdp434jndbmgttxvkxbfnrkjtw03c010c",
+        "time": "2017-10-12 17:08:02",
+        "media": "youtube",
+        "message": "❤️❤️❤️"
+    }
+]}

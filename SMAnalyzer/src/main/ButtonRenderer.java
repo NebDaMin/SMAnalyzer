@@ -38,7 +38,7 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
     public ButtonRenderer() {
         setOpaque(true);
     }
-//matteo whaddup
+//renders button object in table cell
 
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
@@ -237,7 +237,7 @@ class ButtonEditor extends DefaultCellEditor {
         IsPushed = false;
         return new String(Label);
     }
-
+    //rounding for PosScore
     public static double round(double value, int places) {
         if (places < 0) {
             throw new IllegalArgumentException();
