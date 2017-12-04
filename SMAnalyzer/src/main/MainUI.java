@@ -198,24 +198,13 @@ public class MainUI extends JFrame {
                 int returnVal = FileChooser.showSaveDialog(MainUI.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     exportToFile(comments, FileChooser.getSelectedFile() + ".txt");
-//                    try {
-//                        FileWriter fw = new FileWriter(FileChooser.getSelectedFile() + ".txt");
-//                        fw.write(comments.get(0).getMedia() + "`");
-//                        fw.write(Analyzer.getOriginalPost() + "`");
-//                        for (CommentInstance c : comments) {
-//                            fw.write(c.getID() + "`");
-//                            fw.write(c.getCommentRaw() + "`");
-//                            fw.write(c.getCommentTime() + "`");
-//                            fw.write(c.getShares() + "|");
-//                        }
-//                        fw.close();
-//                    } catch (IOException ex) {
-//                        ex.printStackTrace();
-//                    }
                 }
             } else if (e.getSource() == LoadFile) {
+                Analyzer.clearArray();
                 AnalyzeButton.setEnabled(false);
+                LoadFile.setEnabled(false);
                 ArrayList<NormalizedComment> comments = parseFileToJSON();
+                Analyzer.setOriginalPost(comments.get(0).getMessage());
                 Boolean isBlacklistEnabled = !BlacklistIgnoreBox.isSelected();
                 try {
                     Analyzer.setComments(comments);
@@ -451,13 +440,12 @@ public class MainUI extends JFrame {
             try {
                 String contents = new String(Files.readAllBytes(Paths.get(FileChooser.getSelectedFile().getPath())));
                 JSONObject json = Utility.parseJson(contents);
-                NormalizedComment originalPost = new NormalizedComment();
                 JSONArray jsonArray = json.getJSONArray("comments");
                 ArrayList<JSONObject> commentsArray = new ArrayList();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     commentsArray.add(jsonArray.getJSONObject(i));
                 }
-                for (int i = 1; i < commentsArray.size(); i++) {
+                for (int i = 0; i < commentsArray.size(); i++) {
                     JSONObject comment = commentsArray.get(i);
                     NormalizedComment normComment = new NormalizedComment();
 
@@ -476,6 +464,7 @@ public class MainUI extends JFrame {
                     if (comment.has("upvotes")) {
                         normComment.setUpvotes(comment.getString("upvotes"));
                     }
+                    comments.add(normComment);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -493,3 +482,4 @@ public class MainUI extends JFrame {
         new MainUI();
     }
 }
+
