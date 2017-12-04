@@ -4,6 +4,7 @@ import smsdk.*;
 import java.util.*;
 import org.json.*;
 
+//This class handles for the cursors in order to make a new call to the API for more comments
 public class FBCommentList {
 
     String before;

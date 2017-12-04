@@ -14,11 +14,13 @@ public class YTClient {
     static YtAPI YtClient;
     private ArrayList<NormalizedComment> PostArrayList;
 
+    //Initializes YTClient with the API and initializes a new PostArrayList.
     public YTClient() {
         YtClient = new YtAPI(API_KEY);
         PostArrayList = new ArrayList();
     }
 
+    //Retrieves the comment for the specified channel or video Id. Adds the channel/video title to the PostArrayList and all comments.
     public void fetchComments(String type, String id, boolean children) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         if (type.equals("user")) {

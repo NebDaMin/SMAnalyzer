@@ -16,6 +16,7 @@ public class RedditClient {
     private RedditOAuth RedditOAuth;
     private ArrayList<NormalizedComment> PostArrayList;
 
+    //Initializes the RedditClient with the API, OAuth object, generates a new Token, and initializes a new PostArrayList.
     public RedditClient() {
         RedditClient = new RedditAPI(ClientId, ClientSecret);
         RedditOAuth = new RedditOAuth(RedditClient);
@@ -23,6 +24,9 @@ public class RedditClient {
         PostArrayList = new ArrayList();
     }
 
+    /* Retrieves the specific post and comments by id, 
+       and includes if children comments past the top-level should be added.
+    */
     public void fetchComments(String id, boolean includeChildren) {
         RedditRequest request = new RedditRequest("/comments/" + id + ".json");
         ArrayList<JSONObject> list = parseJSONArrayFromString(RedditClient.get(Token, request));
@@ -31,6 +35,7 @@ public class RedditClient {
         System.out.println("PostArrayList size: " + PostArrayList.size());
     }
 
+    //Parses the response from RedditClient.get() when the response is a JSON Array
     public ArrayList<JSONObject> parseJSONArrayFromString(String jsonText) {
         JSONArray json = Utility.parseJsonArray(jsonText);
         ArrayList<JSONObject> array = new ArrayList<JSONObject>();
@@ -40,6 +45,7 @@ public class RedditClient {
         return array;
     }
 
+    //Parses a JSON Array where needed
     public ArrayList<JSONObject> parseJSONArray(JSONArray jsonArray) {
         ArrayList<JSONObject> array = new ArrayList<JSONObject>();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -48,11 +54,13 @@ public class RedditClient {
         return array;
     }
 
+    //Parses a JSON Object where needed
     public JSONObject parseJSONObject(String jsonText) {
         JSONObject json = Utility.parseJson(jsonText);
         return json;
     }
 
+    //Recursively checks for comments on a specific post id
     public int addCommentsToArrayList(JSONObject obj, boolean includeChildren, String id) {
         if (!obj.has("data")) {
             return 1;
@@ -106,6 +114,7 @@ public class RedditClient {
         return 0;
     }
 
+    //Gets the post information from the RedditClient.get() api call
     public void addOriginalPostToArrayList(JSONObject obj) {
         if (obj.has("data")) {
             JSONObject data = obj.getJSONObject("data").getJSONArray("children").getJSONObject(0).getJSONObject("data");
