@@ -77,8 +77,6 @@ public class MainUI extends JFrame {
         ExportToFile = new JMenuItem("Export to file");
         ExportToFile.setEnabled(false);
         File.add(ExportToFile);
-        SaveFile = new JCheckBoxMenuItem("Save to File");
-        File.add(SaveFile);
         Menu.add(File);
 
         //options menu item init
@@ -181,7 +179,6 @@ public class MainUI extends JFrame {
                 //this calls clearUI
             } else if (e.getSource() == ClearButton) {
                 clearUI();
-                UrlText.setText("");
 
                 //adds a word to the main dictionary
             } else if (e.getSource() == DictionaryAdd) {
@@ -228,14 +225,15 @@ public class MainUI extends JFrame {
                 FBClient.clearArray();
                 YTClient.clearArray();
                 RedditClient.clearArray();
-                clearUI();
                 AnalyzeButton.setEnabled(false);
-                
+
                 String urlString = UrlText.getText();
                 MainUI.this.MainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
                 if (urlString.equals(null) || urlString.equals("")) {
-                    JOptionPane.showMessageDialog(null, "There's nothing to analyze.\nPlease paste a url.", "Did you really hit analyze without puttng anything in?", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "There's nothing to analyze.\nPlease paste a url.",
+                            "Did you really hit analyze without putting anything in?", JOptionPane.ERROR_MESSAGE);
+                    clearUI();
                 } else {
                     Parse = new Parse();
                     HashMap<String, String> stringMap = Parse.parseUrl(urlString);
@@ -245,44 +243,68 @@ public class MainUI extends JFrame {
                     LoadFile.setEnabled(false);
 
                     // begins the parsing process
-                    if (Parse.getSite().equals("facebook")) {
-                        if (stringMap.size() == 1) {
-                            FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child);
-                        } else if (stringMap.size() == 3) {
-                            FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child);
-                        }
-                    } else if (Parse.getSite().equals("youtube")) {
-                        YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"), child);
-                    } else if (Parse.getSite().equals("reddit")) {
-                        RedditClient.fetchComments(stringMap.get("Post Id"), child);
-                    }
-                    try {
+                    if (Parse.getSite() != null) {
                         if (Parse.getSite().equals("facebook")) {
-                            if (!FBClient.getPostArray().isEmpty()) {
-                                Analyzer.setComments(FBClient.getPostArray());
-                                Analyzer.setOriginalPost(FBClient.getPostArray().get(0).getMessage());
+                            if (stringMap.size() == 1) {
+                                FBClient.fetchRandomPagePost(stringMap.get("Page Name"), child);
+                            } else if (stringMap.size() == 3) {
+                                FBClient.fetchSpecificPagePost(stringMap.get("Page Name"), stringMap.get("Post Id"), child);
                             }
                         } else if (Parse.getSite().equals("youtube")) {
-                            if (!YTClient.getPostArray().isEmpty()) {
-                                Analyzer.setComments(YTClient.getPostArray());
-                                Analyzer.setOriginalPost(YTClient.getPostArray().get(0).getMessage());
-                            }
+                            YTClient.fetchComments(stringMap.get("Page Type"), stringMap.get("Id"), child);
                         } else if (Parse.getSite().equals("reddit")) {
-                            if (!RedditClient.getPostArray().isEmpty()) {
-                                Analyzer.setComments(RedditClient.getPostArray());
-                                Analyzer.setOriginalPost(RedditClient.getPostArray().get(0).getMessage());
+                            RedditClient.fetchComments(stringMap.get("Post Id"), child);
+                        }
+                    } else {
+                        clearUI();
+                    }
+                    boolean hasComments = false;
+                    try {
+                        if (Parse.getSite() != null) {
+                            if (Parse.getSite().equals("facebook")) {
+                                if (FBClient.getPostArray().size() > 1) {
+                                    Analyzer.setComments(FBClient.getPostArray());
+                                    Analyzer.setOriginalPost(FBClient.getPostArray().get(0).getMessage());
+                                    hasComments = true;
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "There was no comments to analyze.\nPlease choose a url with comments.",
+                                            "We need some comments", JOptionPane.ERROR_MESSAGE);
+                                    clearUI();
+                                }
+                            } else if (Parse.getSite().equals("youtube")) {
+                                if (YTClient.getPostArray().size() > 1) {
+                                    Analyzer.setComments(YTClient.getPostArray());
+                                    Analyzer.setOriginalPost(YTClient.getPostArray().get(0).getMessage());
+                                    hasComments = true;
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "There was no comments to analyze.\nPlease choose a url with comments.",
+                                            "We need some comments", JOptionPane.ERROR_MESSAGE);
+                                    clearUI();
+                                }
+                            } else if (Parse.getSite().equals("reddit")) {
+                                if (RedditClient.getPostArray().size() > 1) {
+                                    Analyzer.setComments(RedditClient.getPostArray());
+                                    Analyzer.setOriginalPost(RedditClient.getPostArray().get(0).getMessage());
+                                    hasComments = true;
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "There was no comments to analyze.\nPlease choose a url with comments.",
+                                            "We need some comments", JOptionPane.ERROR_MESSAGE);
+                                    clearUI();
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(MainUI.this, "Uh....",
+                                        "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
                             }
-                        } else {
-                            JOptionPane.showMessageDialog(MainUI.this, "Uh....",
-                                    "I don't know how you got here, but you need to leave", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } catch (Exception ex) {
                         System.out.println(ex);
                         JOptionPane.showMessageDialog(null, ex, "Something Broke", JOptionPane.ERROR_MESSAGE);
                     }
                     //actually SMAnalyzing now
-                    Analyzer.analyze(isBlacklistEnabled);
-                    displayData();
+                    if (hasComments) {
+                        Analyzer.analyze(isBlacklistEnabled);
+                        displayData();
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(MainUI.this, "Uh....",
@@ -380,9 +402,11 @@ public class MainUI extends JFrame {
         OutputTable.setVisible(false);
         ExportToFile.setEnabled(false);
         LoadFile.setEnabled(true);
+        MainUI.this.MainPanel.setCursor(null);
         MainUI.this.remove(ScrollPane);
         MainUI.this.remove(Scroll);
         PostText.setText("");
+        UrlText.setText("");
         ChartPanel.removeAll();
         AnalyzeButton.setEnabled(true);
         MainUI.this.remove(ChartPanel);

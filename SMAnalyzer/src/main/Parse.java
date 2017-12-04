@@ -23,8 +23,8 @@ public class Parse {
             setSite("reddit");
             return parseRedditUrl(s);
         } else {
-            JOptionPane.showMessageDialog(null, "Url not recognized",
-                    "We only do facebook, youtube, or twitter", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "We only do facebook, youtube, or reddit",
+                    "Url not recognized", JOptionPane.INFORMATION_MESSAGE);
             return null;
         }
     }

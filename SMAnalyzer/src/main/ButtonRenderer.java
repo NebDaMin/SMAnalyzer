@@ -208,7 +208,7 @@ class ButtonEditor extends DefaultCellEditor {
             summaryString += "\n\nNegative Percentage: " + negPercentage;
             summaryString += "\nPositive Percentage: " + posPercentage;
             summaryString += "\nNeutral Percentage: " + neutralPercentage;
-            summaryString += "\n\nPositvity Score: " + posScore;
+            summaryString += "\n\nPositivity Score: " + posScore;
 
             JTextPane summary = new JTextPane();
             summary.setEditable(false);
