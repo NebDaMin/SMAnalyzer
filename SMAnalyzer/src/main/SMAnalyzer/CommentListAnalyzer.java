@@ -59,7 +59,7 @@ public class CommentListAnalyzer {
         //Adding ArrayList of strings from input to ArrayList of CommentInstances
         for (int x = 0; x < post.size(); x++) {
             CommentInstance currentInstance = new CommentInstance(post.get(x).getMedia(), post.get(x).getId(), post.get(x).getMessage(), post.get(x).getTime(),
-                    post.get(x).getShares(), Dictionary.getDictionaryInstance(), PositivityWords);
+                    post.get(x).getShares(),post.get(x).getUpvotes(), Dictionary.getDictionaryInstance(), PositivityWords);
             //Filtering out non english words and instances of Only Names in comments.
             if (currentInstance.getIsEnglish() == true && currentInstance.getIsOnlyName() == false) {
                 AllComments.add(currentInstance);

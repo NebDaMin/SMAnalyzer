@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import jdk.nashorn.internal.parser.JSONParser;
 import main.sminterfaces.FBClient;
 import main.sminterfaces.YTClient;
 import main.sminterfaces.NormalizedComment;
@@ -22,6 +23,9 @@ import main.sminterfaces.RedditClient;
 import main.sminterfaces.TwitterClient;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import smsdk.Utility;
 
 public class MainUI extends JFrame {
 
@@ -193,24 +197,26 @@ public class MainUI extends JFrame {
                 ArrayList<CommentInstance> comments = Analyzer.getComments();
                 int returnVal = FileChooser.showSaveDialog(MainUI.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        FileWriter fw = new FileWriter(FileChooser.getSelectedFile() + ".txt");
-                        fw.write(comments.get(0).getMedia() + "`");
-                        fw.write(Analyzer.getOriginalPost() + "`");
-                        for (CommentInstance c : comments) {
-                            fw.write(c.getID() + "`");
-                            fw.write(c.getCommentRaw() + "`");
-                            fw.write(c.getCommentTime() + "`");
-                            fw.write(c.getShares() + "|");
-                        }
-                        fw.close();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                    exportToFile(comments, FileChooser.getSelectedFile() + ".txt");
+//                    try {
+//                        FileWriter fw = new FileWriter(FileChooser.getSelectedFile() + ".txt");
+//                        fw.write(comments.get(0).getMedia() + "`");
+//                        fw.write(Analyzer.getOriginalPost() + "`");
+//                        for (CommentInstance c : comments) {
+//                            fw.write(c.getID() + "`");
+//                            fw.write(c.getCommentRaw() + "`");
+//                            fw.write(c.getCommentTime() + "`");
+//                            fw.write(c.getShares() + "|");
+//                        }
+//                        fw.close();
+//                    } catch (IOException ex) {
+//                        ex.printStackTrace();
+//                    }
                 }
                 //this loads a file to be SMAnalyzed matteo?
             } else if (e.getSource() == LoadFile) {
-                ArrayList<NormalizedComment> comments = parseFile();
+                AnalyzeButton.setEnabled(false);
+                ArrayList<NormalizedComment> comments = parseFileToJSON();
                 Boolean isBlacklistEnabled = !BlacklistIgnoreBox.isSelected();
                 try {
                     Analyzer.setComments(comments);
@@ -414,68 +420,64 @@ public class MainUI extends JFrame {
         MainUI.this.pack();
     }
 
-    //matteo
-    private ArrayList<NormalizedComment> parseFile() {
+    //Exports the analysis as a JSON Object into a text file
+    private void exportToFile(ArrayList<CommentInstance> comments, String file) {
+        try {
+            FileWriter fw = new FileWriter(file);
+            JSONObject obj = new JSONObject();
+            JSONArray commentArray = new JSONArray();
+            for (CommentInstance c : comments) {
+                JSONObject commentObj = new JSONObject();
+                commentObj.put("id", c.getID());
+                commentObj.put("message", c.getCommentRaw());
+                commentObj.put("time", c.getCommentTime());
+                commentObj.put("media", c.getMedia());
+                commentObj.put("shares", c.getShares());
+                commentObj.put("upvotes", c.getUpvotes());
+                commentArray.put(commentObj);
+            }
+            obj.put("comments", commentArray);
+            fw.write(obj.toString(4));
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    //Parses the text file into a JSON object
+    private ArrayList<NormalizedComment> parseFileToJSON() {
         ArrayList<NormalizedComment> comments = new ArrayList();
-        ArrayList<String> idList = new ArrayList();
-        ArrayList<String> textList = new ArrayList();
-        ArrayList<String> timeList = new ArrayList();
-        ArrayList<String> shareList = new ArrayList();
         int returnVal = FileChooser.showOpenDialog(MainUI.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
                 String contents = new String(Files.readAllBytes(Paths.get(FileChooser.getSelectedFile().getPath())));
-                char currentChar;
-                String media = "";
-                String originalPost = "";
-                String currentId = "";
-                String currentText = "";
-                String currentTime = "";
-                String currentShares = "";
-                int currentState = 0;
-                for (int k = 0; k < contents.length(); k++) {
-                    currentChar = contents.charAt(k);
-                    if (currentChar == '`') {
-                        if (currentState == 2) {
-                            idList.add(currentId);
-                            currentId = "";
-                        } else if (currentState == 3) {
-                            textList.add(currentText);
-                            currentText = "";
-                        } else if (currentState == 4) {
-                            timeList.add(currentTime);
-                            currentTime = "";
-                        }
-                        currentState++;
-                    } else if (currentChar == '|') {
-                        shareList.add(currentShares);
-                        currentShares = "";
-                        currentState = 2;
-                    } else if (currentState == 0) {
-                        media += currentChar;
-                    } else if (currentState == 1) {
-                        originalPost += currentChar;
-                    } else if (currentState == 2) {
-                        currentId += currentChar;
-                    } else if (currentState == 3) {
-                        currentText += currentChar;
-                    } else if (currentState == 4) {
-                        currentTime += currentChar;
-                    } else if (currentState == 5) {
-                        currentShares += currentChar;
+                JSONObject json = Utility.parseJson(contents);
+                NormalizedComment originalPost = new NormalizedComment();
+                JSONArray jsonArray = json.getJSONArray("comments");
+                ArrayList<JSONObject> commentsArray = new ArrayList();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    commentsArray.add(jsonArray.getJSONObject(i));
+                }
+                for (int i = 1; i < commentsArray.size(); i++) {
+                    JSONObject comment = commentsArray.get(i);
+                    NormalizedComment normComment = new NormalizedComment();
+
+                    if (comment.has("id")) {
+                        normComment.setId(comment.getString("id"));
+                    }
+                    if (comment.has("message")) {
+                        normComment.setMessage(comment.getString("message"));
+                    }
+                    if (comment.has("time")) {
+                        normComment.setTime(comment.getString("time"));
+                    }
+                    if (comment.has("shares")) {
+                        normComment.setShares(comment.getString("shares"));
+                    }
+                    if (comment.has("upvotes")) {
+                        normComment.setUpvotes(comment.getString("upvotes"));
                     }
                 }
-
-                for (int k = 0; k < idList.size(); k++) {
-                    NormalizedComment normCom = new NormalizedComment();
-                    normCom.setMedia(media);
-                    normCom.setId(idList.get(k));
-                    normCom.setMessage(textList.get(k));
-                    normCom.setTime(timeList.get(k));
-                    normCom.setShares(shareList.get(k));
-                    comments.add(normCom);
-                }
-                Analyzer.setOriginalPost(originalPost);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

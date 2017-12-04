@@ -12,6 +12,7 @@ public class CommentInstance implements Comparable<CommentInstance> {
     private String CommentTime = "";                        //Placeholder for the time value to be sent from the facebook API
     private String Media = "";                              //Social media source of comment
     private String Shares = "";                             //Number of shares comment has received
+    private String Upvotes ="";                             //Number of upvotes comment has received    
     private String ID = "";                                 //ID assigned by social media source
     private String CommentNoPunct = "";                     //Comment Version without punctuation
     private ArrayList<WordInstance> UniqueWordList;         //List of unique words    //Count of each words in word list
@@ -23,7 +24,7 @@ public class CommentInstance implements Comparable<CommentInstance> {
 
     //Constructor for CommentInstance
     public CommentInstance(String media, String id, String inputString, String time,
-            String shares, GenericSpellDictionary dictionary, ArrayList<WordInstance> positivityWordList) throws IOException {
+            String shares, String upvotes, GenericSpellDictionary dictionary, ArrayList<WordInstance> positivityWordList) throws IOException {
         //Initialize Variables
         inputString = inputString.replaceAll("|", "");
         inputString = inputString.replaceAll("`", "");
@@ -31,6 +32,7 @@ public class CommentInstance implements Comparable<CommentInstance> {
         CommentTime = time;
         Media = media;
         Shares = shares;
+        Upvotes = upvotes;
         ID = id;
         CommentCharList = new ArrayList<>();
         UniqueWordList = new ArrayList<>();
@@ -183,7 +185,11 @@ public class CommentInstance implements Comparable<CommentInstance> {
     public String getShares() {
         return Shares;
     }
-
+    
+    public String getUpvotes() {
+        return Upvotes;
+    }
+    
     public ArrayList<WordInstance> getUniqueWordList() {
         return UniqueWordList;
     }
