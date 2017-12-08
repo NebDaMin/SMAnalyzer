@@ -103,24 +103,23 @@ public class CommentListAnalyzer {
 
     //Filter words out based on blacklist
     public ArrayList<WordInstance> filterBlacklist(ArrayList<WordInstance> input) {
+        ArrayList<WordInstance> tempList = (ArrayList<WordInstance>) input.clone();
         for (int x = 0; x < input.size(); x++) {
             for (int y = 0; y < BlackList.size(); y++) {
                 if (BlackList.get(y).getWord().equals(input.get(x).getWord())) {
-                    input.remove(x);
-                    x--;
+                    tempList.remove(input.get(x));
                     break;
                 }
             }
             //Filter based on temporary black list
             for (int z = 0; z < TempBlacklist.size(); z++) {
                 if (TempBlacklist.get(z).getWord().equals(input.get(x).getWord())) {
-                    input.remove(x);
-                    x--;
+                    tempList.remove(input.get(x));
                     break;
                 }
             }
         }
-        return input;
+        return tempList;
     }
 
     //Groups the comments together based on keyword
